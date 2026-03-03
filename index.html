@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Baltej Goud | Portfolio</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome for Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Background Decorators -->
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+
+    <header>
+      <nav>
+        <div class="logo">BG.</div>
+        <ul class="nav-links">
+          <li><a href="#about">About</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact" class="btn-primary">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Hero Section -->
+      <section id="about" class="hero fade-in">
+        <div class="hero-content">
+          <span class="badge">Welcome to my space</span>
+          <h1>Hi, I'm <span class="highlight">Baltej Goud</span></h1>
+          <p class="subtitle">
+            Master’s in Data Science | App Developer | React Native | Firebase
+          </p>
+          <div class="cta-group">
+            <a href="#projects" class="btn-primary">View My Work</a>
+            <a
+              href="https://github.com/baltejgoud"
+              target="_blank"
+              class="btn-secondary"
+            >
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+        </div>
+        <div class="hero-image">
+          <!-- Placeholder for profile image -->
+          <div class="profile-card">
+            <div class="profile-img-container">
+              <!-- Add your profile photo named 'profile.jpg' in this folder -->
+              <div class="image-placeholder"><i class="fas fa-user"></i></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Skills Section -->
+      <section id="skills" class="skills-section section-padding">
+        <h2 class="section-title fade-in">
+          My <span class="highlight">Expertise</span>
+        </h2>
+        <div class="skills-grid">
+          <div class="skill-card fade-in">
+            <div class="skill-icon"><i class="fas fa-mobile-alt"></i></div>
+            <h3>App Development</h3>
+            <p>React Native, Expo, Mobile UI/UX</p>
+          </div>
+          <div class="skill-card fade-in">
+            <div class="skill-icon"><i class="fas fa-database"></i></div>
+            <h3>Data Science</h3>
+            <p>Machine Learning, Data Analysis, Python</p>
+          </div>
+          <div class="skill-card fade-in">
+            <div class="skill-icon"><i class="fas fa-server"></i></div>
+            <h3>Backend & Cloud</h3>
+            <p>Firebase, Node.js, Express, Cloud Firestore</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Projects Section -->
+      <section id="projects" class="projects-section section-padding">
+        <h2 class="section-title fade-in">
+          Featured <span class="highlight">Projects</span>
+        </h2>
+        <div class="projects-grid">
+          <!-- ExtraTicket Project -->
+          <div class="project-card glass-panel fade-in">
+            <div class="project-content">
+              <div class="project-tags">
+                <span>React Native</span>
+                <span>Firebase</span>
+              </div>
+              <h3>ExtraTicket - Event Booking Platform</h3>
+              <p>
+                A modern event booking platform featuring real-time seat
+                selection, group bookings, wallet integration, and holographic
+                tickets.
+              </p>
+              <div class="project-links">
+                <a
+                  href="https://github.com/baltejgoud/extraticket"
+                  target="_blank"
+                  class="project-link"
+                  >Source Code <i class="fas fa-arrow-right"></i
+                ></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Section -->
+      <section id="contact" class="contact-section section-padding">
+        <div class="glass-panel contact-card fade-in">
+          <h2>Let's connect</h2>
+          <p>
+            I'm always open to discussing new projects, creative ideas or
+            opportunities to be part of your visions.
+          </p>
+          <div class="social-links">
+            <a
+              href="https://github.com/baltejgoud"
+              target="_blank"
+              class="social-icon"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a href="#" class="social-icon"
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+            <a href="mailto:your.email@example.com" class="social-icon"
+              ><i class="fas fa-envelope"></i
+            ></a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        &copy;
+        <script>
+          document.write(new Date().getFullYear());
+        </script>
+        Baltej Goud. All rights reserved.
+      </p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
