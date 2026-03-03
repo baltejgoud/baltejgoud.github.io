@@ -1,53 +1,85 @@
-// Sticky Navigation Background
-window.addEventListener("scroll", () => {
-  const header = document.querySelector("header");
-  if (window.scrollY > 50) {
-    header.classList.add("scrolled");
-  } else {
-    header.classList.remove("scrolled");
-  }
+// ─────────────────────────────────────────────────────────
+//  Portfolio Script — Scroll, Modal, 3D Tilt, Hamburger
+// ─────────────────────────────────────────────────────────
+
+// 1. Sticky nav on scroll
+const header = document.querySelector('header');
+window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 50);
 });
 
-// Scroll Reveal Animations
-const observerOptions = {
-  root: null,
-  rootMargin: "0px",
-  threshold: 0.15,
-};
+// 2. Scroll-reveal animation
+const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            // Stagger siblings inside grids
+            const siblings = entry.target.parentElement.querySelectorAll('.fade-in, .fade-in-right');
+            let delay = 0;
+            siblings.forEach(el => {
+                if (!el.classList.contains('visible')) {
+                    el.style.transitionDelay = `${delay}ms`;
+                    delay += 100;
+                }
+            });
+            entry.target.classList.add('visible');
+            obs.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.12 });
 
-const observer = new IntersectionObserver((entries, observer) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("visible");
-      observer.unobserve(entry.target); // Run once
-    }
-  });
-}, observerOptions);
+document.querySelectorAll('.fade-in, .fade-in-right').forEach(el => observer.observe(el));
 
-document.addEventListener("DOMContentLoaded", () => {
-  const hiddenElements = document.querySelectorAll(".fade-in");
-  hiddenElements.forEach((el) => observer.observe(el));
+// 3. Deep Fake Modal
+const deepfakeCard = document.getElementById('deepfake-card');
+const modal        = document.getElementById('deepfake-modal');
+const modalClose   = document.getElementById('modal-close-btn');
+
+function openModal() {
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+if (deepfakeCard) {
+    deepfakeCard.addEventListener('click', openModal);
+    deepfakeCard.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(); }
+    });
+}
+if (modalClose)  modalClose.addEventListener('click', closeModal);
+if (modal) {
+    modal.addEventListener('click', e => {
+        if (e.target === modal) closeModal(); // close on backdrop click
+    });
+}
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
 });
 
-// Subtle 3D tilt effect on project cards
-const cards = document.querySelectorAll(".project-card");
+// 4. 3D tilt on project cards (desktop only)
+const cards = document.querySelectorAll('.project-card');
+if (window.matchMedia('(pointer: fine)').matches) {
+    cards.forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const rect = card.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width  - 0.5;
+            const y = (e.clientY - rect.top)  / rect.height - 0.5;
+            card.style.transform = `perspective(800px) rotateX(${-y * 8}deg) rotateY(${x * 8}deg) translateY(-6px)`;
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+        });
+    });
+}
 
-cards.forEach((card) => {
-  card.addEventListener("mousemove", (e) => {
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    const tiltX = (y - centerY) / 20;
-    const tiltY = (centerX - x) / 20;
-
-    card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.02, 1.02, 1.02)`;
-  });
-
-  card.addEventListener("mouseleave", () => {
-    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-  });
-});
+// 5. Hamburger menu (mobile)
+const hamburger = document.getElementById('hamburger');
+const navLinks  = document.querySelector('.nav-links');
+if (hamburger && navLinks) {
+    hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('open-menu');
+    });
+}
