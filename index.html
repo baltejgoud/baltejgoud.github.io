@@ -1,205 +1,445 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Baltej Goud | Portfolio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Cursor glow -->
+    <div id="cursor-glow"></div>
+
+    <!-- Scroll progress bar -->
+    <div id="scroll-progress"></div>
+
+    <!-- Back to top -->
+    <button id="back-to-top" title="Back to top" aria-label="Back to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
 
     <!-- Deep Fake Modal -->
-    <div id="deepfake-modal" class="modal-overlay" role="dialog" aria-modal="true">
-        <div class="modal-box">
-            <button class="modal-close" id="modal-close-btn" aria-label="Close">&times;</button>
-            <h2>🤖 AI-Based Deep Fake Detection</h2>
-            <p class="modal-subtitle">Using Artificial Intelligence to fight Artificial Intelligence</p>
-
-            <div class="modal-section">
-                <h3>📌 Overview</h3>
-                <p>Growing computation power has made creating indistinguishable human-synthesized "deepfake" videos very simple. These are used for political distress, fake terrorism events, and blackmail. This system automatically detects both <strong>replacement</strong> and <strong>reenactment</strong> deepfakes.</p>
-            </div>
-
-            <div class="modal-section">
-                <h3>⚙️ How It Works — Pipeline</h3>
-                <img src="deepfake_pipeline.png" alt="Deepfake Detection Pipeline" class="modal-img" />
-                <div class="pipeline-steps">
-                    <div class="step"><span class="step-num">1</span><div><strong>Input Video</strong><p>Raw video is fed into the system</p></div></div>
-                    <div class="step-arrow">→</div>
-                    <div class="step"><span class="step-num">2</span><div><strong>Frame Extraction</strong><p>Video broken into individual frames</p></div></div>
-                    <div class="step-arrow">→</div>
-                    <div class="step"><span class="step-num">3</span><div><strong>ResNeXt CNN</strong><p>Extracts visual features per frame</p></div></div>
-                    <div class="step-arrow">→</div>
-                    <div class="step"><span class="step-num">4</span><div><strong>LSTM RNN</strong><p>Learns temporal patterns across frames</p></div></div>
-                    <div class="step-arrow">→</div>
-                    <div class="step result-step"><span class="step-num">5</span><div><strong>Real or Fake?</strong><p>Final binary classification</p></div></div>
-                </div>
-            </div>
-
-            <div class="modal-section">
-                <h3>🧠 Feature Extraction (ResNeXt CNN)</h3>
-                <img src="cnn_features.png" alt="CNN Feature Extraction" class="modal-img" />
-                <p>The Res-Next Convolutional Neural Network extracts frame-level features capturing subtle facial artifacts, boundary inconsistencies, and texture anomalies that are invisible to the human eye but signal manipulation.</p>
-            </div>
-
-            <div class="modal-section">
-                <h3>🗃️ Dataset</h3>
-                <div class="dataset-pills">
-                    <span>FaceForensics++</span>
-                    <span>Deepfake Detection Challenge</span>
-                    <span>Celeb-DF</span>
-                </div>
-                <p>Evaluated on large amounts of balanced, mixed data to emulate real-time scenarios and improve performance on real-world data.</p>
-            </div>
-
-            <div class="modal-section">
-                <h3>🔑 Key Technologies</h3>
-                <div class="dataset-pills accent-green">
-                    <span>LSTM</span><span>RNN</span><span>ResNeXt CNN</span><span>Python</span><span>Deep Learning</span>
-                </div>
-            </div>
+    <div
+      id="deepfake-modal"
+      class="modal-overlay"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="modal-box">
+        <button class="modal-close" id="modal-close-btn" aria-label="Close">
+          &times;
+        </button>
+        <h2>🤖 AI-Based Deep Fake Detection</h2>
+        <p class="modal-subtitle">
+          Using Artificial Intelligence to fight Artificial Intelligence
+        </p>
+        <div class="modal-section">
+          <h3>📌 Overview</h3>
+          <p>
+            Growing computation power has made creating indistinguishable
+            "deepfake" videos extremely simple. These are weaponised for
+            political distress, fraud, and blackmail. This system automatically
+            detects both <strong>replacement</strong> and
+            <strong>reenactment</strong> deepfakes.
+          </p>
         </div>
+        <div class="modal-section">
+          <h3>⚙️ How It Works — Pipeline</h3>
+          <img
+            src="deepfake_pipeline.png"
+            alt="Deepfake Detection Pipeline"
+            class="modal-img"
+          />
+          <div class="pipeline-steps">
+            <div class="step">
+              <span class="step-num">1</span>
+              <div>
+                <strong>Input Video</strong>
+                <p>Raw video is fed in</p>
+              </div>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+              <span class="step-num">2</span>
+              <div>
+                <strong>Frame Extraction</strong>
+                <p>Split into frames</p>
+              </div>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+              <span class="step-num">3</span>
+              <div>
+                <strong>ResNeXt CNN</strong>
+                <p>Feature extraction</p>
+              </div>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+              <span class="step-num">4</span>
+              <div>
+                <strong>LSTM RNN</strong>
+                <p>Temporal patterns</p>
+              </div>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step result-step">
+              <span class="step-num">5</span>
+              <div>
+                <strong>Real or Fake?</strong>
+                <p>Final classification</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-section">
+          <h3>🧠 Feature Extraction (ResNeXt CNN)</h3>
+          <img
+            src="cnn_features.png"
+            alt="CNN Feature Extraction"
+            class="modal-img"
+          />
+          <p>
+            The ResNeXt CNN captures subtle facial artifacts, boundary
+            inconsistencies, and texture anomalies invisible to the human eye
+            but clear signals of manipulation.
+          </p>
+        </div>
+        <div class="modal-section">
+          <h3>🗃️ Dataset</h3>
+          <div class="dataset-pills">
+            <span>FaceForensics++</span><span>Deepfake Detection Challenge</span
+            ><span>Celeb-DF</span>
+          </div>
+        </div>
+        <div class="modal-section">
+          <h3>🔑 Key Technologies</h3>
+          <div class="dataset-pills accent-green">
+            <span>LSTM</span><span>RNN</span><span>ResNeXt CNN</span
+            ><span>Python</span><span>Deep Learning</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <header>
-        <nav>
-            <div class="logo">BG.</div>
-            <ul class="nav-links">
-                <li><a href="#about">About</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact" class="btn-primary-nav">Contact</a></li>
-            </ul>
-            <button class="hamburger" id="hamburger" aria-label="Menu"><i class="fas fa-bars"></i></button>
-        </nav>
+      <nav>
+        <div class="logo">BG.</div>
+        <ul class="nav-links" id="nav-links">
+          <li><a href="#about">About</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#education">Education</a></li>
+          <li><a href="#contact" class="btn-primary-nav">Contact</a></li>
+        </ul>
+        <div class="nav-controls">
+          <button
+            id="theme-toggle"
+            title="Toggle dark mode"
+            aria-label="Toggle theme"
+          >
+            🌙
+          </button>
+          <button class="hamburger" id="hamburger" aria-label="Menu">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+      </nav>
     </header>
 
     <main>
-        <!-- Hero Section -->
-        <section id="about" class="hero">
-            <div class="hero-content fade-in">
-                <span class="badge"><i class="fas fa-sparkles" style="margin-right:6px;"></i>Open to opportunities</span>
-                <h1>Hi, I'm<br><span class="highlight">Baltej Goud</span></h1>
-                <p class="subtitle">App Developer &nbsp;·&nbsp; UI/UX Designer &nbsp;·&nbsp; React Native &nbsp;·&nbsp; Firebase</p>
-                <p class="intro-text">I am good at <strong>mobile and web development</strong> — crafting beautiful, intuitive experiences from concept to deployment.</p>
-                <div class="cta-group">
-                    <a href="#projects" class="btn-primary">View My Work <i class="fas fa-arrow-right"></i></a>
-                    <a href="https://github.com/baltejgoud" target="_blank" class="btn-secondary">
-                        <i class="fab fa-github"></i> GitHub
-                    </a>
-                </div>
+      <!-- ── HERO ── -->
+      <section id="about" class="hero">
+        <div class="hero-content fade-in">
+          <span class="badge"
+            ><span class="pulse-dot"></span> Open to opportunities</span
+          >
+          <h1>Hi, I'm<br /><span class="highlight">Baltej Goud</span></h1>
+          <div class="typewriter-wrap">
+            I'm a&nbsp;<span id="typewriter" class="typewriter-text"></span
+            ><span class="typewriter-cursor">|</span>
+          </div>
+          <p class="intro-text">
+            Good at <strong>mobile and web development</strong> — crafting
+            beautiful, intuitive experiences from concept to deployment.
+          </p>
+          <div class="cta-group">
+            <button
+              class="btn-primary"
+              id="confetti-btn"
+              onclick="window.location = '#projects'"
+            >
+              View My Work <i class="fas fa-rocket"></i>
+            </button>
+            <a
+              href="https://github.com/baltejgoud"
+              target="_blank"
+              class="btn-secondary"
+            >
+              <i class="fab fa-github"></i> GitHub
+            </a>
+            <a href="#" class="btn-secondary btn-resume" download>
+              <i class="fas fa-download"></i> Resume
+            </a>
+          </div>
+          <!-- Fun stat counters -->
+          <div class="stats-row">
+            <div class="stat">
+              <span class="counter" data-target="2">0</span
+              ><small>Projects</small>
             </div>
-            <div class="hero-image fade-in-right">
-                <div class="profile-card">
-                    <div class="profile-img-container">
-                        <img src="profile.jpg" alt="Baltej Goud" class="profile-photo" onerror="this.style.display='none'; document.querySelector('.image-placeholder').style.display='flex';" />
-                        <div class="image-placeholder" style="display:none;"><i class="fas fa-user"></i></div>
-                    </div>
-                    <!-- Floating badges -->
-                    <div class="float-badge badge-top"><i class="fas fa-mobile-alt"></i> React Native</div>
-                    <div class="float-badge badge-bottom"><i class="fas fa-fire"></i> Firebase</div>
-                </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+              <span class="counter" data-target="3">0</span
+              ><small>Years Coding</small>
             </div>
-        </section>
-
-        <!-- Marquee strip -->
-        <div class="marquee-container">
-            <div class="marquee-track">
-                <span>React Native</span><span>·</span><span>Firebase</span><span>·</span><span>UI/UX Design</span><span>·</span><span>Node.js</span><span>·</span><span>Deep Learning</span><span>·</span><span>TypeScript</span><span>·</span><span>Figma</span><span>·</span><span>Expo</span><span>·</span><span>Python</span><span>·</span>
-                <span>React Native</span><span>·</span><span>Firebase</span><span>·</span><span>UI/UX Design</span><span>·</span><span>Node.js</span><span>·</span><span>Deep Learning</span><span>·</span><span>TypeScript</span><span>·</span><span>Figma</span><span>·</span><span>Expo</span><span>·</span><span>Python</span><span>·</span>
+            <div class="stat-divider"></div>
+            <div class="stat">
+              <span class="counter" data-target="10">0</span
+              ><small>Technologies</small>
             </div>
+          </div>
         </div>
-
-        <!-- Skills Section -->
-        <section id="skills" class="skills-section section-padding">
-            <p class="section-label fade-in">What I do</p>
-            <h2 class="section-title fade-in">My <span class="highlight">Expertise</span></h2>
-            <div class="skills-grid">
-                <div class="skill-card fade-in">
-                    <div class="skill-icon purple"><i class="fas fa-mobile-alt"></i></div>
-                    <h3>Mobile Development</h3>
-                    <p>React Native, Expo — cross-platform apps for iOS & Android</p>
-                </div>
-                <div class="skill-card fade-in">
-                    <div class="skill-icon indigo"><i class="fas fa-pencil-ruler"></i></div>
-                    <h3>UI/UX Design</h3>
-                    <p>Design Systems, Animations, Figma, Premium user experiences</p>
-                </div>
-                <div class="skill-card fade-in">
-                    <div class="skill-icon blue"><i class="fas fa-globe"></i></div>
-                    <h3>Web Development</h3>
-                    <p>HTML, CSS, JavaScript, React — responsive, modern UIs</p>
-                </div>
-                <div class="skill-card fade-in">
-                    <div class="skill-icon teal"><i class="fas fa-server"></i></div>
-                    <h3>Backend & Cloud</h3>
-                    <p>Firebase, Node.js, Express, Firestore, Cloud Functions</p>
-                </div>
+        <div class="hero-image fade-in-right">
+          <div class="profile-card" id="profile-card">
+            <div class="profile-img-container">
+              <img
+                src="profile.jpg"
+                alt="Baltej Goud"
+                class="profile-photo"
+                onerror="
+                  this.style.display = 'none';
+                  document.querySelector('.image-placeholder').style.display =
+                    'flex';
+                "
+              />
+              <div class="image-placeholder" style="display: none">
+                <i class="fas fa-user"></i>
+              </div>
             </div>
-        </section>
-
-        <!-- Projects Section -->
-        <section id="projects" class="projects-section section-padding">
-            <p class="section-label fade-in">What I've built</p>
-            <h2 class="section-title fade-in">Featured <span class="highlight">Projects</span></h2>
-            <div class="projects-grid">
-
-                <!-- ExtraTicket -->
-                <div class="project-card fade-in">
-                    <div class="project-header">
-                        <div class="project-emoji">🎟️</div>
-                        <div class="project-tags">
-                            <span>React Native</span><span>Firebase</span><span>Node.js</span>
-                        </div>
-                    </div>
-                    <h3>ExtraTicket — Event Booking Platform</h3>
-                    <p>A modern event booking platform with real-time seat selection, group bookings, wallet integration, and holographic tickets. Built with React Native (Expo) and Node.js/Firebase backend.</p>
-                    <div class="project-footer">
-                        <a href="https://github.com/baltejgoud/extraticket" target="_blank" class="project-link">View Source <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                <!-- DeepFake Detection — clickable -->
-                <div class="project-card fade-in clickable" id="deepfake-card" role="button" tabindex="0" aria-label="Open Deep Fake Detection details">
-                    <div class="project-header">
-                        <div class="project-emoji">🤖</div>
-                        <div class="project-tags">
-                            <span>Deep Learning</span><span>CNN</span><span>LSTM</span><span>AI</span>
-                        </div>
-                    </div>
-                    <h3>AI-Based Deep Fake Detection</h3>
-                    <p>A deep learning system that distinguishes AI-generated fake videos from real ones using ResNeXt CNN + LSTM. Evaluated on FaceForensics++, DFDC, and Celeb-DF datasets.</p>
-                    <div class="project-footer">
-                        <span class="project-link highlight-link"><i class="fas fa-play-circle"></i> Click to see how it works</span>
-                    </div>
-                </div>
-
+            <div class="float-badge badge-top">
+              <i class="fas fa-mobile-alt"></i> React Native
             </div>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact" class="contact-section section-padding">
-            <div class="contact-card fade-in">
-                <p class="section-label">Say hello</p>
-                <h2>Let's <span class="highlight">Connect</span></h2>
-                <p>Open to new projects, creative ideas or opportunities to be part of your vision.</p>
-                <div class="social-links">
-                    <a href="https://github.com/baltejgoud" target="_blank" class="social-icon"><i class="fab fa-github"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="mailto:your.email@example.com" class="social-icon"><i class="fas fa-envelope"></i></a>
-                </div>
+            <div class="float-badge badge-bottom">
+              <i class="fas fa-fire"></i> Firebase
             </div>
-        </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- Marquee strip -->
+      <div class="marquee-container">
+        <div class="marquee-track">
+          <span>React Native</span><span>·</span><span>Firebase</span
+          ><span>·</span> <span>UI/UX Design</span><span>·</span
+          ><span>Node.js</span><span>·</span> <span>Deep Learning</span
+          ><span>·</span><span>TypeScript</span><span>·</span> <span>Figma</span
+          ><span>·</span><span>Expo</span><span>·</span><span>Python</span
+          ><span>·</span> <span>React Native</span><span>·</span
+          ><span>Firebase</span><span>·</span> <span>UI/UX Design</span
+          ><span>·</span><span>Node.js</span><span>·</span>
+          <span>Deep Learning</span><span>·</span><span>TypeScript</span
+          ><span>·</span> <span>Figma</span><span>·</span><span>Expo</span
+          ><span>·</span><span>Python</span><span>·</span>
+        </div>
+      </div>
+
+      <!-- ── SKILLS ── -->
+      <section id="skills" class="skills-section section-padding">
+        <p class="section-label fade-in">What I do</p>
+        <h2 class="section-title fade-in">
+          My <span class="highlight">Expertise</span>
+        </h2>
+        <div class="skills-grid">
+          <div class="skill-card fade-in" data-emoji="📱">
+            <div class="skill-icon purple">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h3>Mobile Development</h3>
+            <p>React Native, Expo — cross-platform apps for iOS & Android</p>
+            <div class="skill-bar">
+              <div class="skill-fill" data-width="90"></div>
+            </div>
+            <span class="skill-pct">90%</span>
+            <div class="emoji-pop">📱</div>
+          </div>
+          <div class="skill-card fade-in" data-emoji="🎨">
+            <div class="skill-icon indigo">
+              <i class="fas fa-pencil-ruler"></i>
+            </div>
+            <h3>UI/UX Design</h3>
+            <p>Design Systems, Animations, Figma, Premium user experiences</p>
+            <div class="skill-bar">
+              <div class="skill-fill" data-width="85"></div>
+            </div>
+            <span class="skill-pct">85%</span>
+            <div class="emoji-pop">🎨</div>
+          </div>
+          <div class="skill-card fade-in" data-emoji="🌐">
+            <div class="skill-icon blue"><i class="fas fa-globe"></i></div>
+            <h3>Web Development</h3>
+            <p>HTML, CSS, JavaScript, React — responsive modern UIs</p>
+            <div class="skill-bar">
+              <div class="skill-fill" data-width="80"></div>
+            </div>
+            <span class="skill-pct">80%</span>
+            <div class="emoji-pop">🌐</div>
+          </div>
+          <div class="skill-card fade-in" data-emoji="☁️">
+            <div class="skill-icon teal"><i class="fas fa-server"></i></div>
+            <h3>Backend & Cloud</h3>
+            <p>Firebase, Node.js, Express, Firestore, Cloud Functions</p>
+            <div class="skill-bar">
+              <div class="skill-fill" data-width="75"></div>
+            </div>
+            <span class="skill-pct">75%</span>
+            <div class="emoji-pop">☁️</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── PROJECTS ── -->
+      <section id="projects" class="projects-section section-padding">
+        <p class="section-label fade-in">What I've built</p>
+        <h2 class="section-title fade-in">
+          Featured <span class="highlight">Projects</span>
+        </h2>
+        <div class="projects-grid">
+          <div class="project-card fade-in">
+            <div class="project-header">
+              <div class="project-emoji">🎟️</div>
+              <div class="project-tags">
+                <span>React Native</span><span>Firebase</span
+                ><span>Node.js</span>
+              </div>
+            </div>
+            <h3>ExtraTicket — Event Booking Platform</h3>
+            <p>
+              A modern event booking platform with real-time seat selection,
+              group bookings, wallet integration, and holographic tickets.
+            </p>
+            <div class="project-footer">
+              <a
+                href="https://github.com/baltejgoud/extraticket"
+                target="_blank"
+                class="project-link"
+                >View Source <i class="fas fa-arrow-right"></i
+              ></a>
+            </div>
+          </div>
+          <div
+            class="project-card fade-in clickable"
+            id="deepfake-card"
+            role="button"
+            tabindex="0"
+          >
+            <div class="project-header">
+              <div class="project-emoji">🤖</div>
+              <div class="project-tags">
+                <span>Deep Learning</span><span>CNN</span><span>LSTM</span
+                ><span>AI</span>
+              </div>
+            </div>
+            <h3>AI-Based Deep Fake Detection</h3>
+            <p>
+              A deep learning system using ResNeXt CNN + LSTM to distinguish
+              AI-generated fake videos from real ones.
+            </p>
+            <div class="project-footer">
+              <span class="highlight-link"
+                ><i class="fas fa-play-circle"></i> Click to see how it
+                works</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── EDUCATION ── -->
+      <section id="education" class="education-section section-padding">
+        <p class="section-label fade-in">Background</p>
+        <h2 class="section-title fade-in">
+          My <span class="highlight">Education</span>
+        </h2>
+        <div class="timeline fade-in">
+          <div class="timeline-item">
+            <div class="timeline-icon">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="timeline-content">
+              <span class="timeline-year">2023 – Present</span>
+              <h3>Master's in Data Science</h3>
+              <p>
+                Specialisation in Machine Learning, AI, and Data Engineering.
+                Working on AI-based projects including deep fake detection
+                systems.
+              </p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-icon"><i class="fas fa-laptop-code"></i></div>
+            <div class="timeline-content">
+              <span class="timeline-year">2019 – 2023</span>
+              <h3>Bachelor of Engineering</h3>
+              <p>
+                Computer Science & Engineering — gained foundations in
+                algorithms, software development, and system design.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── CONTACT ── -->
+      <section id="contact" class="contact-section section-padding">
+        <div class="contact-card fade-in">
+          <p class="section-label">Say hello 👋</p>
+          <h2>Let's <span class="highlight">Connect</span></h2>
+          <p>
+            Open to new projects, creative ideas or opportunities to be part of
+            your vision.
+          </p>
+          <div class="social-links">
+            <a
+              href="https://github.com/baltejgoud"
+              target="_blank"
+              class="social-icon"
+              data-tip="GitHub"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a href="#" class="social-icon" data-tip="LinkedIn"
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+            <a
+              href="mailto:your.email@example.com"
+              class="social-icon"
+              data-tip="Email"
+              ><i class="fas fa-envelope"></i
+            ></a>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer>
-        <p>Designed & built by <strong>Baltej Goud</strong> &copy; <script>document.write(new Date().getFullYear())</script></p>
+      <p>
+        Designed & built with ❤️ by <strong>Baltej Goud</strong> &copy;
+        <script>
+          document.write(new Date().getFullYear());
+        </script>
+      </p>
     </footer>
 
     <script src="script.js"></script>
-</body>
+  </body>
 </html>
