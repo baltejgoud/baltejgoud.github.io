@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baltej Goud — Resume</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family:'Outfit',sans-serif;
+            background:#f5f7ff;
+            color:#1a1d2e;
+            padding:40px 20px;
+        }
+        .resume {
+            max-width:800px; margin:0 auto;
+            background:white; border-radius:20px;
+            padding:50px; box-shadow:0 10px 40px rgba(99,102,241,.12);
+        }
+        /* Print button */
+        .print-bar {
+            text-align:center; margin-bottom:24px;
+        }
+        .print-bar button {
+            background:linear-gradient(135deg,#6366f1,#8b5cf6);
+            color:white; border:none; padding:12px 30px;
+            border-radius:50px; font-family:'Outfit',sans-serif;
+            font-weight:700; font-size:1rem; cursor:pointer;
+            box-shadow:0 6px 20px rgba(99,102,241,.3);
+        }
+        .print-bar button:hover { opacity:.9; }
+
+        /* Header */
+        .r-header { text-align:center; margin-bottom:28px; padding-bottom:20px; border-bottom:2px solid #e0e7ff; }
+        .r-header h1 { font-size:2.2rem; font-weight:800; background:linear-gradient(135deg,#6366f1,#8b5cf6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .r-contact { display:flex; flex-wrap:wrap; justify-content:center; gap:.8rem; margin-top:12px; }
+        .r-contact a, .r-contact span {
+            display:inline-flex; align-items:center; gap:.3rem;
+            font-size:.88rem; color:#4b5563; text-decoration:none;
+            background:#f0f0ff; padding:5px 12px; border-radius:20px;
+        }
+        .r-contact a:hover { color:#6366f1; }
+
+        /* Section */
+        .r-section { margin-bottom:22px; }
+        .r-section h2 {
+            font-size:1rem; font-weight:800; text-transform:uppercase;
+            letter-spacing:.1em; color:#6366f1;
+            border-bottom:2px solid #e0e7ff; padding-bottom:6px; margin-bottom:12px;
+        }
+        .r-section p, .r-section li { font-size:.92rem; color:#374151; line-height:1.6; }
+        ul { padding-left:1.2rem; }
+        li { margin-bottom:4px; }
+
+        /* Entry */
+        .entry { margin-bottom:14px; }
+        .entry-header { display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:.5rem; }
+        .entry-header h3 { font-size:1rem; font-weight:700; }
+        .entry-header span { font-size:.82rem; color:#6b7280; font-weight:500; }
+        .entry .role { font-size:.9rem; color:#6366f1; font-weight:600; margin:.2rem 0 .4rem; }
+        .entry p { font-size:.88rem; color:#6b7280; }
+
+        /* Skills grid */
+        .skills-table { display:grid; grid-template-columns:1fr 2fr; gap:.4rem; }
+        .skills-table dt { font-weight:700; font-size:.88rem; }
+        .skills-table dd { font-size:.88rem; color:#4b5563; }
+
+        /* Pills */
+        .pills { display:flex; flex-wrap:wrap; gap:.4rem; margin-top:8px; }
+        .pill { background:#eef2ff; color:#6366f1; font-size:.78rem; font-weight:600; padding:3px 12px; border-radius:20px; }
+
+        /* Achievements */
+        .ach-item { display:flex; gap:.8rem; margin-bottom:8px; align-items:flex-start; }
+        .ach-item .ach-dot { width:8px; height:8px; border-radius:50%; background:#6366f1; flex-shrink:0; margin-top:.45rem; }
+
+        @media print {
+            body { background:white; padding:0; }
+            .resume { box-shadow:none; border-radius:0; padding:30px; }
+            .print-bar { display:none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-bar">
+        <button onclick="window.print()"><i></i> 🖨️ Print / Save as PDF</button>
+        <span style="display:block;margin-top:8px;font-size:.8rem;color:#9ca3af;">Use Ctrl+P → Save as PDF</span>
+    </div>
+
+    <div class="resume">
+        <!-- Header -->
+        <div class="r-header">
+            <h1>Panagatla Baltej Goud</h1>
+            <div class="r-contact">
+                <a href="tel:+917993969656">📞 +91 7993969656</a>
+                <a href="mailto:Baltejgoud123@gmail.com">✉️ Baltejgoud123@gmail.com</a>
+                <span>📍 Hyderabad, Telangana</span>
+                <a href="https://github.com/baltejgoud" target="_blank">🔗 github.com/baltejgoud</a>
+                <a href="https://baltejgoud.github.io" target="_blank">🌐 baltejgoud.github.io</a>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="r-section">
+            <h2>Professional Summary</h2>
+            <p>Aspiring Software Engineer and Mobile App Developer with expertise in Python, UI/UX design, database management, and AI/ML-driven application development. Skilled in building scalable, user-centric, and high-performance web and mobile systems. Passionate about leveraging AI and emerging technologies to create impactful, secure, and innovative digital products.</p>
+        </div>
+
+        <!-- Education -->
+        <div class="r-section">
+            <h2>Education</h2>
+            <div class="entry">
+                <div class="entry-header">
+                    <h3>B V Raju Institute of Technology, Narsapur</h3>
+                    <span>2019 – 2023</span>
+                </div>
+                <div class="role">B.Tech — Computer Science & Engineering</div>
+                <p>GPA: 6.1</p>
+            </div>
+        </div>
+
+        <!-- Experience -->
+        <div class="r-section">
+            <h2>Experience</h2>
+            <div class="entry">
+                <div class="entry-header"><h3>Wells Fargo</h3></div>
+                <div class="role">UI/UX Designer</div>
+                <p>Designed user-centric interfaces and contributed to improving the digital experience at one of the US's largest financial institutions.</p>
+            </div>
+            <div class="entry">
+                <div class="entry-header"><h3>IKEA</h3></div>
+                <div class="role">Freelance UI/UX Designer</div>
+                <p>Delivered freelance design projects, creating intuitive and visually engaging experiences aligned with IKEA's global design language.</p>
+            </div>
+            <div class="entry">
+                <div class="entry-header"><h3>Tectoro Consulting Private Limited</h3></div>
+                <div class="role">AI/ML Developer</div>
+                <p>Developed and deployed AI/ML solutions, working on real-world machine learning pipelines and intelligent application development.</p>
+            </div>
+        </div>
+
+        <!-- Projects -->
+        <div class="r-section">
+            <h2>Academic Projects</h2>
+            <div class="entry">
+                <h3>AI-Based Deep Fake Detection</h3>
+                <p style="margin-top:.4rem;">A deep learning system that efficiently distinguishes AI-generated fake videos from real ones. Uses ResNeXt CNN to extract frame-level features and an LSTM-based RNN to classify whether a video has been manipulated. Evaluated on FaceForensics++, DFDC, and Celeb-DF datasets.</p>
+                <div class="pills"><span class="pill">Python</span><span class="pill">LSTM</span><span class="pill">ResNeXt CNN</span><span class="pill">Deep Learning</span></div>
+            </div>
+            <div class="entry" style="margin-top:10px;">
+                <h3>Let's Get Cooking with AI</h3>
+                <p style="margin-top:.4rem;">A mini application that provides tailored recipes based on ingredients you have. Includes a computer vision recognition engine that identifies fruits and vegetables from uploaded images.</p>
+                <div class="pills"><span class="pill">Python</span><span class="pill">Computer Vision</span><span class="pill">AI</span></div>
+            </div>
+            <div class="entry" style="margin-top:10px;">
+                <h3>ExtraTicket — Event Booking Platform</h3>
+                <p style="margin-top:.4rem;">Modern event booking platform with real-time seat selection, group bookings, wallet integration, and holographic tickets.</p>
+                <div class="pills"><span class="pill">React Native</span><span class="pill">Firebase</span><span class="pill">Node.js</span></div>
+            </div>
+        </div>
+
+        <!-- Technical Skills -->
+        <div class="r-section">
+            <h2>Technical Skills</h2>
+            <dl class="skills-table">
+                <dt>Languages</dt><dd>Python, C, SQL, JavaScript</dd>
+                <dt>Software Engineering</dt><dd>Agile, CI/CD, Application Security, Microservices</dd>
+                <dt>Databases</dt><dd>SQL, MongoDB, Relational Databases, Data Warehousing</dd>
+                <dt>Cloud & Infra</dt><dd>Google Cloud, AWS, Firebase, Docker</dd>
+                <dt>AI / Data Science</dt><dd>Machine Learning, Deep Learning, Big Data</dd>
+                <dt>Tools & Version Control</dt><dd>Git, GitHub, Jenkins</dd>
+                <dt>Web Development</dt><dd>HTML, CSS, JavaScript, REST APIs</dd>
+            </dl>
+        </div>
+
+        <!-- Achievements -->
+        <div class="r-section">
+            <h2>Achievements & Additional Information</h2>
+            <div class="ach-item"><div class="ach-dot"></div><p>Top 2 in Code for Good Hackathon 2024.</p></div>
+            <div class="ach-item"><div class="ach-dot"></div><p>Won an MUN Competition.</p></div>
+            <div class="ach-item"><div class="ach-dot"></div><p><strong>Lead Computer Science Tutor</strong>, B V Raju Institute of Technology — tutored over 500 students in data cleaning, visualisation, statistical analysis, and core CS topics.</p></div>
+        </div>
+    </div>
+</body>
+</html>
