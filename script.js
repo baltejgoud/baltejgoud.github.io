@@ -63,6 +63,7 @@ themeToggle.addEventListener("click", () => {
 
 // ── 5. Typewriter effect ─────────────────────────────────
 const roles = [
+  "SaaS Platform Creator 🚀",
   "App Developer 📱",
   "UI/UX Designer 🎨",
   "React Native Dev ⚛️",
@@ -206,36 +207,55 @@ document
   .querySelectorAll(".counter")
   .forEach((el) => counterObserver.observe(el));
 
-// ── 10. Deep Fake Modal ──────────────────────────────────
+// ── 10. Deep Fake & PRISMA Modals ─────────────────────────
 const deepfakeCard = document.getElementById("deepfake-card");
-const modal = document.getElementById("deepfake-modal");
-const modalClose = document.getElementById("modal-close-btn");
+const dfModal = document.getElementById("deepfake-modal");
+const dfClose = document.getElementById("modal-close-btn");
 
-function openModal() {
-  modal.classList.add("open");
+const prismaBtn = document.getElementById("prisma-modal-btn");
+const prismaModal = document.getElementById("prisma-modal");
+const prismaClose = document.getElementById("prisma-modal-close-btn");
+
+function openModal(modalEl, triggerEl) {
+  modalEl.classList.add("open");
   document.body.style.overflow = "hidden";
-  launchConfetti(deepfakeCard); // fun!
+  if (triggerEl) launchConfetti(triggerEl);
 }
-function closeModal() {
-  modal.classList.remove("open");
+function closeModal(modalEl) {
+  modalEl.classList.remove("open");
   document.body.style.overflow = "";
 }
-if (deepfakeCard) {
-  deepfakeCard.addEventListener("click", openModal);
+
+if (deepfakeCard && dfModal) {
+  deepfakeCard.addEventListener("click", () => openModal(dfModal, deepfakeCard));
   deepfakeCard.addEventListener("keydown", (e) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      openModal();
+      openModal(dfModal, deepfakeCard);
     }
   });
 }
-if (modalClose) modalClose.addEventListener("click", closeModal);
-if (modal)
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) closeModal();
-  });
+if (dfClose && dfModal) dfClose.addEventListener("click", () => closeModal(dfModal));
+
+if (prismaBtn && prismaModal) {
+  prismaBtn.addEventListener("click", () => openModal(prismaModal, prismaBtn));
+}
+if (prismaClose && prismaModal) prismaClose.addEventListener("click", () => closeModal(prismaModal));
+
+// Close modals on overlay click
+[dfModal, prismaModal].forEach(modalEl => {
+  if (modalEl) {
+    modalEl.addEventListener("click", (e) => {
+      if (e.target === modalEl) closeModal(modalEl);
+    });
+  }
+});
+
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") closeModal();
+  if (e.key === "Escape") {
+    if (dfModal) closeModal(dfModal);
+    if (prismaModal) closeModal(prismaModal);
+  }
 });
 
 // ── 11. 3D tilt on project cards ────────────────────────
@@ -393,3 +413,92 @@ if (canvas) {
     }
     animateParticles();
 }
+
+// ── 15. PRISMA Interactive Mini-Dashboard ─────────────────
+const verticalData = {
+    fashion: {
+        color: "#ec4899",
+        sellThrough: "94.2%",
+        mape: "5.8%",
+        status: "Optimizing NYC, LA, and Miami regional hubs.",
+        chartLine: "M0 65 C20 55 40 65 60 50 C80 35 100 42 120 25 C140 10 160 20 180 15 C200 10 220 22 240 18 C260 14 280 24 300 20",
+        chartArea: "M0 65 C20 55 40 65 60 50 C80 35 100 42 120 25 C140 10 160 20 180 15 C200 10 220 22 240 18 C260 14 280 24 300 20 L300 80 L0 80Z",
+        dotX: 300,
+        dotY: 20
+    },
+    electronics: {
+        color: "#06b6d4",
+        sellThrough: "87.6%",
+        mape: "7.2%",
+        status: "Component constraints flagged in Q3 BOM list.",
+        chartLine: "M0 72 C30 68 60 48 90 40 C120 32 150 48 180 44 C210 40 240 28 270 24 C280 22 290 28 300 30",
+        chartArea: "M0 72 C30 68 60 48 90 40 C120 32 150 48 180 44 C210 40 240 28 270 24 C280 22 290 28 300 30 L300 80 L0 80Z",
+        dotX: 300,
+        dotY: 30
+    },
+    pharma: {
+        color: "#10b981",
+        sellThrough: "99.1%",
+        mape: "3.1%",
+        status: "Batch 884A successfully signed and audited.",
+        chartLine: "M0 50 C20 54 40 42 60 38 C80 34 100 22 120 18 C140 14 160 28 180 22 C200 16 220 12 240 10 C260 8 280 14 300 12",
+        chartArea: "M0 50 C20 54 40 42 60 38 C80 34 100 22 120 18 C140 14 160 28 180 22 C200 16 220 12 240 10 C260 8 280 14 300 12 L300 80 L0 80Z",
+        dotX: 300,
+        dotY: 12
+    }
+};
+
+const miniTabs = document.querySelectorAll(".mini-ind-tab");
+const kpiSellThrough = document.getElementById("kpi-sellthrough");
+const kpiMape = document.getElementById("kpi-mape");
+const statusMsg = document.getElementById("vertical-status-msg");
+const chartLine = document.getElementById("mini-chart-line");
+const chartArea = document.getElementById("mini-chart-area");
+const chartDot = document.getElementById("mini-chart-dot");
+const rootEl = document.documentElement;
+
+// Setup default css variable color
+rootEl.style.setProperty("--vertical-color", verticalData.fashion.color);
+
+miniTabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+        // Set active tab styling
+        miniTabs.forEach(t => {
+            t.classList.remove("active");
+            t.setAttribute("aria-selected", "false");
+        });
+        tab.classList.add("active");
+        tab.setAttribute("aria-selected", "true");
+
+        const industry = tab.dataset.ind;
+        const data = verticalData[industry];
+
+        if (data) {
+            // Update theme color variable for the widget
+            rootEl.style.setProperty("--vertical-color", data.color);
+
+            // Animate and update KPIs
+            if (kpiSellThrough) {
+                kpiSellThrough.style.color = data.color;
+                kpiSellThrough.textContent = data.sellThrough;
+            }
+            if (kpiMape) {
+                kpiMape.textContent = data.mape;
+            }
+            
+            // Update status message
+            if (statusMsg) {
+                statusMsg.textContent = data.status;
+            }
+
+            // Animate SVG graph paths
+            if (chartLine) chartLine.setAttribute("d", data.chartLine);
+            if (chartArea) chartArea.setAttribute("d", data.chartArea);
+            if (chartDot) {
+                chartDot.setAttribute("cx", data.dotX);
+                chartDot.setAttribute("cy", data.dotY);
+                chartDot.setAttribute("fill", data.color);
+            }
+        }
+    });
+});

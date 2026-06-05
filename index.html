@@ -60,6 +60,57 @@
         </div>
     </div>
 
+    <!-- PRISMA Technical Modal -->
+    <div id="prisma-modal" class="modal-overlay" role="dialog" aria-modal="true">
+        <div class="modal-box">
+            <button class="modal-close" id="prisma-modal-close-btn" aria-label="Close">&times;</button>
+            <h2>🌐 PRISMA — Enterprise Predictive Analytics SaaS</h2>
+            <p class="modal-subtitle">High-performance vertical SaaS platform with a multi-model forecasting engine</p>
+            
+            <div class="modal-section">
+                <h3>📌 Overview</h3>
+                <p>PRISMA is a vertically-integrated, multi-tenant SaaS application that optimizes supply chains for three highly regulated or fast-moving industries: <strong>Apparel & Fashion</strong>, <strong>Consumer Electronics</strong>, and <strong>Pharmaceuticals</strong>. It utilizes an ensemble of machine learning models to predict SKU-level demand and recommend purchase configurations.</p>
+            </div>
+            
+            <div class="modal-section">
+                <h3>⚙️ Vertically Integrated Architecture</h3>
+                <div class="architecture-flow">
+                    <div class="arch-layer-box">
+                        <div class="layer-title"><i class="fas fa-layer-group"></i> Frontend React Dashboard (Vite + TS)</div>
+                        <p>Real-time analytics portal displaying sell-through indicators, margin opportunities, and simulated stockouts. Structured as a single-page application communicating with backend APIs via JWT-authenticated requests.</p>
+                    </div>
+                    <div class="arch-layer-arrow"><i class="fas fa-arrow-down"></i></div>
+                    <div class="arch-layer-box">
+                        <div class="layer-title"><i class="fas fa-server"></i> FastAPI Gateway & Multi-tenant Database (PostgreSQL 16)</div>
+                        <p>Core backend API utilizing session-level Row-Level Security (RLS) to enforce tenant isolation. Houses compliance-ready GxP audit logs for medical inventory, Alembic migration systems, and vertical routers.</p>
+                    </div>
+                    <div class="arch-layer-arrow"><i class="fas fa-arrow-down"></i></div>
+                    <div class="arch-layer-box">
+                        <div class="layer-title"><i class="fas fa-brain"></i> ML Inference API (Foundation + Statistical Ensemble)</div>
+                        <p>Dedicated Python ML service which routes inference queries to the optimal model for each SKU (ranging from XGBoost and Prophet to statistical models). Features a zero-shot foundation model fallback (Amazon Chronos) for new SKUs with short history.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-section">
+                <h3>🛠️ Key Engineering Highlights</h3>
+                <ul class="modal-bullets" style="padding-left:1.2rem; margin-top:0.5rem; color:var(--text-mid); font-size:0.95rem; line-height:1.7;">
+                    <li style="margin-bottom:0.5rem;"><strong>Row-Level Security (RLS):</strong> Uses PostgreSQL session parameters to restrict data visibility per tenant, ensuring bank-grade data isolation in a shared database.</li>
+                    <li style="margin-bottom:0.5rem;"><strong>GxP Audit Trail:</strong> Complies with FDA 21 CFR Part 11 regulations by implementing append-only transaction histories and cryptographically signed audit logs for pharmaceutical batch changes.</li>
+                    <li style="margin-bottom:0.5rem;"><strong>Zero-Shot Chronos Fallback:</strong> Automatically invokes a preloaded foundation model when historical data is insufficient for standard time-series training.</li>
+                    <li style="margin-bottom:0.5rem;"><strong>Infra as Code & Observability:</strong> Deployed via Docker Compose / K8s with integrated Prometheus metrics collection and Grafana dashboard visualization.</li>
+                </ul>
+            </div>
+            
+            <div class="modal-section">
+                <h3>🔑 Technologies & Tools</h3>
+                <div class="dataset-pills accent-green">
+                    <span>FastAPI</span><span>React SPA</span><span>PostgreSQL 16</span><span>SQLAlchemy</span><span>Alembic</span><span>Docker Compose</span><span>Kubernetes</span><span>Prometheus</span><span>Grafana</span><span>XGBoost</span><span>Chronos Foundation</span><span>Pytest</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <header>
         <nav>
             <div class="logo">BG.</div>
@@ -100,7 +151,7 @@
                     </a>
                 </div>
                 <div class="stats-row">
-                    <div class="stat"><span class="counter" data-target="4">0</span><small>Projects</small></div>
+                    <div class="stat"><span class="counter" data-target="5">0</span><small>Projects</small></div>
                     <div class="stat-divider"></div>
                     <div class="stat"><span class="counter" data-target="3">0</span><small>Years Exp.</small></div>
                     <div class="stat-divider"></div>
@@ -180,6 +231,7 @@
                 <span>SQL</span><span>MongoDB</span><span>Firebase</span><span>AWS</span>
                 <span>Google Cloud</span><span>Docker</span><span>Git</span><span>REST APIs</span>
                 <span>HTML</span><span>CSS</span><span>CI/CD</span><span>Agile</span>
+                <span>FastAPI</span><span>React</span><span>PostgreSQL</span>
             </div>
         </section>
 
@@ -228,6 +280,90 @@
         <section id="projects" class="projects-section section-padding">
             <p class="section-label fade-in">What I've built</p>
             <h2 class="section-title fade-in">Featured <span class="highlight">Projects</span></h2>
+            
+            <!-- Flagship Project: PRISMA -->
+            <div class="featured-project-container fade-in" style="margin-bottom: 3.5rem;">
+                <div class="featured-project-card">
+                    <div class="featured-badge"><i class="fas fa-crown"></i> Flagship Project</div>
+                    <div class="featured-content-layout">
+                        <div class="featured-text">
+                            <div class="featured-header">
+                                <div class="featured-emoji">🌐</div>
+                                <div class="project-tags">
+                                    <span>FastAPI</span>
+                                    <span>React SPA</span>
+                                    <span>ML Inference</span>
+                                    <span>Docker</span>
+                                </div>
+                            </div>
+                            <h3>PRISMA — Enterprise Multi-Industry Predictive Analytics &amp; Supply Chain SaaS</h3>
+                            <p class="featured-description">
+                                A vertically-integrated, multi-tenant SaaS platform delivering predictive demand forecasting and purchase recommendations across Apparel &amp; Fashion, Consumer Electronics, and Pharmaceuticals. Engineered with session-level PostgreSQL RLS, vertical router gateways, and a zero-shot Chronos foundation model fallback.
+                            </p>
+                            
+                            <ul class="featured-points">
+                                <li><i class="fas fa-check-circle"></i> <strong>Multi-Tenant Architecture:</strong> Complete isolation using session-level RLS, vertical router configurations, and schema partitioning.</li>
+                                <li><i class="fas fa-check-circle"></i> <strong>Optimized Predictive Stack:</strong> Automated per-SKU routing across deep learning, statistical ensembles, and foundation time-series models.</li>
+                                <li><i class="fas fa-check-circle"></i> <strong>Enterprise-Grade Operations:</strong> Out-of-the-box SOC 2 compliance readiness with cryptographically verifiable GxP batch audit logging.</li>
+                            </ul>
+                            
+                            <div class="featured-actions">
+                                <button class="btn-primary" id="prisma-modal-btn">
+                                    Explore Architecture <i class="fas fa-project-diagram"></i>
+                                </button>
+                                <a href="https://github.com/baltejgoud/prisma-project" target="_blank" class="btn-secondary">
+                                    <i class="fab fa-github"></i> View Repository
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="featured-preview">
+                            <div class="mini-dash-shell">
+                                <div class="mini-dash-bar">
+                                    <div class="mini-dots"><span></span><span></span><span></span></div>
+                                    <div class="mini-dash-title">prisma.app / <strong>preview-workspace</strong></div>
+                                </div>
+                                <div class="mini-ind-tabs" role="tablist">
+                                    <button class="mini-ind-tab active" data-ind="fashion" aria-selected="true" role="tab"><span class="tdot"></span>Fashion</button>
+                                    <button class="mini-ind-tab" data-ind="electronics" aria-selected="false" role="tab"><span class="tdot"></span>Electronics</button>
+                                    <button class="mini-ind-tab" data-ind="pharma" aria-selected="false" role="tab"><span class="tdot"></span>Pharma</button>
+                                </div>
+                                <div class="mini-dash-body">
+                                    <div class="mini-kpi-row">
+                                        <div class="mini-kpi">
+                                            <div class="mini-kpi-l">Sell-Through</div>
+                                            <div class="mini-kpi-v" id="kpi-sellthrough">94.2%</div>
+                                        </div>
+                                        <div class="mini-kpi">
+                                            <div class="mini-kpi-l">Forecast MAPE</div>
+                                            <div class="mini-kpi-v" id="kpi-mape">5.8%</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mini-chart-wrap">
+                                        <svg viewBox="0 0 300 80" preserveAspectRatio="none">
+                                            <defs>
+                                                <linearGradient id="mini-cg-gradient" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="0%" stop-color="var(--vertical-color, #ec4899)" stop-opacity="0.3"/>
+                                                    <stop offset="100%" stop-color="var(--vertical-color, #ec4899)" stop-opacity="0"/>
+                                                </linearGradient>
+                                            </defs>
+                                            <path id="mini-chart-area" d="M0 65 C20 55 40 65 60 50 C80 35 100 42 120 25 C140 10 160 20 180 15 C200 10 220 22 240 18 C260 14 280 24 300 20 L300 80 L0 80Z" fill="url(#mini-cg-gradient)"/>
+                                            <path id="mini-chart-line" d="M0 65 C20 55 40 65 60 50 C80 35 100 42 120 25 C140 10 160 20 180 15 C200 10 220 22 240 18 C260 14 280 24 300 20" fill="none" stroke="var(--vertical-color, #ec4899)" stroke-width="2"/>
+                                            <circle id="mini-chart-dot" cx="300" cy="20" r="3.5" fill="var(--vertical-color, #ec4899)"/>
+                                        </svg>
+                                    </div>
+                                    
+                                    <div class="mini-status-text">
+                                        <i class="fas fa-info-circle"></i> <span id="vertical-status-msg">Optimizing NYC, LA, and Miami regional hubs.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="projects-grid">
                 <div class="project-card fade-in">
                     <div class="project-header">
