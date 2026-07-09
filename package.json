@@ -1,0 +1,17 @@
+{
+  "name": "baltej-goud-portfolio",
+  "version": "1.0.0",
+  "description": "Interactive night-city themed portfolio website for Baltej Goud",
+  "scripts": {
+    "dev": "npx serve . -l 8000",
+    "start": "npx serve . -l 8000"
+  },
+  "keywords": [
+    "portfolio",
+    "developer",
+    "interface-designer",
+    "interactive"
+  ],
+  "author": "Baltej Goud",
+  "license": "ISC"
+}
