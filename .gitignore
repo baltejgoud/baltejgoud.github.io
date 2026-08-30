@@ -2,3 +2,7 @@
 temp_design/
 node_modules/
 .DS_Store
+
+# Generated Cursor skill junctions (see scripts/install-cursor-skills.ps1)
+.cursor/skills/*/
+!.cursor/skills/awesome-claude-skills/
