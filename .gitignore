@@ -1,5 +1,6 @@
 .claude/
 temp_design/
+prompts_chat/
 node_modules/
 .DS_Store
 

@@ -17,23 +17,23 @@
 <meta property="og:site_name" content="Baltej Goud">
 <meta property="og:title" content="Baltej Goud — Founder, Product Builder &amp; Engineer">
 <meta property="og:description" content="Founder of Sanket — a predictive intelligence platform designed to help businesses understand demand, inventory and operational risk.">
-<meta property="og:image" content="https://baltejgoud.github.io/profile.jpg">
-<meta property="og:image:width" content="515">
-<meta property="og:image:height" content="1024">
-<meta property="og:image:alt" content="Portrait of Baltej Goud">
+<meta property="og:image" content="https://baltejgoud.github.io/og_image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta property="og:image:alt" content="Baltej Goud — Founder &amp; CEO of Sanket">
 <meta property="profile:first_name" content="Baltej">
 <meta property="profile:last_name" content="Goud">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Baltej Goud — Founder, Product Builder &amp; Engineer">
 <meta name="twitter:description" content="Founder of Sanket — a predictive intelligence platform designed to help businesses understand demand, inventory and operational risk.">
-<meta name="twitter:image" content="https://baltejgoud.github.io/profile.jpg">
+<meta name="twitter:image" content="https://baltejgoud.github.io/og_image.jpg">
 
 <!-- Progressive enhancement: reveal/draw animations only apply when JS can undo them. -->
 <script>document.documentElement.classList.add("js");</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
 <link rel="stylesheet" href="style.css">
 
 <script type="application/ld+json">
@@ -73,6 +73,7 @@
 
 <!-- ══════════════════════════════════════════════ NAVIGATION -->
 <header class="nav" id="nav">
+  <div class="nav-progress" id="navProgress" aria-hidden="true"></div>
   <div class="wrap nav-in">
     <a class="wordmark" href="#top">Baltej&nbsp;Goud</a>
 
@@ -143,50 +144,126 @@
     </div>
 
     <div class="hero-visual reveal" style="--d:200ms">
-      <figure class="panel chart-panel" id="heroChart">
-        <figcaption class="chart-head">
-          <span class="meta">Sanket · Demand signal</span>
-          <span class="tag"><i class="dot" aria-hidden="true"></i>SKU-2481 · 26-week horizon</span>
-        </figcaption>
+      <div class="hero-dash" id="heroDash" role="region" aria-label="Sanket Interactive Demand Intelligence Dashboard">
+        <!-- Top HUD bar -->
+        <div class="dash-head">
+          <div class="dash-brand">
+            <span class="dash-live-dot" aria-hidden="true"></span>
+            <span class="meta">Sanket // Demand Signal</span>
+          </div>
+          <div class="dash-controls">
+            <select class="dash-select" id="heroSkuSelect" aria-label="Select SKU Product">
+              <option value="sku-2481" selected>SKU-2481 · Fashion Velocity</option>
+              <option value="sku-8920">SKU-8920 · Electronics Lifecycle</option>
+              <option value="sku-1045">SKU-1045 · Pharma Regulated</option>
+            </select>
+          </div>
+        </div>
 
-        <div class="chart-body">
-          <svg viewBox="0 0 660 250" role="img" aria-label="A demand signal chart: fourteen weeks of recorded demand, then a twelve-week forecast with a widening confidence band trending upward.">
-            <!-- grid -->
-            <line class="grid-line" x1="40" y1="40"  x2="640" y2="40"></line>
-            <line class="grid-line" x1="40" y1="84"  x2="640" y2="84"></line>
-            <line class="grid-line" x1="40" y1="128" x2="640" y2="128"></line>
-            <line class="grid-line" x1="40" y1="172" x2="640" y2="172"></line>
-            <line class="grid-line" x1="40" y1="214" x2="640" y2="214"></line>
+        <!-- Interactive chart area -->
+        <div class="dash-stage" id="heroDashStage">
+          <svg class="dash-svg" id="heroSvg" viewBox="0 0 600 220" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="heroPastGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(255,255,255,0.08)"></stop>
+                <stop offset="100%" stop-color="rgba(255,255,255,0)"></stop>
+              </linearGradient>
+              <linearGradient id="heroFutGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(232,162,87,0.22)"></stop>
+                <stop offset="100%" stop-color="rgba(232,162,87,0.01)"></stop>
+              </linearGradient>
+            </defs>
+            <!-- Background Grid lines -->
+            <g class="dash-grid-lines">
+              <line x1="30" y1="35" x2="570" y2="35"></line>
+              <line x1="30" y1="75" x2="570" y2="75"></line>
+              <line x1="30" y1="115" x2="570" y2="115"></line>
+              <line x1="30" y1="155" x2="570" y2="155"></line>
+              <line x1="30" y1="195" x2="570" y2="195"></line>
+            </g>
 
-            <!-- confidence band -->
-            <polygon class="series-band fade-el"
-              points="360,110 400,102 460,89 520,71 580,51 640,34 640,70 580,81 520,93 460,103 400,108 360,110"></polygon>
+            <!-- Vertical Today Divider Line -->
+            <line class="dash-today-line" id="heroTodayLine" x1="320" y1="15" x2="320" y2="195"></line>
+            <text class="dash-today-label" id="heroTodayLabel" x="326" y="26">TODAY</text>
 
-            <!-- horizon divider -->
-            <line class="divider-line" x1="360" y1="20" x2="360" y2="214"></line>
-            <text class="axis-label" x="366" y="30">Today</text>
+            <!-- Dynamic Confidence Envelope -->
+            <polygon class="dash-band" id="heroBand" points=""></polygon>
 
-            <!-- recorded demand -->
-            <path class="series-past draw" d="M40 178 L86 164 L132 186 L178 150 L224 158 L270 128 L316 136 L360 110"></path>
+            <!-- Gradient Area fills -->
+            <path class="dash-past-area" id="heroPastArea" d=""></path>
+            <path class="dash-fut-area" id="heroFutArea" d=""></path>
 
-            <!-- forecast -->
-            <path class="series-fut draw draw--2" d="M360 110 C400 106 430 100 460 96 C500 90 540 76 580 66 C605 60 625 56 640 52"></path>
+            <!-- Dynamic Historical Curve -->
+            <path class="dash-past-path" id="heroPastPath" d=""></path>
 
-            <circle class="marker fade-el" cx="640" cy="52" r="4"></circle>
+            <!-- Dynamic Forecast Curve -->
+            <path class="dash-fut-path" id="heroFutPath" d=""></path>
 
-            <text class="axis-label" x="40"  y="236">W−14</text>
-            <text class="axis-label" x="336" y="236">Now</text>
-            <text class="axis-label" x="596" y="236">W+12</text>
+            <!-- Interactive Cursor Line and Dot -->
+            <g class="dash-cursor-group" id="heroCursorGroup" style="opacity: 0;">
+              <line class="dash-cursor-line" id="heroCursorLine" x1="0" y1="15" x2="0" y2="195"></line>
+              <circle class="dash-cursor-dot" id="heroCursorDot" cx="0" cy="0" r="4.5"></circle>
+            </g>
+
+            <!-- Horizontal Axis Labels -->
+            <g class="dash-axis-labels">
+              <text x="30" y="212" class="axis-lbl">W−14</text>
+              <text x="175" y="212" class="axis-lbl">W−7</text>
+              <text x="315" y="212" class="axis-lbl">NOW</text>
+              <text x="440" y="212" class="axis-lbl">W+6</text>
+              <text x="570" y="212" class="axis-lbl" text-anchor="end" id="heroAxisMax">W+12</text>
+            </g>
           </svg>
+
+          <!-- Floating Interactive HUD Tooltip -->
+          <div class="dash-tooltip" id="heroTooltip" style="opacity: 0;">
+            <div class="tt-tag" id="heroTtTag">HISTORICAL</div>
+            <div class="tt-main">
+              <span class="tt-val" id="heroTtVal">182</span>
+              <span class="tt-unit">units</span>
+            </div>
+            <div class="tt-sub" id="heroTtSub">Week −4 · Recorded</div>
+          </div>
         </div>
 
-        <div class="chart-foot">
-          <div><span class="meta">Model</span><span class="cf-v">XGBoost</span></div>
-          <div><span class="meta">Confidence</span><span class="cf-v">96</span></div>
-          <div><span class="meta">Horizon</span><span class="cf-v">12 wks</span></div>
+        <!-- Scenario & Horizon Control Bar -->
+        <div class="dash-subbar">
+          <div class="dash-horizons" id="heroHorizonChips" role="group" aria-label="Forecast Horizon">
+            <span class="meta">Horizon:</span>
+            <button type="button" class="dash-chip" data-horizon="4w">4W</button>
+            <button type="button" class="dash-chip is-active" data-horizon="12w">12W</button>
+            <button type="button" class="dash-chip" data-horizon="26w">26W</button>
+          </div>
+
+          <div class="dash-scenario">
+            <button type="button" class="dash-toggle" id="heroShockBtn" aria-pressed="false">
+              <span class="toggle-pill"><span class="toggle-knob"></span></span>
+              <span class="meta">Shock Test (+25%)</span>
+            </button>
+          </div>
         </div>
-      </figure>
-      <p class="caption">Product concept · representative data</p>
+
+        <!-- Live Telemetry Footer Metrics -->
+        <div class="dash-foot">
+          <div class="dash-stat">
+            <span class="meta">Estimator</span>
+            <span class="dash-stat-v" id="heroModelVal">XGBoost v2.4</span>
+          </div>
+          <div class="dash-stat">
+            <span class="meta">Confidence</span>
+            <span class="dash-stat-v" id="heroConfVal">96.4%</span>
+          </div>
+          <div class="dash-stat">
+            <span class="meta">Error (MAPE)</span>
+            <span class="dash-stat-v" id="heroMapeVal">4.2%</span>
+          </div>
+          <div class="dash-stat">
+            <span class="meta">Action Rec</span>
+            <span class="dash-stat-v dash-status" id="heroActionVal">Optimal Stock</span>
+          </div>
+        </div>
+      </div>
+      <p class="caption">Live interactive dashboard · hover to inspect weekly telemetry, switch SKUs or simulate shock test</p>
     </div>
 
   </div>
@@ -332,11 +409,11 @@
                   <h4>Demand forecast</h4>
                   <p>Recorded demand and forward projection with a confidence band that widens across the horizon.</p>
                 </div>
-                <div class="chips" role="group" aria-label="Forecast horizon">
-                  <button type="button" aria-pressed="false">4W</button>
-                  <button type="button" aria-pressed="false">13W</button>
-                  <button type="button" aria-pressed="true">26W</button>
-                  <button type="button" aria-pressed="false">52W</button>
+                <div class="chips" role="group" aria-label="Forecast horizon" id="horizonChips">
+                  <button type="button" data-horizon="4" aria-pressed="false">4W</button>
+                  <button type="button" data-horizon="13" aria-pressed="false">13W</button>
+                  <button type="button" data-horizon="26" aria-pressed="true">26W</button>
+                  <button type="button" data-horizon="52" aria-pressed="false">52W</button>
                 </div>
               </div>
 
@@ -345,17 +422,17 @@
                 <line class="grid-line" x1="0" y1="70"  x2="640" y2="70"></line>
                 <line class="grid-line" x1="0" y1="110" x2="640" y2="110"></line>
                 <line class="grid-line" x1="0" y1="150" x2="640" y2="150"></line>
-                <polygon class="series-band" points="300,104 360,96 420,84 480,68 540,54 620,38 620,80 540,86 480,94 420,106 360,112 300,104"></polygon>
+                <polygon class="series-band" id="horizonBand" points="300,104 360,96 420,84 480,68 540,54 620,38 620,80 540,86 480,94 420,106 360,112 300,104"></polygon>
                 <line class="divider-line" x1="300" y1="10" x2="300" y2="150"></line>
                 <path class="series-past" d="M12 132 L60 118 L108 138 L156 108 L204 118 L252 96 L300 104"></path>
-                <path class="series-fut" d="M300 104 C350 100 380 94 420 90 C470 85 520 72 560 64 C590 58 606 56 620 54"></path>
-                <circle class="marker" cx="620" cy="54" r="3.5"></circle>
+                <path class="series-fut" id="horizonFut" d="M300 104 C350 100 380 94 420 90 C470 85 520 72 560 64 C590 58 606 56 620 54"></path>
+                <circle class="marker" id="horizonMarker" cx="620" cy="54" r="3.5"></circle>
                 <text class="axis-label" x="306" y="22">Forecast begins</text>
                 <text class="axis-label" x="12"  y="172">Recorded</text>
-                <text class="axis-label" x="306" y="172">Projected · 80% interval</text>
+                <text class="axis-label" x="306" y="172" id="horizonAxisLabel">Projected · 80% interval</text>
               </svg>
 
-              <p class="note"><i class="dot" aria-hidden="true"></i>Interval widens with horizon. Beyond week 20 the recommendation shifts from ordering quantity to reorder timing.</p>
+              <p class="note" id="horizonNote"><i class="dot" aria-hidden="true"></i>Interval widens with horizon. Beyond week 20 the recommendation shifts from ordering quantity to reorder timing.</p>
             </div>
 
             <!-- View 3 -->
@@ -479,7 +556,7 @@
       <div class="vert-grid">
         <article class="vert reveal">
           <div class="vert-i">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="square" aria-hidden="true"><path d="M2 18 L8 17 L12 5 L16 16 L22 15"></path></svg>
+            <img src="vert_fashion.jpg" alt="Fashion vertical icon" class="vert-img" width="32" height="32" loading="lazy">
             <span class="meta">V1</span>
           </div>
           <h3>Fashion</h3>
@@ -489,7 +566,7 @@
 
         <article class="vert reveal" style="--d:60ms">
           <div class="vert-i">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M2 19 L7 7 L15 7 L22 19"></path></svg>
+            <img src="vert_electronics.jpg" alt="Electronics vertical icon" class="vert-img" width="32" height="32" loading="lazy">
             <span class="meta">V2</span>
           </div>
           <h3>Electronics</h3>
@@ -499,7 +576,7 @@
 
         <article class="vert reveal" style="--d:120ms">
           <div class="vert-i">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="square" aria-hidden="true"><path d="M2 12 L9 12"></path><rect x="9.5" y="8.5" width="5" height="7"></rect><path d="M15 12 L22 12"></path></svg>
+            <img src="vert_pharma.jpg" alt="Pharma vertical icon" class="vert-img" width="32" height="32" loading="lazy">
             <span class="meta">V3</span>
           </div>
           <h3>Pharma</h3>
@@ -509,7 +586,7 @@
 
         <article class="vert reveal" style="--d:180ms">
           <div class="vert-i">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="square" aria-hidden="true"><path d="M2 16 C4.5 9 7 9 9.5 16 C12 23 14.5 23 17 16 C18.5 11.8 20 10.5 22 10"></path></svg>
+            <img src="vert_agro.jpg" alt="Agro vertical icon" class="vert-img" width="32" height="32" loading="lazy">
             <span class="meta">V4</span>
           </div>
           <h3>Agro</h3>
@@ -592,14 +669,23 @@
           </div>
         </article>
 
-        <article class="story-row reveal">
-          <p class="story-n">06</p>
-          <div><h4 class="story-t">Architecture</h4><p class="story-sub">Five layers, each replaceable.</p></div>
-          <div class="story-b">
-            <p>The platform separates what the user sees, what the API allows, what the database
-            guarantees, and what the models decide — so any one of them can be rebuilt without
-            taking the others down with it.</p>
+        <article class="story-row story-row--arch reveal">
+          <div class="arch-header">
+            <p class="story-n">06</p>
+            <div><h4 class="story-t">Architecture</h4><p class="story-sub">Five layers, each replaceable.</p></div>
+            <div class="story-b">
+              <p>The platform separates what the user sees, what the API allows, what the database
+              guarantees, and what the models decide — so any one of them can be rebuilt without
+              taking the others down with it.</p>
+            </div>
+          </div>
 
+          <figure class="arch-schematic">
+            <img src="sanket_architecture.jpg" alt="Sanket enterprise predictive intelligence platform architecture: 5-layer modular stack with Interface, API Gateway, Multi-tenant Data Layer, Inference Engine, Estimators and Operations sidecar." width="1280" height="720" loading="lazy" decoding="async">
+            <figcaption class="caption">Platform architecture · multi-tenant store, model routing engine and operations telemetry stack</figcaption>
+          </figure>
+
+          <div class="arch-details-grid">
             <div class="arch">
               <div class="arch-layer">
                 <span class="arch-tag">Interface</span>
@@ -759,18 +845,8 @@
 
       <!-- Build 2 -->
       <article class="build reveal">
-        <figure class="build-visual" aria-hidden="true">
-          <div class="mock">
-            <div class="mock-bar"><span>Seat map · Hall A</span><span>Group of 3</span></div>
-            <div class="seatmap">
-              <i class="is-taken"></i><i></i><i class="is-taken"></i><i></i><i></i><i class="is-taken"></i><i></i><i></i><i class="is-taken"></i><i></i>
-              <i></i><i class="is-taken"></i><i></i><i></i><i class="is-taken"></i><i></i><i class="is-taken"></i><i></i><i></i><i></i>
-              <i class="is-taken"></i><i></i><i class="is-sel"></i><i class="is-sel"></i><i class="is-sel"></i><i></i><i class="is-taken"></i><i></i><i></i><i class="is-taken"></i>
-              <i></i><i></i><i class="is-taken"></i><i></i><i></i><i class="is-taken"></i><i></i><i></i><i class="is-taken"></i><i></i>
-              <i class="is-taken"></i><i></i><i></i><i class="is-taken"></i><i></i><i></i><i></i><i class="is-taken"></i><i></i><i></i>
-            </div>
-            <div class="mock-foot"><span>Row C · 12–14</span><span>Held 04:59</span></div>
-          </div>
+        <figure class="build-visual">
+          <img src="extraticket_ui.jpg" alt="ExtraTicket event booking platform interface: live auditorium seat selection with adjacent group reservations and digital ticket pass." width="640" height="640" loading="lazy" decoding="async">
         </figure>
 
         <div class="build-body">
@@ -795,23 +871,8 @@
 
       <!-- Build 3 -->
       <article class="build reveal">
-        <figure class="build-visual" aria-hidden="true">
-          <div class="mock">
-            <div class="mock-bar"><span>Recognition</span><span>4 detected</span></div>
-            <div class="detect">
-              <svg viewBox="0 0 220 170">
-                <rect class="det-box" x="16" y="34" width="72" height="58"></rect>
-                <text class="det-label" x="16" y="28">TOMATO · 0.97</text>
-                <rect class="det-box det-box--dim" x="102" y="20" width="56" height="48"></rect>
-                <text class="det-label det-label--dim" x="102" y="14">ONION · 0.91</text>
-                <rect class="det-box det-box--dim" x="128" y="84" width="74" height="60"></rect>
-                <text class="det-label det-label--dim" x="128" y="78">SPINACH · 0.88</text>
-                <rect class="det-box det-box--dim" x="30" y="104" width="52" height="44"></rect>
-                <text class="det-label det-label--dim" x="30" y="98">CHILLI · 0.84</text>
-              </svg>
-            </div>
-            <div class="mock-foot"><span>3 recipes matched</span><span>Pantry mode</span></div>
-          </div>
+        <figure class="build-visual">
+          <img src="cooking_vision_ui.jpg" alt="Let's Get Cooking computer vision recognition interface: fresh ingredients detected on kitchen workspace with bounding boxes and recipe matches." width="640" height="640" loading="lazy" decoding="async">
         </figure>
 
         <div class="build-body">
@@ -1045,6 +1106,11 @@
     </p>
   </div>
 </footer>
+
+<button class="scroll-top" id="scrollTop" aria-label="Scroll to top" title="Scroll to top">
+  <span class="arw" aria-hidden="true">↑</span>
+  <span>Top</span>
+</button>
 
 <script src="script.js" defer></script>
 </body>
