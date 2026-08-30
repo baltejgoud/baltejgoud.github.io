@@ -1,706 +1,1051 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baltej Goud — Software Developer &amp; Interface Craftsman</title>
-    <meta name="description" content="Baltej Goud — full-stack developer building solid systems and elegant interfaces. React, TypeScript, Node.js, data engineering. Flagship: SANKET, a multi-tenant predictive analytics platform.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Identity / sharing -->
-    <meta name="theme-color" content="#0d0e13">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%23ffd700' stroke-width='7'/%3E%3Ccircle cx='50' cy='50' r='30' fill='%230d0e13'/%3E%3C/svg%3E">
-    <link rel="canonical" href="https://baltejgoud.github.io/">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://baltejgoud.github.io/">
-    <meta property="og:title" content="Baltej Goud — Software Developer &amp; Interface Craftsman">
-    <meta property="og:description" content="Full-stack developer building solid systems and elegant interfaces. Flagship: SANKET, a multi-tenant predictive analytics platform.">
-    <meta property="og:image" content="https://baltejgoud.github.io/profile.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Baltej Goud — Software Developer &amp; Interface Craftsman">
-    <meta name="twitter:description" content="Full-stack developer building solid systems and elegant interfaces. Flagship: SANKET, a multi-tenant predictive analytics platform.">
-    <meta name="twitter:image" content="https://baltejgoud.github.io/profile.jpg">
+<title>Baltej Goud — Founder, Product Builder &amp; Engineer</title>
+<meta name="description" content="Baltej Goud is a founder, product builder and engineer working across software, artificial intelligence, data systems and product design. Founder of Sanket, a predictive intelligence platform.">
+<link rel="canonical" href="https://baltejgoud.github.io/">
+<meta name="theme-color" content="#08080a">
+<meta name="color-scheme" content="dark">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%2308080A'/%3E%3Cpath d='M5 23 L12 19 L18 21 L27 9' fill='none' stroke='%23E8A257' stroke-width='2.4' stroke-linecap='square'/%3E%3C/svg%3E">
+
+<meta property="og:type" content="profile">
+<meta property="og:url" content="https://baltejgoud.github.io/">
+<meta property="og:site_name" content="Baltej Goud">
+<meta property="og:title" content="Baltej Goud — Founder, Product Builder &amp; Engineer">
+<meta property="og:description" content="Founder of Sanket — a predictive intelligence platform designed to help businesses understand demand, inventory and operational risk.">
+<meta property="og:image" content="https://baltejgoud.github.io/profile.jpg">
+<meta property="og:image:width" content="515">
+<meta property="og:image:height" content="1024">
+<meta property="og:image:alt" content="Portrait of Baltej Goud">
+<meta property="profile:first_name" content="Baltej">
+<meta property="profile:last_name" content="Goud">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Baltej Goud — Founder, Product Builder &amp; Engineer">
+<meta name="twitter:description" content="Founder of Sanket — a predictive intelligence platform designed to help businesses understand demand, inventory and operational risk.">
+<meta name="twitter:image" content="https://baltejgoud.github.io/profile.jpg">
+
+<!-- Progressive enhancement: reveal/draw animations only apply when JS can undo them. -->
+<script>document.documentElement.classList.add("js");</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Baltej Goud",
+  "alternateName": "Panagatla Baltej Goud",
+  "jobTitle": "Founder & CEO",
+  "description": "Founder, product builder and engineer working across software, artificial intelligence, data systems and product design.",
+  "url": "https://baltejgoud.github.io/",
+  "image": "https://baltejgoud.github.io/profile.jpg",
+  "email": "mailto:baltejgoud123@gmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Hyderabad",
+    "addressRegion": "Telangana",
+    "addressCountry": "IN"
+  },
+  "alumniOf": {
+    "@type": "CollegeOrUniversity",
+    "name": "B V Raju Institute of Technology, Narsapur"
+  },
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Sanket",
+    "description": "Predictive intelligence platform for SKU-level demand, inventory and operational risk."
+  },
+  "knowsAbout": ["Product strategy", "Software engineering", "Machine learning", "Demand forecasting", "Data systems", "Product design"],
+  "sameAs": ["https://www.linkedin.com/in/baltejgoud", "https://github.com/baltejgoud"]
+}
+</script>
 </head>
-<body>
 
-    <!-- ═══ Title card loader ═══ -->
-    <div id="loader" aria-hidden="true">
-        <div class="loader-inner">
-            <p class="loader-kicker">PORTFOLIO — 2026</p>
-            <p class="loader-name">BALTEJ&nbsp;GOUD</p>
-            <p class="loader-jp">日食 — TOTALITY</p>
-            <div class="loader-line"><span></span></div>
-        </div>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ══════════════════════════════════════════════ NAVIGATION -->
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="wordmark" href="#top">Baltej&nbsp;Goud</a>
+
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#sanket">Sanket</a>
+      <a href="#work">Work</a>
+      <a href="#experience">Experience</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <div class="nav-side">
+      <a href="https://www.linkedin.com/in/baltejgoud" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a href="https://github.com/baltejgoud" target="_blank" rel="noopener">GitHub ↗</a>
     </div>
 
-    <!-- Atmosphere -->
-    <div class="grain" aria-hidden="true"></div>
-    <div id="scroll-progress" aria-hidden="true"></div>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navPanel" aria-label="Menu">
+      <span></span><span></span>
+    </button>
+  </div>
 
-    <!-- ═══ Navigation ═══ -->
-    <header id="site-header">
-        <nav>
-            <a href="#top" class="wordmark" aria-label="Baltej Goud — home">
-                <span class="wm-main">BALTEJ</span><span class="wm-dot">●</span><span class="wm-sub">GOUD</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="#work"><span class="nav-num">01</span>Work</a></li>
-                <li><a href="#sanket"><span class="nav-num">02</span>Sanket</a></li>
-                <li><a href="#craft"><span class="nav-num">03</span>Craft</a></li>
-                <li><a href="#about"><span class="nav-num">04</span>About</a></li>
-                <li><a href="#contact"><span class="nav-num">05</span>Contact</a></li>
-            </ul>
-            <div class="nav-right">
-                <a href="resume.html" target="_blank" class="nav-resume">Résumé <span class="arrow">↗</span></a>
-                <button id="menu-btn" aria-label="Open menu" aria-expanded="false">
-                    <span></span><span></span>
-                </button>
-            </div>
-        </nav>
+  <div class="nav-panel" id="navPanel">
+    <div class="wrap">
+      <ul>
+        <li><a href="#sanket">Sanket</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="np-meta meta">
+        <a href="https://www.linkedin.com/in/baltejgoud" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a href="https://github.com/baltejgoud" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<span id="top"></span>
+
+<!-- ══════════════════════════════════════════════ 01 · HERO -->
+<section class="hero" aria-labelledby="hero-h">
+  <div class="wrap hero-grid">
+
+    <div class="hero-text">
+      <h1 id="hero-h">
+        <span class="hero-name reveal">Baltej Goud</span>
+        <span class="hero-claim reveal" style="--d:60ms">Founder &amp; CEO.</span>
+        <span class="hero-deck reveal" style="--d:100ms">I build intelligent products for complex industries.</span>
+      </h1>
+
+      <p class="hero-copy reveal" style="--d:140ms">
+        Founder of <strong>Sanket</strong> — a predictive intelligence platform designed to help
+        businesses understand demand, inventory and operational risk.
+      </p>
+
+      <div class="hero-actions reveal" style="--d:200ms">
+        <a class="btn btn--primary" href="#sanket">Explore Sanket <span class="arw" aria-hidden="true">→</span></a>
+        <a class="btn btn--ghost" href="#about">About me</a>
+      </div>
+
+      <div class="hero-out reveal" style="--d:260ms">
+        <a href="https://www.linkedin.com/in/baltejgoud" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a href="https://github.com/baltejgoud" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="mailto:baltejgoud123@gmail.com">Email ↗</a>
+      </div>
+    </div>
+
+    <div class="hero-visual reveal" style="--d:200ms">
+      <figure class="panel chart-panel" id="heroChart">
+        <figcaption class="chart-head">
+          <span class="meta">Sanket · Demand signal</span>
+          <span class="tag"><i class="dot" aria-hidden="true"></i>SKU-2481 · 26-week horizon</span>
+        </figcaption>
+
+        <div class="chart-body">
+          <svg viewBox="0 0 660 250" role="img" aria-label="A demand signal chart: fourteen weeks of recorded demand, then a twelve-week forecast with a widening confidence band trending upward.">
+            <!-- grid -->
+            <line class="grid-line" x1="40" y1="40"  x2="640" y2="40"></line>
+            <line class="grid-line" x1="40" y1="84"  x2="640" y2="84"></line>
+            <line class="grid-line" x1="40" y1="128" x2="640" y2="128"></line>
+            <line class="grid-line" x1="40" y1="172" x2="640" y2="172"></line>
+            <line class="grid-line" x1="40" y1="214" x2="640" y2="214"></line>
+
+            <!-- confidence band -->
+            <polygon class="series-band fade-el"
+              points="360,110 400,102 460,89 520,71 580,51 640,34 640,70 580,81 520,93 460,103 400,108 360,110"></polygon>
+
+            <!-- horizon divider -->
+            <line class="divider-line" x1="360" y1="20" x2="360" y2="214"></line>
+            <text class="axis-label" x="366" y="30">Today</text>
+
+            <!-- recorded demand -->
+            <path class="series-past draw" d="M40 178 L86 164 L132 186 L178 150 L224 158 L270 128 L316 136 L360 110"></path>
+
+            <!-- forecast -->
+            <path class="series-fut draw draw--2" d="M360 110 C400 106 430 100 460 96 C500 90 540 76 580 66 C605 60 625 56 640 52"></path>
+
+            <circle class="marker fade-el" cx="640" cy="52" r="4"></circle>
+
+            <text class="axis-label" x="40"  y="236">W−14</text>
+            <text class="axis-label" x="336" y="236">Now</text>
+            <text class="axis-label" x="596" y="236">W+12</text>
+          </svg>
+        </div>
+
+        <div class="chart-foot">
+          <div><span class="meta">Model</span><span class="cf-v">XGBoost</span></div>
+          <div><span class="meta">Confidence</span><span class="cf-v">96</span></div>
+          <div><span class="meta">Horizon</span><span class="cf-v">12 wks</span></div>
+        </div>
+      </figure>
+      <p class="caption">Product concept · representative data</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════ 02 · APPROACH -->
+<section class="section section--alt" aria-labelledby="approach-h">
+  <div class="wrap">
+    <p class="eyebrow reveal">Approach</p>
+    <h2 class="statement reveal" id="approach-h" style="--d:80ms">
+      I like building at the point where technology, product and business
+      <em>become the same problem.</em>
+    </h2>
+
+    <div class="approach-grid">
+      <div class="reveal">
+        <h3>Start at the decision, not the technology</h3>
+        <p>Most operational problems are not technology problems until someone insists on making
+        them one. I start with the decision being made badly, how often it is made, and what it
+        costs to get wrong.</p>
+      </div>
+      <div class="reveal" style="--d:60ms">
+        <h3>Turn ambiguity into a product</h3>
+        <p>A vague operational complaint becomes a scoped product only once you decide what the
+        system will answer, who acts on the answer, and what it deliberately refuses to do.</p>
+      </div>
+      <div class="reveal" style="--d:120ms">
+        <h3>Build the whole system</h3>
+        <p>Schema to pixel. Data model, API, inference layer, interface. Owning the full stack is
+        what makes it possible to move a constraint instead of designing around it.</p>
+      </div>
+      <div class="reveal" style="--d:180ms">
+        <h3>Hold both ends at once</h3>
+        <p>Architecture decides what the product can eventually become; the interface decides
+        whether anyone gets that far. Treating either as someone else's concern is how good
+        systems end up unused.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════ 03 · SANKET -->
+<section class="section" id="sanket" aria-labelledby="sanket-h">
+  <div class="wrap">
+
+    <header class="sanket-head">
+      <p class="eyebrow reveal">The company</p>
+      <h2 class="sanket-mark reveal" id="sanket-h" style="--d:60ms">Sanket</h2>
+      <p class="sanket-gloss reveal" style="--d:100ms">संकेत — "the signal"</p>
+      <p class="sanket-logline reveal" style="--d:140ms">Predictive intelligence for businesses that cannot afford to guess.</p>
     </header>
 
-    <!-- Full-screen mobile menu -->
-    <div id="menu-overlay" aria-hidden="true">
-        <ul>
-            <li><a href="#work" class="menu-link"><em>01</em> Selected Work</a></li>
-            <li><a href="#sanket" class="menu-link"><em>02</em> Sanket</a></li>
-            <li><a href="#craft" class="menu-link"><em>03</em> Craft</a></li>
-            <li><a href="#about" class="menu-link"><em>04</em> About</a></li>
-            <li><a href="#contact" class="menu-link"><em>05</em> Contact</a></li>
-            <li><a href="resume.html" target="_blank" class="menu-link menu-resume"><em>↳</em> Résumé</a></li>
-        </ul>
-        <p class="menu-foot">Hyderabad, IN — <span id="menu-clock">—:—</span> IST — 日食</p>
+    <!-- 3.2 The problem, in business terms -->
+    <div class="problem-grid">
+      <div class="reveal">
+        <h3 class="h3">The decision that is broken</h3>
+        <p>Businesses across industries make purchasing and inventory decisions using incomplete
+        data, spreadsheets and fragmented forecasting systems. Capital is committed weeks or
+        months before demand actually appears.</p>
+        <p>Estimate high and the money sits on a shelf as dead inventory. Estimate low and the
+        demand walks to a competitor. In regulated categories, a wrong move also leaves an audit
+        problem behind it.</p>
+      </div>
+      <div class="reveal" style="--d:80ms">
+        <h3 class="h3">What Sanket does about it</h3>
+        <p>Sanket forecasts demand at SKU level, ranks where inventory is about to go wrong, and
+        turns that into purchase configurations a buyer can act on — with the reasoning visible
+        rather than hidden behind a single score.</p>
+        <p>It is built as one platform serving several operating contexts, so a business does not
+        have to choose between a tool that understands forecasting and a tool that understands
+        its industry.</p>
+      </div>
     </div>
 
-    <main id="top">
-
-        <!-- ═══════════════ PROLOGUE / HERO ═══════════════ -->
-        <section id="hero" aria-label="Introduction">
-            <div class="sky" aria-hidden="true">
-                <div class="stars"></div>
-                <canvas id="hero-canvas"></canvas>
-                <div class="dusk-band"></div>
-                <svg class="skyline skyline-far" viewBox="0 0 1440 220" preserveAspectRatio="none" aria-hidden="true">
-                    <path d="M0 220 L0 170 L60 170 L60 130 L90 130 L90 155 L140 155 L140 95 L150 95 L150 80 L160 80 L160 95 L170 95 L170 150 L230 150 L230 120 L260 120 L260 165 L320 165 L320 105 L330 90 L340 105 L340 140 L410 140 L410 165 L470 165 L470 110 L480 110 L480 70 L488 60 L496 70 L496 110 L510 110 L510 150 L580 150 L580 125 L640 125 L640 160 L700 160 L700 100 L714 100 L714 82 L720 72 L726 82 L726 100 L740 100 L740 150 L800 150 L800 130 L860 130 L860 168 L930 168 L930 112 L944 112 L944 95 L958 95 L958 145 L1020 145 L1020 122 L1080 122 L1080 158 L1150 158 L1150 98 L1160 98 L1160 84 L1170 84 L1170 130 L1240 130 L1240 155 L1310 155 L1310 118 L1370 118 L1370 165 L1440 165 L1440 220 Z"/>
-                </svg>
-                <svg class="skyline skyline-near" viewBox="0 0 1440 180" preserveAspectRatio="none" aria-hidden="true">
-                    <path d="M0 180 L0 120 L80 120 L80 70 L96 70 L96 50 L112 50 L112 70 L128 70 L128 105 L210 105 L210 130 L300 130 L300 60 L318 60 L318 42 L322 30 L326 42 L326 60 L344 60 L344 115 L430 115 L430 90 L520 90 L520 135 L620 135 L620 55 L638 55 L638 35 L650 35 L650 55 L668 55 L668 110 L760 110 L760 140 L850 140 L850 85 L870 85 L870 60 L890 60 L890 120 L980 120 L980 95 L1070 95 L1070 145 L1160 145 L1160 75 L1178 75 L1178 52 L1190 40 L1202 52 L1202 75 L1220 75 L1220 125 L1320 125 L1320 100 L1440 100 L1440 180 Z"/>
-                </svg>
-            </div>
-
-            <div class="v-rail" aria-hidden="true">
-                <span class="v-text">ソフトウェア・エンジニア — フルスタック</span>
-                <span class="v-line"></span>
-            </div>
-
-            <div class="hero-inner">
-                <p class="hero-kicker reveal">
-                    <span class="status-dot"></span>Open to opportunities — Hyderabad / Remote
-                </p>
-                <h1 class="hero-name" aria-label="Baltej Goud">
-                    <span class="line" data-split>BALTEJ</span>
-                    <span class="line line-indent" data-split>GOUD</span>
-                </h1>
-                <div class="hero-sub reveal">
-                    <p class="hero-role">Full-stack developer <em>&amp;</em> interface craftsman</p>
-                    <p class="hero-copy">I build systems that hold up under load and interfaces that feel
-                    alive — React, TypeScript, Node.js, SQL, data pipelines, and the pixels on top.
-                    Engineering rigor on one side, design instinct on the other.</p>
-                    <div class="hero-cta">
-                        <a href="#sanket" class="btn-solid">See the flagship <span class="arrow">↓</span></a>
-                        <a href="https://www.linkedin.com/in/baltejgoud" target="_blank" rel="noopener" class="btn-ghost">LinkedIn <span class="arrow">↗</span></a>
-                        <a href="https://github.com/baltejgoud" target="_blank" rel="noopener" class="btn-ghost">GitHub <span class="arrow">↗</span></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="hero-foot" aria-hidden="true">
-                <span class="scroll-cue">SCROLL<span class="cue-line"></span>日食—TOTALITY</span>
-                <div class="ticker">
-                    <div class="ticker-track">
-                        <span>REACT</span><span>TYPESCRIPT</span><span>NODE.JS</span><span>SQL</span><span>FASTAPI</span><span>POSTGRESQL</span><span>ETL&nbsp;/&nbsp;DATA</span><span>DOCKER</span><span>UI&nbsp;/&nbsp;UX</span><span>PYTHON</span><span>AUTOMATION</span><span>DASHBOARDS</span>
-                        <span>REACT</span><span>TYPESCRIPT</span><span>NODE.JS</span><span>SQL</span><span>FASTAPI</span><span>POSTGRESQL</span><span>ETL&nbsp;/&nbsp;DATA</span><span>DOCKER</span><span>UI&nbsp;/&nbsp;UX</span><span>PYTHON</span><span>AUTOMATION</span><span>DASHBOARDS</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ═══════════════ CH.01 — SELECTED WORK ═══════════════ -->
-        <section id="work" class="chapter">
-            <header class="chapter-head">
-                <p class="chapter-kicker reveal"><span class="ch-num">第一章</span> CHAPTER 01 — SELECTED WORK</p>
-                <h2 class="chapter-title reveal-wipe">Work that earns<br><em>its place.</em></h2>
-                <p class="chapter-lede reveal">Four builds, one flagship. Each panel is a real system —
-                shipped, documented, and defensible in a technical interview.</p>
-            </header>
-
-            <!-- Manga panel grid -->
-            <div class="panel-grid">
-                <!-- Panel: Deepfake -->
-                <article class="panel panel-a reveal-panel" id="deepfake-panel" role="button" tabindex="0"
-                         aria-haspopup="dialog" aria-label="AI deepfake detection — open case dossier">
-                    <span class="panel-num">02</span>
-                    <div class="panel-tags"><span>ResNeXt CNN</span><span>LSTM</span><span>PyTorch</span></div>
-                    <h3>Deepfake<br>Detection</h3>
-                    <p>A CNN + LSTM pipeline that reads the temporal fingerprints of manipulated video —
-                    trained on FaceForensics++, DFDC and Celeb-DF.</p>
-                    <span class="panel-link">Open the dossier <span class="arrow">→</span></span>
-                    <div class="panel-tone" aria-hidden="true"></div>
-                </article>
-
-                <!-- Panel: ExtraTicket -->
-                <article class="panel panel-b reveal-panel">
-                    <span class="panel-num">03</span>
-                    <div class="panel-tags"><span>React Native</span><span>Firebase</span><span>Node.js</span></div>
-                    <h3>ExtraTicket</h3>
-                    <p>Event booking with real-time seat maps, group reservations, wallet
-                    integration and holographic tickets.</p>
-                    <a href="https://github.com/baltejgoud/extraticket" target="_blank" rel="noopener" class="panel-link">Source <span class="arrow">↗</span></a>
-                    <div class="panel-tone" aria-hidden="true"></div>
-                </article>
-
-                <!-- Panel: bye-bye world -->
-                <article class="panel panel-c reveal-panel">
-                    <span class="panel-num">04</span>
-                    <div class="panel-tags"><span>Vanilla JS</span><span>AI</span></div>
-                    <h3>bye-bye world</h3>
-                    <p>An AI task manager with live summaries and an animated UI — zero
-                    frameworks, pure craft.</p>
-                    <a href="https://baltejgoud.github.io/bye-bye-world/" target="_blank" rel="noopener" class="panel-link">Live demo <span class="arrow">↗</span></a>
-                    <div class="panel-tone" aria-hidden="true"></div>
-                </article>
-
-                <!-- Panel: Cooking AI -->
-                <article class="panel panel-d reveal-panel">
-                    <span class="panel-num">05</span>
-                    <div class="panel-tags"><span>Computer Vision</span><span>Python</span></div>
-                    <h3>Let's Get Cooking</h3>
-                    <p>Point a camera at your groceries; a recognition engine identifies them
-                    and composes recipes to match.</p>
-                    <span class="panel-link muted">Academic project</span>
-                    <div class="panel-tone" aria-hidden="true"></div>
-                </article>
-            </div>
-        </section>
-
-        <!-- ═══════════════ CH.02 — SANKET FLAGSHIP ═══════════════ -->
-        <section id="sanket" class="chapter prisma-chapter">
-            <div class="prisma-atmo" aria-hidden="true"></div>
-
-            <!-- Episode title card -->
-            <header class="prisma-title-card">
-                <p class="chapter-kicker reveal"><span class="ch-num">第二章</span> CASE STUDY 01 — FLAGSHIP</p>
-                <div class="prisma-refraction-container reveal-panel" aria-hidden="true">
-                    <svg class="prisma-refraction-svg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet">
-                        <defs>
-                            <filter id="prism-glow" x="-30%" y="-30%" width="160%" height="160%">
-                                <feGaussianBlur stdDeviation="9" result="blur" />
-                                <feMerge>
-                                    <feMergeNode in="blur" />
-                                    <feMergeNode in="SourceGraphic" />
-                                </feMerge>
-                            </filter>
-                            <linearGradient id="beam-entry" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#fff6df" stop-opacity="0" />
-                                <stop offset="100%" stop-color="#fff6df" stop-opacity="0.8" />
-                            </linearGradient>
-                            <linearGradient id="beam-red" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#ffd700" stop-opacity="0.9" />
-                                <stop offset="100%" stop-color="#ffd700" stop-opacity="0" />
-                            </linearGradient>
-                            <linearGradient id="beam-orange" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#e9c400" stop-opacity="0.8" />
-                                <stop offset="100%" stop-color="#e9c400" stop-opacity="0" />
-                            </linearGradient>
-                            <linearGradient id="beam-cyan" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#00e3fd" stop-opacity="0.95" />
-                                <stop offset="100%" stop-color="#00e3fd" stop-opacity="0" />
-                            </linearGradient>
-                            <linearGradient id="beam-purple" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#e7d1ff" stop-opacity="0.8" />
-                                <stop offset="100%" stop-color="#e7d1ff" stop-opacity="0" />
-                            </linearGradient>
-                        </defs>
-                        <g class="refracted-beams" filter="url(#prism-glow)">
-                            <polygon class="ray ray-red" points="200,155 380,60 380,85" fill="url(#beam-red)" />
-                            <polygon class="ray ray-orange" points="200,155 380,110 380,135" fill="url(#beam-orange)" />
-                            <polygon class="ray ray-cyan" points="200,155 380,160 380,185" fill="url(#beam-cyan)" />
-                            <polygon class="ray ray-purple" points="200,155 380,210 380,235" fill="url(#beam-purple)" />
-                        </g>
-                        <polygon class="entry-beam" points="20,145 20,150 175,155 175,150" fill="url(#beam-entry)" />
-                        <g class="prism-glass-group">
-                            <polygon points="140,210 200,100 260,210" fill="rgba(18, 19, 24, 0.8)" stroke="rgba(0, 227, 253, 0.2)" stroke-width="1" />
-                            <line x1="175" y1="152" x2="200" y2="155" stroke="#fff6df" stroke-width="1.5" opacity="0.9" />
-                            <line x1="175" y1="154" x2="198" y2="162" stroke="#ffd700" stroke-width="1" opacity="0.8" />
-                            <line x1="175" y1="151" x2="202" y2="148" stroke="#00e3fd" stroke-width="1.2" opacity="0.85" />
-                            <polygon class="prism-triangle" points="140,210 200,100 260,210" fill="rgba(255, 246, 223, 0.04)" stroke="rgba(255, 215, 0, 0.35)" stroke-width="2.5" />
-                            <path d="M 200,100 L 255,202 Q 248,206 238,208 L 195,110 Z" fill="rgba(255,255,255,0.05)" />
-                        </g>
-                        <circle class="prism-core" cx="200" cy="155" r="4.5" fill="#ffd700" filter="url(#prism-glow)" />
-                    </svg>
-                </div>
-                <div class="prisma-wordmark reveal-wipe" aria-label="Sanket">
-                    <span class="pw-jp">संकेत — "THE SIGNAL"</span>
-                    <h2 class="pw-main">SANKET</h2>
-                    <div class="spectral-rule" aria-hidden="true"></div>
-                </div>
-                <p class="prisma-logline reveal">One demand signal, refracted into
-                <em>every future worth planning for.</em></p>
-            </header>
-
-            <!-- Framing -->
-            <div class="prisma-framing">
-                <div class="pf-col reveal">
-                    <h4 class="pf-label">The problem</h4>
-                    <p>In fashion, electronics, pharma and farm supply, demand forecasting still
-                    happens in spreadsheets. Buyers over-order into dead inventory or under-order
-                    into stockouts — and in regulated verticals, every wrong move leaves an audit
-                    problem behind it.</p>
-                </div>
-                <div class="pf-col reveal">
-                    <h4 class="pf-label">The build</h4>
-                    <p>SANKET is a multi-tenant predictive analytics SaaS that forecasts SKU-level
-                    demand and recommends purchase configurations across four verticals — with
-                    bank-grade tenant isolation and compliance-ready audit trails baked into the
-                    data layer, not bolted on.</p>
-                </div>
-                <div class="pf-col reveal">
-                    <h4 class="pf-label">Why it's different</h4>
-                    <p>Instead of one model for everything, SANKET routes each SKU to whichever
-                    model earns it — XGBoost, Prophet, statistical ensembles — and falls back to a
-                    zero-shot foundation model (Amazon Chronos) when a product is too new to have
-                    history. Cold-start is a solved path, not an excuse.</p>
-                </div>
-            </div>
-
-            <!-- HUD dashboard -->
-            <div class="hud-wrap reveal-panel">
-                <div class="hud-frame" id="hud">
-                    <span class="hud-corner tl"></span><span class="hud-corner tr"></span>
-                    <span class="hud-corner bl"></span><span class="hud-corner br"></span>
-                    <div class="hud-bar">
-                        <span class="hud-id">SANKET // WORKSPACE</span>
-                        <span class="hud-sim">SIMULATED DATA — LIVE UI</span>
-                    </div>
-                    <div class="hud-tabs" role="tablist" aria-label="Industry verticals">
-                        <button class="hud-tab active" data-ind="fashion" role="tab" aria-selected="true"><span class="tdot"></span>Fashion</button>
-                        <button class="hud-tab" data-ind="electronics" role="tab" aria-selected="false"><span class="tdot"></span>Electronics</button>
-                        <button class="hud-tab" data-ind="pharma" role="tab" aria-selected="false"><span class="tdot"></span>Pharma</button>
-                        <button class="hud-tab" data-ind="agro" role="tab" aria-selected="false"><span class="tdot"></span>Agro</button>
-                    </div>
-                    <div class="hud-body">
-                        <div class="hud-kpis">
-                            <div class="hud-kpi">
-                                <span class="hud-kpi-l">SELL-THROUGH</span>
-                                <span class="hud-kpi-v" id="kpi-sellthrough">94.2%</span>
-                            </div>
-                            <div class="hud-kpi">
-                                <span class="hud-kpi-l">FORECAST MAPE</span>
-                                <span class="hud-kpi-v" id="kpi-mape">5.8%</span>
-                            </div>
-                            <div class="hud-kpi">
-                                <span class="hud-kpi-l">MODEL ROUTE</span>
-                                <span class="hud-kpi-v hud-kpi-model" id="kpi-model">XGBoost</span>
-                            </div>
-                        </div>
-                        <div class="hud-chart">
-                            <div class="hud-scanner" aria-hidden="true"></div>
-                            <svg viewBox="0 0 300 80" preserveAspectRatio="none" aria-hidden="true" id="hud-chart-svg">
-                                <defs>
-                                    <linearGradient id="hud-grad" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stop-color="var(--vc, #6fd3e8)" stop-opacity="0.25"/>
-                                        <stop offset="100%" stop-color="var(--vc, #6fd3e8)" stop-opacity="0"/>
-                                    </linearGradient>
-                                    <pattern id="hud-grid-pattern" width="15" height="10" patternUnits="userSpaceOnUse">
-                                        <path d="M 15 0 L 0 0 0 10" fill="none" stroke="rgba(236, 231, 219, 0.04)" stroke-width="0.5"/>
-                                    </pattern>
-                                </defs>
-                                <rect width="300" height="80" fill="url(#hud-grid-pattern)" />
-                                <path id="hud-area" d="M0 65 C20 55 40 65 60 50 C80 35 100 42 120 25 C140 10 160 20 180 15 C200 10 220 22 240 18 C260 14 280 24 300 20 L300 80 L0 80Z" fill="url(#hud-grad)"/>
-                                <path id="hud-line" d="M0 65 C20 55 40 65 60 50 C80 35 100 42 120 25 C140 10 160 20 180 15 C200 10 220 22 240 18 C260 14 280 24 300 20" fill="none" stroke="var(--vc, #6fd3e8)" stroke-width="2"/>
-                                <line id="hud-tracker-line" x1="-10" y1="0" x2="-10" y2="80" stroke="var(--vc, #6fd3e8)" stroke-dasharray="2,2" stroke-width="1.2" opacity="0" />
-                                <circle id="hud-dot" cx="300" cy="20" r="3.5" fill="var(--vc, #6fd3e8)"/>
-                                <circle id="hud-tracker-dot" cx="-10" cy="-10" r="4.5" fill="#ece7db" stroke="var(--vc, #6fd3e8)" stroke-width="1.5" opacity="0" filter="url(#prism-glow)" />
-                            </svg>
-                            <div id="hud-tooltip" class="hud-tooltip-card">
-                                <span class="tooltip-time">TIME INDEX</span>
-                                <span class="tooltip-val">DEMAND: --%</span>
-                            </div>
-                        </div>
-                        <p class="hud-status"><span class="hud-blink">▮</span> <span id="hud-msg">Optimizing NYC, LA and Miami regional hubs.</span></p>
-                    </div>
-                </div>
-                <p class="hud-caption">The live workspace — vertical switching re-themes KPIs, model
-                routing and regional status in real time.</p>
-            </div>
-
-            <!-- Product frames -->
-            <div class="shots reveal-panel" aria-label="Sanket product frames">
-                <figure class="shot">
-                    <div class="shot-chrome" aria-hidden="true">
-                        <span class="sc-dots"><i></i><i></i><i></i></span>
-                        <span class="sc-url">sanket.app / forecast — overview</span>
-                    </div>
-                    <div class="shot-body shot-dash">
-                        <div class="shot-side" aria-hidden="true">
-                            <span class="ss-logo"></span>
-                            <span class="ss-item active"></span>
-                            <span class="ss-item"></span>
-                            <span class="ss-item"></span>
-                            <span class="ss-item"></span>
-                        </div>
-                        <div class="shot-main">
-                            <div class="shot-kpis">
-                                <div class="sk"><span class="sk-l">SELL-THROUGH</span><span class="sk-v">94.2%</span><span class="sk-d up">▲ 2.1 vs LY</span></div>
-                                <div class="sk"><span class="sk-l">FORECAST MAPE</span><span class="sk-v">5.8%</span><span class="sk-d up">▼ 0.4 MoM</span></div>
-                                <div class="sk"><span class="sk-l">AT-RISK SKUs</span><span class="sk-v">7</span><span class="sk-d warn">● watchlist</span></div>
-                            </div>
-                            <div class="shot-chart" aria-hidden="true">
-                                <span class="bar" style="--h:34%; --dl:0s"></span>
-                                <span class="bar" style="--h:46%; --dl:.04s"></span>
-                                <span class="bar" style="--h:41%; --dl:.08s"></span>
-                                <span class="bar" style="--h:58%; --dl:.12s"></span>
-                                <span class="bar" style="--h:52%; --dl:.16s"></span>
-                                <span class="bar" style="--h:66%; --dl:.2s"></span>
-                                <span class="bar peak" style="--h:88%; --dl:.24s"></span>
-                                <span class="bar" style="--h:72%; --dl:.28s"></span>
-                                <span class="bar" style="--h:61%; --dl:.32s"></span>
-                                <span class="bar" style="--h:69%; --dl:.36s"></span>
-                                <span class="bar" style="--h:77%; --dl:.4s"></span>
-                                <span class="bar" style="--h:83%; --dl:.44s"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <figcaption>01 — Forecast overview · KPI strip and 12-month demand curve, peak week flagged in cyan.</figcaption>
-                </figure>
-
-                <figure class="shot">
-                    <div class="shot-chrome" aria-hidden="true">
-                        <span class="sc-dots"><i></i><i></i><i></i></span>
-                        <span class="sc-url">sanket.app / models — routing</span>
-                    </div>
-                    <div class="shot-body shot-table">
-                        <div class="st-row st-head" aria-hidden="true">
-                            <span>SKU</span><span>90-DAY TREND</span><span>MODEL</span><span>CONF.</span>
-                        </div>
-                        <div class="st-row">
-                            <span>SKU-2481 · Linen shirt SS26</span>
-                            <span class="st-trend gold"><svg class="st-spark" viewBox="0 0 60 16" preserveAspectRatio="none"><path d="M0 12 L10 10 L20 11 L30 7 L40 8 L50 4 L60 5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></span>
-                            <span class="st-badge gold">XGBoost</span>
-                            <span class="st-conf"><span class="st-meter" style="--w:96%"></span>96</span>
-                        </div>
-                        <div class="st-row">
-                            <span>SKU-1177 · 27&Prime; OLED panel</span>
-                            <span class="st-trend cyan"><svg class="st-spark" viewBox="0 0 60 16" preserveAspectRatio="none"><path d="M0 6 L10 8 L20 5 L30 9 L40 7 L50 11 L60 10" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></span>
-                            <span class="st-badge cyan">Prophet</span>
-                            <span class="st-conf"><span class="st-meter" style="--w:93%"></span>93</span>
-                        </div>
-                        <div class="st-row">
-                            <span>SKU-8842 · Insulin pen 3ml</span>
-                            <span class="st-trend violet"><svg class="st-spark" viewBox="0 0 60 16" preserveAspectRatio="none"><path d="M0 9 L10 8.5 L20 8 L30 8.5 L40 7.5 L50 7 L60 6.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></span>
-                            <span class="st-badge violet">Ensemble</span>
-                            <span class="st-conf"><span class="st-meter" style="--w:97%"></span>97</span>
-                        </div>
-                        <div class="st-row">
-                            <span>SKU-0034 · Drip kit <em class="st-new">NEW</em></span>
-                            <span class="st-trend pale"><svg class="st-spark" viewBox="0 0 60 16" preserveAspectRatio="none"><path d="M0 13 L15 13 L30 12 L45 9 L60 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/></svg></span>
-                            <span class="st-badge pale">Chronos</span>
-                            <span class="st-conf"><span class="st-meter" style="--w:81%"></span>81</span>
-                        </div>
-                        <p class="st-note"><span class="hud-blink">▮</span> Zero-shot route active — SKU-0034 has 11 days of history.</p>
-                    </div>
-                    <figcaption>02 — Model routing · every SKU assigned to the model that earns it; cold-start falls back to Chronos.</figcaption>
-                </figure>
-            </div>
-            <p class="shots-note">Product frames rebuilt in pure HTML &amp; CSS — no images, every pixel intentional.</p>
-
-            <!-- Case study flow -->
-            <div class="cs-flow">
-                <article class="cs-block reveal">
-                    <span class="cs-num">01</span>
-                    <div class="cs-body">
-                        <h3>Challenge</h3>
-                        <p>Serve four industries with contradictory constraints from a single codebase.
-                        Pharma demands FDA 21 CFR Part 11 audit trails; fashion demands seasonal
-                        velocity; electronics demands lifecycle-aware forecasting; agro demands
-                        regional weather sensitivity. One platform, four rulebooks — and every
-                        tenant's data legally invisible to every other tenant.</p>
-                    </div>
-                </article>
-
-                <article class="cs-block reveal">
-                    <span class="cs-num">02</span>
-                    <div class="cs-body">
-                        <h3>System</h3>
-                        <div class="arch-stack">
-                            <div class="arch-layer reveal-panel">
-                                <span class="arch-tag">PRESENTATION</span>
-                                <h4>React dashboard — Vite + TypeScript</h4>
-                                <p>A single-page analytics portal surfacing sell-through, margin
-                                opportunity and simulated stockouts, speaking to the backend over
-                                JWT-authenticated APIs.</p>
-                            </div>
-                            <div class="arch-connector" aria-hidden="true"></div>
-                            <div class="arch-layer reveal-panel">
-                                <span class="arch-tag">GATEWAY + DATA</span>
-                                <h4>FastAPI gateway — PostgreSQL 16, multi-tenant</h4>
-                                <p>Session-level Row-Level Security enforces tenant isolation inside a
-                                shared database. Vertical routers, Alembic migrations, and GxP audit
-                                logs for medical inventory live here.</p>
-                            </div>
-                            <div class="arch-connector" aria-hidden="true"></div>
-                            <div class="arch-layer reveal-panel">
-                                <span class="arch-tag">INTELLIGENCE</span>
-                                <h4>ML inference service — ensemble + foundation</h4>
-                                <p>A dedicated Python service routes each SKU to its optimal model —
-                                XGBoost, Prophet, statistical ensembles — with a zero-shot Chronos
-                                foundation-model fallback for products with thin history.</p>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="cs-block reveal">
-                    <span class="cs-num">03</span>
-                    <div class="cs-body">
-                        <h3>Engineering detail</h3>
-                        <dl class="spec-sheet">
-                            <div class="spec-row reveal">
-                                <dt>Tenant isolation</dt>
-                                <dd>PostgreSQL session parameters drive Row-Level Security policies, so
-                                a tenant's queries physically cannot see another tenant's rows —
-                                isolation enforced by the database, not by application discipline.</dd>
-                            </div>
-                            <div class="spec-row reveal">
-                                <dt>GxP audit trail</dt>
-                                <dd>Append-only transaction histories with cryptographically signed
-                                audit logs for pharmaceutical batch changes, designed against FDA
-                                21 CFR Part 11.</dd>
-                            </div>
-                            <div class="spec-row reveal">
-                                <dt>Cold-start coverage</dt>
-                                <dd>When a SKU lacks the history to train a time-series model, the
-                                router invokes a preloaded Amazon Chronos foundation model —
-                                zero-shot forecasts from day one.</dd>
-                            </div>
-                            <div class="spec-row reveal">
-                                <dt>Operations</dt>
-                                <dd>Docker Compose and Kubernetes deployment, Prometheus metrics,
-                                Grafana dashboards, Pytest coverage — observable and reproducible
-                                from a cold clone.</dd>
-                            </div>
-                        </dl>
-                    </div>
-                </article>
-
-                <article class="cs-block reveal">
-                    <span class="cs-num">04</span>
-                    <div class="cs-body">
-                        <h3>Outcome &amp; lessons</h3>
-                        <p>SANKET proved I can carry a product from schema design to pixel polish:
-                        a three-layer architecture, four vertical rulebooks, regulated-industry
-                        compliance patterns, and a dashboard I'd put in front of a paying customer.
-                        The hardest lesson — multi-tenancy is a data-layer problem. Solve it in
-                        PostgreSQL and every layer above gets simpler.</p>
-                        <div class="prisma-facts">
-                            <div class="fact"><span class="fact-v" data-count="4">0</span><span class="fact-l">industry verticals</span></div>
-                            <div class="fact"><span class="fact-v" data-count="3">0</span><span class="fact-l">architecture layers</span></div>
-                            <div class="fact"><span class="fact-v" data-count="12">0</span><span class="fact-l">core technologies</span></div>
-                            <div class="fact"><span class="fact-v fact-inf">0</span><span class="fact-l">day-one SKU coverage</span></div>
-                        </div>
-                        <div class="prisma-cta">
-                            <a href="https://github.com/baltejgoud/prisma-project" target="_blank" rel="noopener" class="btn-solid btn-prism">View repository <span class="arrow">↗</span></a>
-                            <a href="mailto:baltejgoud123@gmail.com?subject=Walk%20me%20through%20SANKET" class="btn-ghost">Ask me about the architecture <span class="arrow">→</span></a>
-                        </div>
-                    </div>
-                </article>
-            </div>
-
-            <div class="prisma-stack reveal" aria-label="Sanket technology stack">
-                <span>FastAPI</span><span>React</span><span>TypeScript</span><span>PostgreSQL 16</span><span>SQLAlchemy</span><span>Alembic</span><span>Docker</span><span>Kubernetes</span><span>Prometheus</span><span>Grafana</span><span>XGBoost</span><span>Chronos</span>
-            </div>
-        </section>
-
-        <!-- ═══════════════ CH.03 — CRAFT ═══════════════ -->
-        <section id="craft" class="chapter">
-            <header class="chapter-head">
-                <p class="chapter-kicker reveal"><span class="ch-num">第三章</span> CHAPTER 03 — CRAFT</p>
-                <h2 class="chapter-title reveal-wipe">Two disciplines,<br><em>one builder.</em></h2>
-            </header>
-
-            <div class="craft-cols">
-                <div class="craft-col reveal">
-                    <h3 class="craft-h"><span class="craft-jp">構築</span>SYSTEMS</h3>
-                    <p class="craft-copy">The part that has to be correct at 3&nbsp;a.m.</p>
-                    <ul class="craft-list">
-                        <li><strong>Backend</strong><span>Node.js · FastAPI · REST APIs · auth</span></li>
-                        <li><strong>Data</strong><span>SQL · PostgreSQL · MongoDB · ETL pipelines</span></li>
-                        <li><strong>Automation</strong><span>Python · CI/CD · scripting · scheduled jobs</span></li>
-                        <li><strong>Infra</strong><span>Docker · AWS · Google Cloud · Firebase</span></li>
-                    </ul>
-                </div>
-                <div class="craft-x" aria-hidden="true"><span>×</span></div>
-                <div class="craft-col reveal">
-                    <h3 class="craft-h"><span class="craft-jp">表現</span>INTERFACE</h3>
-                    <p class="craft-copy">The part people actually feel.</p>
-                    <ul class="craft-list">
-                        <li><strong>Frontend</strong><span>React · React Native · TypeScript</span></li>
-                        <li><strong>Design</strong><span>UI/UX · Figma · design systems</span></li>
-                        <li><strong>Data viz</strong><span>Dashboards · charts · analytics UI</span></li>
-                        <li><strong>Motion</strong><span>Interaction design · animation systems</span></li>
-                    </ul>
-                </div>
-            </div>
-
-            <p class="craft-footnote reveal">Also fluent in: JavaScript · C · HTML/CSS · Git · Agile ·
-            TensorFlow · deep learning fundamentals</p>
-        </section>
-
-        <!-- ═══════════════ CH.04 — ABOUT + STORY ARCS ═══════════════ -->
-        <section id="about" class="chapter">
-            <header class="chapter-head">
-                <p class="chapter-kicker reveal"><span class="ch-num">第四章</span> CHAPTER 04 — THE STORY SO FAR</p>
-                <h2 class="chapter-title reveal-wipe">Built in Hyderabad,<br><em>aimed anywhere.</em></h2>
-            </header>
-
-            <div class="about-grid">
-                <figure class="about-portrait reveal-panel">
-                    <img src="profile.jpg" alt="Portrait of Baltej Goud"
-                         onerror="this.closest('figure').classList.add('no-img')">
-                    <figcaption><span class="fig-jp">バルテジ・ゴウド</span>Baltej Goud — developer, designer, tutor of 500+ students</figcaption>
-                    <span class="portrait-frame" aria-hidden="true"></span>
-                </figure>
-                <div class="about-text reveal">
-                    <p class="about-lede">I'm the developer who cares what the commit history <em>and</em>
-                    the kerning look like.</p>
-                    <p>B.Tech in Computer Science from BVRIT Narsapur (2019–2023). Since then I've
-                    designed interfaces inside one of America's largest banks, freelanced for a
-                    global furniture giant, shipped ML pipelines at a consulting firm, and taught
-                    computer science fundamentals to more than five hundred students. The common
-                    thread: I like making complicated things feel simple.</p>
-                    <ul class="about-marks">
-                        <li><span class="mark-num">TOP 2</span>Code for Good Hackathon, 2024</li>
-                        <li><span class="mark-num">1st</span>Model United Nations — winner</li>
-                        <li><span class="mark-num">500+</span>students tutored in CS &amp; data fundamentals</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Story arcs / experience -->
-            <div class="arcs">
-                <article class="arc reveal">
-                    <span class="arc-num">ARC 01</span>
-                    <div class="arc-main">
-                        <h3>Wells Fargo</h3>
-                        <p class="arc-role">UI/UX Designer</p>
-                    </div>
-                    <p class="arc-desc">Designed user-centric interfaces inside one of the US's largest
-                    financial institutions — design systems discipline at bank scale.</p>
-                    <div class="arc-tags"><span>Figma</span><span>Design systems</span><span>UI/UX</span></div>
-                </article>
-                <article class="arc reveal">
-                    <span class="arc-num">ARC 02</span>
-                    <div class="arc-main">
-                        <h3>IKEA</h3>
-                        <p class="arc-role">Freelance UI/UX Designer</p>
-                    </div>
-                    <p class="arc-desc">Delivered freelance product design aligned with IKEA's global
-                    design language — proof I can work inside someone else's system, beautifully.</p>
-                    <div class="arc-tags"><span>Freelance</span><span>Product design</span><span>Prototyping</span></div>
-                </article>
-                <article class="arc reveal">
-                    <span class="arc-num">ARC 03</span>
-                    <div class="arc-main">
-                        <h3>Tectoro Consulting</h3>
-                        <p class="arc-role">AI/ML Developer</p>
-                    </div>
-                    <p class="arc-desc">Built and deployed machine learning pipelines and intelligent
-                    applications for real clients — where models meet production.</p>
-                    <div class="arc-tags"><span>Python</span><span>ML pipelines</span><span>Deployment</span></div>
-                </article>
-            </div>
-        </section>
-
-        <!-- ═══════════════ FINALE — CONTACT ═══════════════ -->
-        <section id="contact" class="chapter finale">
-            <p class="chapter-kicker reveal"><span class="ch-num">終章</span> FINAL CHAPTER</p>
-            <h2 class="finale-title">
-                <span class="line" data-split>LET'S&nbsp;MAKE</span>
-                <span class="line line-indent" data-split>THE&nbsp;NEXT&nbsp;THING.</span>
-            </h2>
-            <p class="finale-copy reveal">Hiring for a role that needs both engineering depth and design
-            taste? Building something that deserves better than a template? My inbox is open.</p>
-            <div class="finale-cta reveal">
-                <a href="mailto:baltejgoud123@gmail.com" class="btn-solid btn-big">baltejgoud123@gmail.com <span class="arrow">↗</span></a>
-            </div>
-            <div class="finale-meta reveal">
-                <a href="tel:+917993969656">+91 79939 69656</a>
-                <span class="meta-div">/</span>
-                <a href="https://www.linkedin.com/in/baltejgoud" target="_blank" rel="noopener">LinkedIn</a>
-                <span class="meta-div">/</span>
-                <a href="https://github.com/baltejgoud" target="_blank" rel="noopener">GitHub</a>
-                <span class="meta-div">/</span>
-                <a href="resume.html" target="_blank">Résumé</a>
-                <span class="meta-div">/</span>
-                <span>Hyderabad, Telangana</span>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <p class="foot-colophon">Hand-built with vanilla HTML, CSS &amp; JS. Set in Space Grotesk, Inter
-        &amp; JetBrains Mono. No templates were harmed.</p>
-        <p class="foot-copy">© <span id="year"></span> Baltej Goud — 日食 · Totality</p>
-    </footer>
-
-    <!-- ═══ Deepfake dossier modal ═══ -->
-    <div id="dossier" class="dossier-overlay" role="dialog" aria-modal="true" aria-labelledby="dossier-title" hidden>
-        <div class="dossier-box">
-            <button class="dossier-close" id="dossier-close" aria-label="Close dossier">×</button>
-            <p class="dossier-kicker">CASE DOSSIER — 02 / ディープフェイク検出</p>
-            <h2 id="dossier-title">AI-Based Deepfake Detection</h2>
-            <p class="dossier-sub">Using artificial intelligence to fight artificial intelligence.</p>
-
-            <div class="dossier-section">
-                <h3>Overview</h3>
-                <p>A deep learning method that distinguishes AI-generated fake videos from real ones,
-                automatically detecting both <strong>replacement</strong> and <strong>reenactment</strong>
-                deepfakes from raw video input.</p>
-            </div>
-
-            <div class="dossier-section">
-                <h3>Pipeline</h3>
-                <img src="deepfake_pipeline.png" alt="Deepfake detection pipeline diagram" class="dossier-img">
-                <ol class="dossier-steps">
-                    <li><strong>Input video</strong> — raw footage fed in</li>
-                    <li><strong>Frame extraction</strong> — split into frames</li>
-                    <li><strong>ResNeXt CNN</strong> — spatial feature extraction</li>
-                    <li><strong>LSTM RNN</strong> — temporal pattern analysis</li>
-                    <li><strong>Verdict</strong> — real or fake</li>
-                </ol>
-            </div>
-
-            <div class="dossier-section">
-                <h3>Feature extraction</h3>
-                <img src="cnn_features.png" alt="CNN feature extraction visualization" class="dossier-img">
-                <p>The ResNeXt CNN captures subtle facial artifacts, boundary inconsistencies and texture
-                anomalies invisible to the human eye — the fingerprints of manipulation.</p>
-            </div>
-
-            <div class="dossier-section">
-                <h3>Datasets &amp; stack</h3>
-                <div class="dossier-pills">
-                    <span>FaceForensics++</span><span>DFDC</span><span>Celeb-DF</span>
-                    <span>ResNeXt CNN</span><span>LSTM RNN</span><span>Python</span><span>Deep Learning</span>
-                </div>
-            </div>
+    <!-- 3.3 Product surface -->
+    <div class="surface-block">
+      <div class="surface reveal">
+        <div class="surface-chrome">
+          <span class="surface-brand"><i class="dot" aria-hidden="true"></i>Sanket · Workspace</span>
+          <span class="surface-ws">Fashion · SS26 · North region</span>
         </div>
+
+        <div class="surface-body">
+          <div class="rail" role="tablist" aria-label="Platform views" aria-orientation="vertical" id="rail">
+            <p class="rail-label">Platform</p>
+            <button role="tab" id="tab-1" aria-controls="view-1" aria-selected="true"  tabindex="0"><span class="idx">01</span>Executive overview</button>
+            <button role="tab" id="tab-2" aria-controls="view-2" aria-selected="false" tabindex="-1"><span class="idx">02</span>Demand forecast</button>
+            <button role="tab" id="tab-3" aria-controls="view-3" aria-selected="false" tabindex="-1"><span class="idx">03</span>Inventory risk</button>
+            <button role="tab" id="tab-4" aria-controls="view-4" aria-selected="false" tabindex="-1"><span class="idx">04</span>Model intelligence</button>
+            <button role="tab" id="tab-5" aria-controls="view-5" aria-selected="false" tabindex="-1"><span class="idx">05</span>Regional performance</button>
+            <button role="tab" id="tab-6" aria-controls="view-6" aria-selected="false" tabindex="-1"><span class="idx">06</span>SKU analysis</button>
+          </div>
+
+          <div class="stage">
+
+            <!-- View 1 -->
+            <div class="view is-active" id="view-1" role="tabpanel" aria-labelledby="tab-1" tabindex="0">
+              <div class="view-head">
+                <div>
+                  <h4>Executive overview</h4>
+                  <p>Portfolio health for the current season, with the decisions that need a human.</p>
+                </div>
+                <span class="tag">Updated daily</span>
+              </div>
+
+              <div class="tiles">
+                <div class="tile"><span class="tile-l">Forecast error (MAPE)</span><span class="tile-v">5.8%</span><span class="tile-d up">−0.4 month on month</span></div>
+                <div class="tile"><span class="tile-l">Sell-through</span><span class="tile-v">94.2%</span><span class="tile-d up">+2.1 vs last year</span></div>
+                <div class="tile"><span class="tile-l">SKUs at risk</span><span class="tile-v">7</span><span class="tile-d warn">Review required</span></div>
+                <div class="tile"><span class="tile-l">Forecast coverage</span><span class="tile-v">100%</span><span class="tile-d">Incl. cold start</span></div>
+              </div>
+
+              <svg viewBox="0 0 640 150" role="img" aria-label="Category demand across the season, with the peak week highlighted.">
+                <line class="grid-line" x1="0" y1="30" x2="640" y2="30"></line>
+                <line class="grid-line" x1="0" y1="70" x2="640" y2="70"></line>
+                <line class="grid-line" x1="0" y1="110" x2="640" y2="110"></line>
+                <line class="grid-line" x1="0" y1="140" x2="640" y2="140"></line>
+                <g fill="#7c7c84">
+                  <rect x="6"   y="98" width="34" height="42"></rect>
+                  <rect x="54"  y="82" width="34" height="58"></rect>
+                  <rect x="102" y="88" width="34" height="52"></rect>
+                  <rect x="150" y="66" width="34" height="74"></rect>
+                  <rect x="198" y="74" width="34" height="66"></rect>
+                  <rect x="246" y="54" width="34" height="86"></rect>
+                  <rect x="342" y="46" width="34" height="94"></rect>
+                  <rect x="390" y="58" width="34" height="82"></rect>
+                  <rect x="438" y="50" width="34" height="90"></rect>
+                  <rect x="486" y="38" width="34" height="102"></rect>
+                  <rect x="534" y="44" width="34" height="96"></rect>
+                  <rect x="582" y="34" width="34" height="106"></rect>
+                </g>
+                <rect x="294" y="22" width="34" height="118" fill="#e8a257"></rect>
+                <text class="axis-label" x="294" y="14">Peak wk 24</text>
+              </svg>
+
+              <p class="note"><i class="dot" aria-hidden="true"></i>Three purchase recommendations are waiting for review. Two SKUs entered the risk queue overnight.</p>
+            </div>
+
+            <!-- View 2 -->
+            <div class="view" id="view-2" role="tabpanel" aria-labelledby="tab-2" tabindex="0" hidden>
+              <div class="view-head">
+                <div>
+                  <h4>Demand forecast</h4>
+                  <p>Recorded demand and forward projection with a confidence band that widens across the horizon.</p>
+                </div>
+                <div class="chips" role="group" aria-label="Forecast horizon">
+                  <button type="button" aria-pressed="false">4W</button>
+                  <button type="button" aria-pressed="false">13W</button>
+                  <button type="button" aria-pressed="true">26W</button>
+                  <button type="button" aria-pressed="false">52W</button>
+                </div>
+              </div>
+
+              <svg viewBox="0 0 640 190" role="img" aria-label="Forecast chart with recorded demand, projected demand and a widening confidence band.">
+                <line class="grid-line" x1="0" y1="30"  x2="640" y2="30"></line>
+                <line class="grid-line" x1="0" y1="70"  x2="640" y2="70"></line>
+                <line class="grid-line" x1="0" y1="110" x2="640" y2="110"></line>
+                <line class="grid-line" x1="0" y1="150" x2="640" y2="150"></line>
+                <polygon class="series-band" points="300,104 360,96 420,84 480,68 540,54 620,38 620,80 540,86 480,94 420,106 360,112 300,104"></polygon>
+                <line class="divider-line" x1="300" y1="10" x2="300" y2="150"></line>
+                <path class="series-past" d="M12 132 L60 118 L108 138 L156 108 L204 118 L252 96 L300 104"></path>
+                <path class="series-fut" d="M300 104 C350 100 380 94 420 90 C470 85 520 72 560 64 C590 58 606 56 620 54"></path>
+                <circle class="marker" cx="620" cy="54" r="3.5"></circle>
+                <text class="axis-label" x="306" y="22">Forecast begins</text>
+                <text class="axis-label" x="12"  y="172">Recorded</text>
+                <text class="axis-label" x="306" y="172">Projected · 80% interval</text>
+              </svg>
+
+              <p class="note"><i class="dot" aria-hidden="true"></i>Interval widens with horizon. Beyond week 20 the recommendation shifts from ordering quantity to reorder timing.</p>
+            </div>
+
+            <!-- View 3 -->
+            <div class="view" id="view-3" role="tabpanel" aria-labelledby="tab-3" tabindex="0" hidden>
+              <div class="view-head">
+                <div>
+                  <h4>Inventory risk</h4>
+                  <p>Where stock is about to become a problem, ranked by days of cover against projected demand.</p>
+                </div>
+                <span class="tag"><i class="dot" aria-hidden="true"></i>7 open</span>
+              </div>
+
+              <div class="dt-scroll">
+                <table class="dt">
+                  <thead>
+                    <tr><th scope="col">SKU</th><th scope="col">Site</th><th scope="col">Exposure</th><th scope="col">Days of cover</th><th scope="col">Recommended action</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td class="sku">SKU-2481</td><td>DC-North</td><td><span class="sev sev--high"><i></i>Stockout</span></td><td class="num">6</td><td>Expedite 1,200 units</td></tr>
+                    <tr><td class="sku">SKU-1177</td><td>DC-West</td><td><span class="sev"><i></i>Overstock</span></td><td class="num">94</td><td>Hold reorder, review markdown</td></tr>
+                    <tr><td class="sku">SKU-8842</td><td>DC-Central</td><td><span class="sev sev--high"><i></i>Expiry</span></td><td class="num">11</td><td>Reallocate batch before shelf life</td></tr>
+                    <tr><td class="sku">SKU-0034</td><td>DC-South</td><td><span class="sev"><i></i>Thin history</span></td><td class="num">—</td><td>Monitor, zero-shot forecast active</td></tr>
+                    <tr><td class="sku">SKU-6620</td><td>DC-North</td><td><span class="sev"><i></i>Nominal</span></td><td class="num">38</td><td>No action</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p class="note"><i class="dot" aria-hidden="true"></i>Risk is scored against the forecast, not against a static reorder point — the threshold moves as demand moves.</p>
+            </div>
+
+            <!-- View 4 -->
+            <div class="view" id="view-4" role="tabpanel" aria-labelledby="tab-4" tabindex="0" hidden>
+              <div class="view-head">
+                <div>
+                  <h4>Model intelligence</h4>
+                  <p>Every SKU is routed to the model that earns it. Products with no usable history fall back to a zero-shot foundation model.</p>
+                </div>
+                <span class="tag">4 routes active</span>
+              </div>
+
+              <div class="dt-scroll">
+                <table class="dt">
+                  <thead>
+                    <tr><th scope="col">SKU</th><th scope="col">Description</th><th scope="col">History</th><th scope="col">Routed model</th><th scope="col">Confidence</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td class="sku">SKU-2481</td><td>Linen shirt, SS26</td><td>3 seasons</td><td><span class="pill">XGBoost</span></td><td class="num"><span class="meter" style="--w:96%"></span>96</td></tr>
+                    <tr><td class="sku">SKU-1177</td><td>27&#8243; OLED panel</td><td>26 months</td><td><span class="pill">Prophet</span></td><td class="num"><span class="meter" style="--w:93%"></span>93</td></tr>
+                    <tr><td class="sku">SKU-8842</td><td>Insulin pen, 3 ml</td><td>41 months</td><td><span class="pill">Ensemble</span></td><td class="num"><span class="meter" style="--w:97%"></span>97</td></tr>
+                    <tr><td class="sku">SKU-0034</td><td>Drip irrigation kit</td><td>11 days</td><td><span class="pill pill--signal">Chronos</span></td><td class="num"><span class="meter meter--signal" style="--w:81%"></span>81</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p class="note"><i class="dot" aria-hidden="true"></i>Zero-shot route active — SKU-0034 has eleven days of history and still receives a forecast on day one.</p>
+            </div>
+
+            <!-- View 5 -->
+            <div class="view" id="view-5" role="tabpanel" aria-labelledby="tab-5" tabindex="0" hidden>
+              <div class="view-head">
+                <div>
+                  <h4>Regional performance</h4>
+                  <p>Forecast accuracy and sell-through by distribution hub, so allocation follows the regions that actually convert.</p>
+                </div>
+                <span class="tag">Sell-through index</span>
+              </div>
+
+              <div class="bars">
+                <div class="bar-row is-peak"><span>DC-North</span><span class="bar-track"><span class="bar-fill" style="--w:94%"></span></span><span class="bar-n">94.2</span></div>
+                <div class="bar-row"><span>DC-West</span><span class="bar-track"><span class="bar-fill" style="--w:88%"></span></span><span class="bar-n">88.1</span></div>
+                <div class="bar-row"><span>DC-Central</span><span class="bar-track"><span class="bar-fill" style="--w:81%"></span></span><span class="bar-n">80.6</span></div>
+                <div class="bar-row"><span>DC-South</span><span class="bar-track"><span class="bar-fill" style="--w:76%"></span></span><span class="bar-n">75.9</span></div>
+                <div class="bar-row"><span>DC-East</span><span class="bar-track"><span class="bar-fill" style="--w:69%"></span></span><span class="bar-n">69.3</span></div>
+              </div>
+
+              <p class="note"><i class="dot" aria-hidden="true"></i>Regional divergence above eight points usually means a distribution constraint, not a demand one.</p>
+            </div>
+
+            <!-- View 6 -->
+            <div class="view" id="view-6" role="tabpanel" aria-labelledby="tab-6" tabindex="0" hidden>
+              <div class="view-head">
+                <div>
+                  <h4>SKU analysis</h4>
+                  <p>One product, the drivers behind its forecast, and how much each one is contributing.</p>
+                </div>
+                <span class="tag"><i class="dot" aria-hidden="true"></i>SKU-2481</span>
+              </div>
+
+              <svg viewBox="0 0 640 120" role="img" aria-label="Twelve-month demand history for a single SKU with the projected next quarter.">
+                <line class="grid-line" x1="0" y1="24" x2="640" y2="24"></line>
+                <line class="grid-line" x1="0" y1="60" x2="640" y2="60"></line>
+                <line class="grid-line" x1="0" y1="96" x2="640" y2="96"></line>
+                <path class="series-past" d="M12 88 L64 74 L116 92 L168 66 L220 76 L272 54 L324 64 L376 44"></path>
+                <path class="series-fut" d="M376 44 C420 40 460 36 500 30 C550 24 590 20 628 16"></path>
+                <line class="divider-line" x1="376" y1="6" x2="376" y2="96"></line>
+                <circle class="marker" cx="628" cy="16" r="3.5"></circle>
+              </svg>
+
+              <div class="drivers">
+                <div class="driver"><span>Seasonality — spring/summer curve</span><span class="meter" style="--w:78%"></span><span class="bar-n">+38%</span></div>
+                <div class="driver"><span>Price elasticity at current list</span><span class="meter" style="--w:54%"></span><span class="bar-n">+16%</span></div>
+                <div class="driver"><span>Promotional lift, week 22 campaign</span><span class="meter meter--signal" style="--w:66%"></span><span class="bar-n">+24%</span></div>
+                <div class="driver"><span>Regional weather index</span><span class="meter" style="--w:28%"></span><span class="bar-n">+7%</span></div>
+                <div class="driver"><span>Cannibalisation from SKU-2477</span><span class="meter" style="--w:22%"></span><span class="bar-n">−5%</span></div>
+              </div>
+
+              <p class="note"><i class="dot" aria-hidden="true"></i>Drivers are shown because buyers override forecasts. An override made against visible reasoning is a better decision than an override made against a black box.</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <p class="caption">Product concept · illustrative interface with representative data</p>
     </div>
 
-    <script src="script.js"></script>
+    <!-- 3.4 Verticals -->
+    <div class="verticals">
+      <p class="eyebrow reveal">One platform</p>
+      <h3 class="h2 reveal" style="--d:60ms">Four operating contexts, one system.</h3>
+
+      <div class="vert-grid">
+        <article class="vert reveal">
+          <div class="vert-i">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="square" aria-hidden="true"><path d="M2 18 L8 17 L12 5 L16 16 L22 15"></path></svg>
+            <span class="meta">V1</span>
+          </div>
+          <h3>Fashion</h3>
+          <p>Short lifecycles and sharp seasonal peaks, where the cost of being late is a markdown.</p>
+          <span class="vert-c">Seasonal velocity</span>
+        </article>
+
+        <article class="vert reveal" style="--d:60ms">
+          <div class="vert-i">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M2 19 L7 7 L15 7 L22 19"></path></svg>
+            <span class="meta">V2</span>
+          </div>
+          <h3>Electronics</h3>
+          <p>Products that ramp, plateau and end. Forecasting has to know which phase it is in.</p>
+          <span class="vert-c">Lifecycle-aware demand</span>
+        </article>
+
+        <article class="vert reveal" style="--d:120ms">
+          <div class="vert-i">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="square" aria-hidden="true"><path d="M2 12 L9 12"></path><rect x="9.5" y="8.5" width="5" height="7"></rect><path d="M15 12 L22 12"></path></svg>
+            <span class="meta">V3</span>
+          </div>
+          <h3>Pharma</h3>
+          <p>Regulated inventory, where every change to a batch has to be traceable after the fact.</p>
+          <span class="vert-c">Audit-bound stock</span>
+        </article>
+
+        <article class="vert reveal" style="--d:180ms">
+          <div class="vert-i">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="square" aria-hidden="true"><path d="M2 16 C4.5 9 7 9 9.5 16 C12 23 14.5 23 17 16 C18.5 11.8 20 10.5 22 10"></path></svg>
+            <span class="meta">V4</span>
+          </div>
+          <h3>Agro</h3>
+          <p>Regional and seasonal sensitivity, with new inputs arriving faster than their sales history.</p>
+          <span class="vert-c">Thin-history demand</span>
+        </article>
+      </div>
+    </div>
+
+    <!-- 3.5 Business story -->
+    <div class="story">
+      <p class="eyebrow reveal">The thesis</p>
+      <h3 class="h2 reveal" style="--d:60ms" id="thesis-h">From a broken decision to decision infrastructure.</h3>
+
+      <div class="story-rows">
+
+        <article class="story-row reveal">
+          <p class="story-n">01</p>
+          <div><h4 class="story-t">Problem</h4><p class="story-sub">Purchasing decisions are made on incomplete evidence.</p></div>
+          <div class="story-b">
+            <p>Buyers commit capital long before demand shows up, using history that lives in
+            spreadsheets and systems that do not talk to each other. The decision is
+            high-frequency, high-value, and almost entirely unassisted.</p>
+            <p>Being wrong is not symmetric. Over-ordering ties up working capital in stock that
+            has to be discounted; under-ordering hands revenue to whoever did have the unit.</p>
+          </div>
+        </article>
+
+        <article class="story-row reveal">
+          <p class="story-n">02</p>
+          <div><h4 class="story-t">Insight</h4><p class="story-sub">Forecasting fails at the edges, not the average.</p></div>
+          <div class="story-b">
+            <p>Conventional forecasting assumes every product looks like the products it was tuned
+            on: a long, clean sales history and stable seasonality. Real catalogues are mostly
+            edges — new products, short lifecycles, regional variation, promotions, substitutions.</p>
+            <p>A single global model is therefore most accurate exactly where the decision matters
+            least, and least accurate where it matters most.</p>
+          </div>
+        </article>
+
+        <article class="story-row reveal">
+          <p class="story-n">03</p>
+          <div><h4 class="story-t">Product</h4><p class="story-sub">Forecast the SKU, then say what to do about it.</p></div>
+          <div class="story-b">
+            <p>Sanket produces demand forecasts per SKU, ranks inventory risk by days of cover
+            against those forecasts, and recommends purchase configurations a buyer can accept,
+            adjust or reject.</p>
+            <p>The reasoning stays visible. Buyers override forecasts — that is not a flaw to be
+            designed out, it is the reason the interface exposes drivers instead of a single
+            confidence score.</p>
+          </div>
+        </article>
+
+        <article class="story-row reveal">
+          <p class="story-n">04</p>
+          <div><h4 class="story-t">Intelligence</h4><p class="story-sub">Every SKU is routed to the model that earns it.</p></div>
+          <div class="story-b">
+            <p>Rather than one model for everything, a routing layer assigns each product to the
+            approach its data supports: gradient boosting where features are rich, seasonal
+            decomposition where the pattern is periodic, statistical ensembles where signals
+            disagree.</p>
+            <p>When a product is too new to train on, the router falls back to a zero-shot
+            foundation model — Amazon Chronos — so cold start is a supported path rather than an
+            exception the customer has to work around.</p>
+            <p class="meta">XGBoost · Prophet · Statistical ensembles · Chronos</p>
+          </div>
+        </article>
+
+        <article class="story-row reveal">
+          <p class="story-n">05</p>
+          <div><h4 class="story-t">Platform</h4><p class="story-sub">One system serving contradictory rulebooks.</p></div>
+          <div class="story-b">
+            <p>Fashion wants seasonal velocity. Electronics wants lifecycle awareness. Pharma wants
+            audit trails and batch traceability. Agro wants regional and weather sensitivity. Each
+            vertical is a rulebook on top of shared forecasting infrastructure, not a separate
+            product.</p>
+            <p>Tenant separation is enforced in the database through PostgreSQL Row-Level Security,
+            so one customer's data is invisible to another as a property of the data layer rather
+            than a promise made by application code.</p>
+          </div>
+        </article>
+
+        <article class="story-row reveal">
+          <p class="story-n">06</p>
+          <div><h4 class="story-t">Architecture</h4><p class="story-sub">Five layers, each replaceable.</p></div>
+          <div class="story-b">
+            <p>The platform separates what the user sees, what the API allows, what the database
+            guarantees, and what the models decide — so any one of them can be rebuilt without
+            taking the others down with it.</p>
+
+            <div class="arch">
+              <div class="arch-layer">
+                <span class="arch-tag">Interface</span>
+                <div>
+                  <h4>Analytics workspace</h4>
+                  <p>Forecasts, risk queues and purchase recommendations, over token-authenticated APIs.</p>
+                  <span class="stack-line">React · TypeScript · Vite</span>
+                </div>
+              </div>
+              <div class="arch-join" aria-hidden="true"></div>
+
+              <div class="arch-layer">
+                <span class="arch-tag">API gateway</span>
+                <div>
+                  <h4>Request routing and authorisation</h4>
+                  <p>Vertical routers, request validation and per-tenant session context.</p>
+                  <span class="stack-line">FastAPI · JWT</span>
+                </div>
+              </div>
+              <div class="arch-join" aria-hidden="true"></div>
+
+              <div class="arch-layer">
+                <span class="arch-tag">Data layer</span>
+                <div>
+                  <h4>Multi-tenant store</h4>
+                  <p>Row-Level Security driven by session parameters, versioned migrations, append-only audit history.</p>
+                  <span class="stack-line">PostgreSQL 16 · SQLAlchemy · Alembic</span>
+                </div>
+              </div>
+              <div class="arch-join" aria-hidden="true"></div>
+
+              <div class="arch-layer">
+                <span class="arch-tag">Inference</span>
+                <div>
+                  <h4>Model routing service</h4>
+                  <p>Feature assembly, per-SKU model selection, batch and on-demand scoring.</p>
+                  <span class="stack-line">Python service</span>
+                </div>
+              </div>
+              <div class="arch-join" aria-hidden="true"></div>
+
+              <div class="arch-layer">
+                <span class="arch-tag">Models</span>
+                <div>
+                  <h4>Forecasting estimators</h4>
+                  <p>Trained estimators for products with history, foundation-model inference for those without.</p>
+                  <span class="stack-line">XGBoost · Prophet · Ensembles · Chronos</span>
+                </div>
+              </div>
+
+              <div class="arch-side">
+                <span class="arch-tag">Operations</span>
+                <p class="small body-2">Containerised deployment, cluster orchestration, metrics and dashboards, test coverage — reproducible from a cold clone.</p>
+                <span class="stack-line">Docker · Kubernetes · Prometheus · Grafana · Pytest</span>
+              </div>
+            </div>
+
+            <dl class="specs">
+              <div class="spec">
+                <dt>Tenant isolation</dt>
+                <dd>PostgreSQL session parameters drive Row-Level Security policies, so a tenant's
+                queries cannot return another tenant's rows. Isolation is enforced by the database,
+                not by application discipline.</dd>
+              </div>
+              <div class="spec">
+                <dt>Audit trail</dt>
+                <dd>Append-only transaction history with signed audit records for pharmaceutical
+                batch changes, designed against FDA 21 CFR Part 11 expectations.</dd>
+              </div>
+              <div class="spec">
+                <dt>Cold-start coverage</dt>
+                <dd>When a SKU lacks the history to train a time-series model, the router invokes a
+                preloaded Chronos foundation model for a zero-shot forecast from day one.</dd>
+              </div>
+              <div class="spec">
+                <dt>Operations</dt>
+                <dd>Docker Compose and Kubernetes deployment, Prometheus metrics, Grafana
+                dashboards and Pytest coverage — observable and reproducible.</dd>
+              </div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="story-row reveal">
+          <p class="story-n">07</p>
+          <div><h4 class="story-t">Vision</h4><p class="story-sub">Forecasting becomes decision infrastructure.</p></div>
+          <div class="story-b">
+            <p>A forecast that a planner reads once a week is a report. The intent is a system an
+            operations team runs on: procurement, replenishment and risk in one place, with the
+            model layer improving underneath without changing how the decision gets made.</p>
+            <p>The platform architecture is deliberately vertical-agnostic, so the same
+            infrastructure can carry additional industries as their rulebooks are added.</p>
+          </div>
+        </article>
+
+      </div>
+
+      <div class="sanket-actions reveal">
+        <a class="btn btn--ghost" href="https://github.com/baltejgoud/prisma-project" target="_blank" rel="noopener">Technical repository <span class="arw" aria-hidden="true">↗</span></a>
+        <a class="btn btn--ghost" href="mailto:baltejgoud123@gmail.com?subject=Sanket">Talk about the architecture <span class="arw" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════ 04 · SELECTED BUILDS -->
+<section class="section section--alt" id="work" aria-labelledby="work-h">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="eyebrow reveal">Selected builds</p>
+      <h2 class="h2 reveal" id="work-h" style="--d:60ms">Other systems worth showing.</h2>
+      <p class="lede reveal" style="--d:120ms">Three builds outside Sanket, each solving a problem that
+      needed both a model and an interface.</p>
+    </header>
+
+    <div class="builds">
+
+      <!-- Build 1 -->
+      <article class="build reveal">
+        <figure class="build-visual">
+          <img src="deepfake_pipeline.png" alt="Diagram of the deepfake detection pipeline: video input, frame extraction, ResNeXt CNN feature extraction, LSTM sequence classification, and a real-or-fake verdict." width="640" height="640" loading="lazy" decoding="async">
+        </figure>
+
+        <div class="build-body">
+          <div class="build-head">
+            <h3>Deepfake Detection</h3>
+            <span class="meta">01</span>
+          </div>
+
+          <dl class="build-fields">
+            <div class="bf"><dt>Role</dt><dd>Research and engineering, end to end</dd></div>
+            <div class="bf"><dt>Problem</dt><dd>Manipulated video is cheap to produce and expensive to disprove. Detection has to work on ordinary footage, not on curated examples.</dd></div>
+            <div class="bf"><dt>What I built</dt><dd>A two-stage pipeline: a ResNeXt CNN extracts frame-level spatial features, and an LSTM reads them as a sequence to catch the temporal inconsistencies manipulation leaves behind. It handles both face replacement and reenactment.</dd></div>
+            <div class="bf"><dt>Key technology</dt><dd class="tech">Python · PyTorch · ResNeXt CNN · LSTM RNN</dd></div>
+            <div class="bf"><dt>Outcome</dt><dd>Trained and evaluated against FaceForensics++, DFDC and Celeb-DF.</dd></div>
+          </dl>
+
+          <details class="detail">
+            <summary>Method detail</summary>
+            <div class="detail-body">
+              <ol>
+                <li><strong>Input video</strong> — raw footage accepted without preprocessing assumptions.</li>
+                <li><strong>Frame extraction</strong> — the clip is decomposed into an ordered frame sequence.</li>
+                <li><strong>ResNeXt CNN</strong> — spatial feature extraction per frame.</li>
+                <li><strong>LSTM RNN</strong> — temporal analysis across the sequence.</li>
+                <li><strong>Verdict</strong> — classification of the clip as authentic or manipulated.</li>
+              </ol>
+              <figure>
+                <img src="cnn_features.png" alt="Visualisation of convolutional feature maps highlighting facial artefacts, boundary inconsistencies and texture anomalies used as detection evidence." width="640" height="640" loading="lazy" decoding="async">
+                <figcaption class="caption">Feature maps · boundary and texture artefacts the classifier keys on</figcaption>
+              </figure>
+            </div>
+          </details>
+        </div>
+      </article>
+
+      <!-- Build 2 -->
+      <article class="build reveal">
+        <figure class="build-visual" aria-hidden="true">
+          <div class="mock">
+            <div class="mock-bar"><span>Seat map · Hall A</span><span>Group of 3</span></div>
+            <div class="seatmap">
+              <i class="is-taken"></i><i></i><i class="is-taken"></i><i></i><i></i><i class="is-taken"></i><i></i><i></i><i class="is-taken"></i><i></i>
+              <i></i><i class="is-taken"></i><i></i><i></i><i class="is-taken"></i><i></i><i class="is-taken"></i><i></i><i></i><i></i>
+              <i class="is-taken"></i><i></i><i class="is-sel"></i><i class="is-sel"></i><i class="is-sel"></i><i></i><i class="is-taken"></i><i></i><i></i><i class="is-taken"></i>
+              <i></i><i></i><i class="is-taken"></i><i></i><i></i><i class="is-taken"></i><i></i><i></i><i class="is-taken"></i><i></i>
+              <i class="is-taken"></i><i></i><i></i><i class="is-taken"></i><i></i><i></i><i></i><i class="is-taken"></i><i></i><i></i>
+            </div>
+            <div class="mock-foot"><span>Row C · 12–14</span><span>Held 04:59</span></div>
+          </div>
+        </figure>
+
+        <div class="build-body">
+          <div class="build-head">
+            <h3>ExtraTicket</h3>
+            <span class="meta">02</span>
+          </div>
+
+          <dl class="build-fields">
+            <div class="bf"><dt>Role</dt><dd>Product and full-stack build</dd></div>
+            <div class="bf"><dt>Problem</dt><dd>Group booking breaks down when seats are claimed one at a time — the seats a group wants are gone before the group has finished agreeing.</dd></div>
+            <div class="bf"><dt>What I built</dt><dd>An event booking platform with real-time seat selection, group reservations that hold adjacent seats together, wallet integration and issued digital tickets.</dd></div>
+            <div class="bf"><dt>Key technology</dt><dd class="tech">React Native · Firebase · Node.js</dd></div>
+            <div class="bf"><dt>Outcome</dt><dd>Source available.</dd></div>
+          </dl>
+
+          <div class="build-actions">
+            <a class="link link-out" href="https://github.com/baltejgoud/extraticket" target="_blank" rel="noopener">Repository<span class="arw" aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Build 3 -->
+      <article class="build reveal">
+        <figure class="build-visual" aria-hidden="true">
+          <div class="mock">
+            <div class="mock-bar"><span>Recognition</span><span>4 detected</span></div>
+            <div class="detect">
+              <svg viewBox="0 0 220 170">
+                <rect class="det-box" x="16" y="34" width="72" height="58"></rect>
+                <text class="det-label" x="16" y="28">TOMATO · 0.97</text>
+                <rect class="det-box det-box--dim" x="102" y="20" width="56" height="48"></rect>
+                <text class="det-label det-label--dim" x="102" y="14">ONION · 0.91</text>
+                <rect class="det-box det-box--dim" x="128" y="84" width="74" height="60"></rect>
+                <text class="det-label det-label--dim" x="128" y="78">SPINACH · 0.88</text>
+                <rect class="det-box det-box--dim" x="30" y="104" width="52" height="44"></rect>
+                <text class="det-label det-label--dim" x="30" y="98">CHILLI · 0.84</text>
+              </svg>
+            </div>
+            <div class="mock-foot"><span>3 recipes matched</span><span>Pantry mode</span></div>
+          </div>
+        </figure>
+
+        <div class="build-body">
+          <div class="build-head">
+            <h3>Let's Get Cooking</h3>
+            <span class="meta">03</span>
+          </div>
+
+          <dl class="build-fields">
+            <div class="bf"><dt>Role</dt><dd>Solo build</dd></div>
+            <div class="bf"><dt>Problem</dt><dd>People decide meals from what is already in the kitchen, but recipe tools ask them to start from a dish and shop backwards.</dd></div>
+            <div class="bf"><dt>What I built</dt><dd>A recognition engine that identifies fruits and vegetables from an uploaded photo, then composes recipes from what it actually detected rather than from a typed ingredient list.</dd></div>
+            <div class="bf"><dt>Key technology</dt><dd class="tech">Python · Computer vision</dd></div>
+            <div class="bf"><dt>Outcome</dt><dd>Academic project.</dd></div>
+          </dl>
+        </div>
+      </article>
+
+    </div>
+
+    <p class="builds-foot reveal">Also live —
+      <a class="link link-out" href="https://baltejgoud.github.io/bye-bye-world/" target="_blank" rel="noopener">bye-bye world<span class="arw" aria-hidden="true">↗</span></a>,
+      an AI task manager with live summaries, built without frameworks.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════ 05 · EXPERIENCE -->
+<section class="section" id="experience" aria-labelledby="exp-h">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="eyebrow reveal">Experience</p>
+      <h2 class="h2 reveal" id="exp-h" style="--d:60ms">Where the range comes from.</h2>
+    </header>
+
+    <div class="tl">
+      <div class="tl-row reveal">
+        <p class="tl-co">Wells Fargo</p>
+        <p class="tl-role">UI/UX Designer</p>
+        <p class="tl-desc">Designed user-centric interfaces inside one of the largest financial
+        institutions in the United States — design-system discipline at bank scale, where
+        consistency matters more than novelty.</p>
+      </div>
+      <div class="tl-row reveal">
+        <p class="tl-co">IKEA</p>
+        <p class="tl-role">Freelance UI/UX Designer</p>
+        <p class="tl-desc">Delivered product design inside an established global design language,
+        working to an existing system rather than around it.</p>
+      </div>
+      <div class="tl-row reveal">
+        <p class="tl-co">Tectoro Consulting</p>
+        <p class="tl-role">AI/ML Developer</p>
+        <p class="tl-desc">Built and deployed machine learning pipelines and intelligent
+        applications for client work — the part of ML that starts after the notebook.</p>
+      </div>
+    </div>
+
+    <p class="tl-edu meta reveal">
+      <span>Education</span>
+      <span>B.Tech, Computer Science &amp; Engineering</span>
+      <span>B V Raju Institute of Technology, Narsapur</span>
+      <span>2019 – 2023</span>
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════ 06 · OPERATING RANGE -->
+<section class="section section--alt" aria-labelledby="range-h">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="eyebrow reveal">Operating range</p>
+      <h2 class="h2 reveal" id="range-h" style="--d:60ms">What I build across.</h2>
+    </header>
+
+    <div class="range">
+      <div class="range-row reveal">
+        <p class="story-n">01</p>
+        <h3>Product</h3>
+        <p>Turning ambiguous operational problems into products with a defined scope, a defined
+        user and a defined refusal.</p>
+      </div>
+      <div class="range-row reveal">
+        <p class="story-n">02</p>
+        <h3>Engineering</h3>
+        <p>Frontend, backend, APIs and production systems — including the parts that only matter
+        at three in the morning.</p>
+      </div>
+      <div class="range-row reveal">
+        <p class="story-n">03</p>
+        <h3>Intelligence</h3>
+        <p>Machine learning, forecasting, data pipelines and automation, with attention to what
+        happens when a model meets real data.</p>
+      </div>
+      <div class="range-row reveal">
+        <p class="story-n">04</p>
+        <h3>Design</h3>
+        <p>Interfaces, information architecture and product experience — the discipline that
+        decides whether the engineering is ever used.</p>
+      </div>
+      <div class="range-row reveal">
+        <p class="story-n">05</p>
+        <h3>Strategy</h3>
+        <p>Markets, users and product direction: what to build next, and what to deliberately
+        leave unbuilt.</p>
+      </div>
+    </div>
+
+    <dl class="stack reveal">
+      <div>
+        <dt>Languages &amp; frameworks</dt>
+        <dd>Python · TypeScript · JavaScript · SQL · C<br>React · React Native · Node.js · FastAPI</dd>
+      </div>
+      <div>
+        <dt>Data &amp; infrastructure</dt>
+        <dd>PostgreSQL · MongoDB · ETL pipelines<br>Docker · Kubernetes · AWS · Google Cloud · Firebase</dd>
+      </div>
+      <div>
+        <dt>Intelligence</dt>
+        <dd>XGBoost · Prophet · Chronos · TensorFlow<br>Forecasting · Deep learning · Model deployment</dd>
+      </div>
+      <div>
+        <dt>Design &amp; practice</dt>
+        <dd>Figma · Design systems · Data visualisation<br>Git · CI/CD · Agile · Prometheus · Grafana</dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════ 07 · ABOUT -->
+<section class="section" id="about" aria-labelledby="about-h">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="eyebrow reveal">About</p>
+      <h2 class="h2 reveal" id="about-h" style="--d:60ms">Built in Hyderabad.</h2>
+    </header>
+
+    <div class="about-grid">
+      <figure class="portrait reveal">
+        <img src="profile.jpg" alt="Portrait of Baltej Goud" width="515" height="1024" loading="lazy" decoding="async">
+        <figcaption class="meta">Baltej Goud — Hyderabad, India</figcaption>
+      </figure>
+
+      <div class="about-text reveal" style="--d:80ms">
+        <p class="lede">I care what the architecture and the kerning both look like, and I do not
+        think that is a contradiction.</p>
+
+        <p>B.Tech in Computer Science and Engineering from B V Raju Institute of Technology,
+        Narsapur. Since then I have designed interfaces inside one of America's largest banks,
+        taken freelance product design briefs for a global furniture retailer, and built and
+        deployed machine learning pipelines at a consulting firm.</p>
+
+        <p>Alongside that I taught computer science fundamentals — data cleaning, visualisation,
+        statistical analysis and core CS — as lead tutor to more than five hundred students.
+        Teaching is where I learned that if you cannot explain a system simply, you have not
+        finished designing it.</p>
+
+        <p>Now I am building Sanket, which is the first thing I have worked on where product
+        strategy, engineering, machine learning and design are not separate jobs handed to
+        separate people.</p>
+
+        <div class="marks">
+          <div class="mark"><span class="mark-v">500+</span><span class="mark-l">Students taught as lead computer science tutor</span></div>
+          <div class="mark"><span class="mark-v">Top 2</span><span class="mark-l">Code for Good Hackathon, 2024</span></div>
+          <div class="mark"><span class="mark-v">1st</span><span class="mark-l">Model United Nations competition</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════ 08 · CURRENTLY -->
+<section class="section section--alt" aria-labelledby="now-h">
+  <div class="wrap now-grid">
+    <p class="eyebrow reveal">Currently</p>
+    <div>
+      <p class="now-status reveal"><i class="dot" aria-hidden="true"></i>Building</p>
+      <h2 class="now-h reveal" id="now-h" style="--d:60ms">Building Sanket.</h2>
+      <p class="now-p reveal" style="--d:120ms">Exploring how forecasting, machine learning and
+      operational data can become practical decision infrastructure for real businesses —
+      not another dashboard.</p>
+      <p class="now-meta meta reveal" style="--d:180ms">
+        <span>Hyderabad, India</span><span>Building globally</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════ 09 · CONTACT -->
+<section class="section" id="contact" aria-labelledby="contact-h">
+  <div class="wrap">
+    <p class="eyebrow reveal">Contact</p>
+    <h2 class="contact-h reveal" id="contact-h" style="--d:60ms">Let's build something consequential.</h2>
+    <p class="contact-p reveal" style="--d:120ms">For conversations around Sanket, technology,
+    product, partnerships or ambitious ideas.</p>
+
+    <div class="contact-list reveal" style="--d:160ms">
+      <a class="contact-item" href="mailto:baltejgoud123@gmail.com">
+        <span class="meta">Email</span>
+        <span class="ci-v">baltejgoud123@gmail.com</span>
+        <span class="arw" aria-hidden="true">↗</span>
+      </a>
+      <a class="contact-item" href="https://www.linkedin.com/in/baltejgoud" target="_blank" rel="noopener">
+        <span class="meta">LinkedIn</span>
+        <span class="ci-v">linkedin.com/in/baltejgoud</span>
+        <span class="arw" aria-hidden="true">↗</span>
+      </a>
+      <a class="contact-item" href="https://github.com/baltejgoud" target="_blank" rel="noopener">
+        <span class="meta">GitHub</span>
+        <span class="ci-v">github.com/baltejgoud</span>
+        <span class="arw" aria-hidden="true">↗</span>
+      </a>
+      <a class="contact-item" href="tel:+917993969656">
+        <span class="meta">Phone</span>
+        <span class="ci-v">+91 79939 69656</span>
+        <span class="arw" aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <p class="meta">Baltej Goud — Founder &amp; CEO · Hyderabad, India</p>
+    <p class="foot-links meta">
+      <a href="resume.html">Profile ↗</a>
+      <a href="https://www.linkedin.com/in/baltejgoud" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a href="https://github.com/baltejgoud" target="_blank" rel="noopener">GitHub ↗</a>
+      <span>© <span id="year">2026</span></span>
+    </p>
+  </div>
+</footer>
+
+<script src="script.js" defer></script>
 </body>
 </html>

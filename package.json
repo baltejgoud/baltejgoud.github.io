@@ -1,16 +1,17 @@
 {
-  "name": "baltej-goud-portfolio",
-  "version": "1.0.0",
-  "description": "Interactive night-city themed portfolio website for Baltej Goud",
+  "name": "baltej-goud-site",
+  "version": "2.0.0",
+  "description": "Founder site for Baltej Goud — Founder & CEO, product builder and engineer. Centred on Sanket, a predictive intelligence platform.",
   "scripts": {
     "dev": "npx serve . -l 8000",
     "start": "npx serve . -l 8000"
   },
   "keywords": [
-    "portfolio",
-    "developer",
-    "interface-designer",
-    "interactive"
+    "founder",
+    "product",
+    "engineering",
+    "predictive-intelligence",
+    "sanket"
   ],
   "author": "Baltej Goud",
   "license": "ISC"
