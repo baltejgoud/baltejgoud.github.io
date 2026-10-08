@@ -22,6 +22,9 @@ Run `npm run check` to validate local page links, assets, anchors and document I
 - `style.css`: responsive layout, typography, colors and interaction states.
 - `work.css`: actual project captures, gallery layouts, editorial case studies and motion preferences.
 - `script.js`: navigation, project filters, gallery layout, local clock and clipboard.
+- `motion.css`: every motion-only style (loader, reveals, marquee, dialogs, cursor effects, page transitions).
+- `assets/js/motion/`: the motion layer, one module per behaviour; `index.js` is the entry point. Add `?nomotion` to any URL to see the static version.
+- `assets/vendor/`: committed GSAP and Lenis builds. After changing their versions in `package.json`, run `npm install` then `npm run vendor`.
 - `resume.html`: professional profile with Print / Save as PDF.
 - `assets/`: optimized artwork, portrait, favicon and social preview.
 - `DESIGN.md`: visual direction, source references, generated artwork prompt and verification.

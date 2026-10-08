@@ -8,7 +8,9 @@ An editorial portfolio with architectural imagery, generous space, oversized typ
 
 Reference research: [Dennis Snellenberg](https://dennissnellenberg.com/work) for project curation, [Brittany Chiang](https://brittanychiang.com/) for professional clarity, and [Bruno Simon](https://bruno-simon.com/html/) for personal creative identity. No reference code or artwork was copied.
 
-UI/UX Pro Max informed the spacious, asymmetric portfolio grid. Custom palette and typography refine its editorial recommendation: Manrope for display, DM Sans for body, Instrument Serif for expressive emphasis. Charcoal `#141414`, ivory `#f1f0e9`, orange `#ff693f`. Hairline structure, subtle hover feedback, native scrolling.
+UI/UX Pro Max informed the spacious, asymmetric portfolio grid. Custom palette and typography refine its editorial recommendation: Manrope for display, DM Sans for body, Instrument Serif for expressive emphasis. Charcoal `#141414`, ivory `#f1f0e9`, orange `#ff693f`. Hairline structure.
+
+On 2026-10-08 the original restraint (subtle hover feedback, native scrolling, no loader) was reversed at Baltej's request: the site read as static next to contemporary portfolios. It now carries a premium editorial motion layer modelled on the feel of [Dennis Snellenberg](https://dennissnellenberg.com/) — see Motion below and `docs/superpowers/specs/2026-10-08-motion-system-design.md`.
 
 ## Content
 
@@ -26,10 +28,25 @@ Content was checked against project source: Axon currently uses versioned local 
 - Native archive and capability disclosures. Dedicated static case studies work without JavaScript.
 - Gallery has pressed-state filters, live result counts and grid/list selection.
 - Project captures have visible story links, hover/focus feedback and full-image links on project pages.
-- Brief page-introduction entrances and project hover feedback; reduced motion disables animation and transforms. Native page navigation remains dependable across browsers.
 - Clipboard action has success and fallback feedback; email links work independently.
-- No loading overlay, custom cursor or hidden-on-load content. Motion preferences disable hover transitions and smooth scroll.
-- Static HTML/CSS/JS, no new runtime dependency. Optimized WebP hero and portrait.
+- Static HTML/CSS/JS on GitHub Pages; the only runtime libraries are the vendored GSAP and Lenis builds. Optimized WebP hero and portrait.
+
+## Motion
+
+Code: `motion.css` and one ES module per behaviour in `assets/js/motion/` (entry `index.js`). Libraries: GSAP 3.15.0 (core, ScrollTrigger, SplitText; GSAP Standard "no charge" License) and Lenis 1.3.26 (MIT), copied into `assets/vendor/` by `npm run vendor`.
+
+- **Gate.** An inline head script adds `js`, then `motion` unless the visitor prefers reduced motion or the URL has `?nomotion`. Hidden initial states exist only under `.motion` inside `@media screen`. If `motion-ready` is not set within 3s, or any motion module throws, the page falls back to static: classes removed, scroll triggers killed, inline animation styles cleared, scrolling unlocked.
+- **First visit.** A "Hello" loader (English, Telugu, Hindi and five more) runs once per browser session on the homepage, about 2s, and is skipped by any click, key or wheel and on deep links (`/#contact`). The hero headline then rises line by line and the sculpture scales in.
+- **Scrolling.** Lenis smooth scroll on mouse and trackpad (touch keeps native scrolling); auto-hiding header that returns on scroll up or keyboard focus; a 2px orange progress line; the skills strip is a marquee whose speed and direction follow scroll velocity.
+- **Reveals** (`data-reveal`): headings rise line by line behind masks (split only after fonts load, restored afterwards so screen readers read one sentence); copy fades up; images unmask from the bottom; hairlines draw from the left. `data-parallax` on the portrait only, plus a slow drift and rotation of the hero sculpture; real product screenshots are never cropped or shifted. `data-count` counts the 500+ up once. The Sanket dashboard grows from 90% to full size as it scrolls in.
+- **Pointer** (mouse and trackpad only): magnetic buttons, fills that grow from the side the pointer entered, ↗ arrows that slide out and back, underline sweeps, a gentle tilt on the hero sculpture.
+- **Quick view.** Project cards open a dialog built from the `#project-data` island the generator writes from `work/projects.json`. The card image flies into the dialog (a fixed-position copy, so the scrolling body never clips it); previous/next and ←/→ cycle the visible cards; Escape, Close or the backdrop return the image to its card and focus to the link. Modifier clicks still open the case study. Phones get a full-screen sheet. An orange "Quick view" bubble follows the pointer over card images.
+- **Hover previews.** Archive and experience rows show a floating card that trails the pointer: the real image where one exists (Deepfake Detection, Let's Get Cooking), otherwise a typographic card made from the row's own text. Decorative and `aria-hidden`.
+- **"Let's talk" panel.** The header button (and mobile-menu link) slides in an orange contact panel with email, copy, LinkedIn, GitHub, résumé and Hyderabad time. Without JavaScript the links still go to `#contact`.
+- **Toast.** Copying the email shows a pill with an animated check; it is the `role="status"` announcement whenever the motion layer is loaded.
+- **Page transitions.** Cross-document View Transitions (Chromium, Safari 18.2+): the new page wipes up while the old one lifts and fades. Firefox navigates normally.
+- **Accordions** open and close smoothly with `interpolate-size` where supported.
+- **Reduced motion and `?nomotion`:** no loader, smooth scroll, reveals, pointer effects or page transitions; dialogs and the toast still work, instantly. **Print:** every reveal state is forced visible and overlays are hidden.
 
 ## Generated artwork
 

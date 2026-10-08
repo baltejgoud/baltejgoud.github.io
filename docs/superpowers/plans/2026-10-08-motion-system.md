@@ -2529,3 +2529,20 @@ Changes made while executing, with the evidence that drove them.
 - **Task 4 — safety net:** the crash showed `disable()` left Lenis stopped and `scroll-locked` on (page could not scroll) and could leave GSAP inline hidden states. `disable(error)` now kills all ScrollTriggers, clears inline props on reveal targets and calls `startScroll()`. Verified with a temporarily forced error during the intro: everything visible, scroll unlocked.
 - **Task 4 — deep links skip the intro:** the gate no longer adds `intro` when `location.hash` is set; the intro's scroll lock otherwise swallowed the anchor jump and visitors to `/#contact` landed on the hero. All three gate copies (generator, `index.html`, `resume.html`) are identical.
 - **Verification environment:** when the Claude app window is hidden, the browser pane runs no animation frames or scroll events. Checks drive GSAP with `gsap.ticker.tick()`, dispatch `scroll` events and call `ScrollTrigger.update()` by hand.
+
+### Final verification (Task 9)
+
+| # | Criterion | Result |
+|---|---|---|
+| 1 | `npm run check` | Pass — 7 pages, 211 references, data islands valid |
+| 2 | 320/390/768/1440 px on `/`, `/work/`, `/work/sanket/`, `/resume.html` | No horizontal overflow, no console errors, motion ready on every page |
+| 3 | Loader | Plays on first visit (all 9 words), skipped on reload, click skips at once, skipped on deep links |
+| 4 | Reveals, count-up, marquee, Sanket scrub, header | All reveal targets revealed after a full scroll; count reaches 500; marquee reverses with scroll direction; header hides down / shows up |
+| 5 | Quick view | Opens with image morph, 01/04 counter, focus on Close; ←/→ cycle visible cards (filtered gallery cycles 2); Escape/Close/backdrop close and return focus; Ctrl-click not intercepted; 375 px full-screen sheet; `?nomotion` instant |
+| 6 | Contact panel | `/`, `/work/vigor/`, mobile-menu link; toast with `role="status"`; Escape and backdrop close; focus returns |
+| 7 | Hover previews | Row 07 shows the real pipeline image, 05 an orange typographic card, experience 02 a charcoal card; none on touch |
+| 8 | `?nomotion` | All 61 reveal/hero targets visible; no loader, Lenis or marquee; dialogs instant |
+| 9 | Failsafe (GSAP renamed) | Classes reset to `js`, all content visible, scroll unlocked, contact panel still works |
+| 10 | Print | Print rules force reveal targets visible; hidden states are `@media screen` only. Manual Print / Save as PDF check left to the user |
+| 11 | CLS | 0.0000 on first visit with the loader |
+| — | Budget | 64,011 bytes gzipped for all added JS (vendor + modules); `motion.css` 3.9KB gzipped |
