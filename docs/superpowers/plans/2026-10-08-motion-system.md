@@ -244,7 +244,7 @@ html.scroll-locked {
 - [ ] **Step 7: Generator templates.** In `scripts/build-work.cjs`, after the `arrow` constant add:
 
 ```js
-const gate = String.raw`<script data-motion-gate>(function(d,w){var h=d.documentElement,c=h.classList;c.add("js");if(w.matchMedia("(prefers-reduced-motion: reduce)").matches||/[?&]nomotion\b/.test(w.location.search))return;c.add("motion");try{if(h.hasAttribute("data-intro")&&!w.sessionStorage.getItem("bg-intro"))c.add("intro")}catch(e){}w.setTimeout(function(){if(!c.contains("motion-ready"))c.remove("motion","intro")},3000)})(document,window);</script>`;
+const gate = String.raw`<script data-motion-gate>(function(d,w){var h=d.documentElement,c=h.classList;c.add("js");if(w.matchMedia("(prefers-reduced-motion: reduce)").matches||/[?&]nomotion\b/.test(w.location.search))return;c.add("motion");try{if(h.hasAttribute("data-intro")&&!w.location.hash&&!w.sessionStorage.getItem("bg-intro"))c.add("intro")}catch(e){}w.setTimeout(function(){if(!c.contains("motion-ready"))c.remove("motion","intro")},3000)})(document,window);</script>`;
 const motionScripts = (prefix) =>
   ["gsap", "ScrollTrigger", "SplitText", "lenis"]
     .map(
@@ -2517,3 +2517,15 @@ git commit -m "feat(motion): quick-view cursor bubble and hover preview cards"
 git add DESIGN.md README.md
 git commit -m "docs: document the motion system"
 ```
+
+---
+
+## Execution notes
+
+Changes made while executing, with the evidence that drove them.
+
+- **Task 2 — Lenis anchors:** `anchors: { offset: -100 }` landed sections 200px down because Lenis already honours `scroll-padding-top: 100px`. Now `anchors: true` (section lands at 100px).
+- **Task 4 — ScrollTrigger crash on mid-scroll loads:** with the intro active and the page already scrolled (scroll restoration or a deep link), creating the rule batch threw `Cannot read properties of undefined (reading 'end')` inside ScrollTrigger's refresh loop (`ScrollTrigger.js:1366`): the timeline-attached image triggers were still waiting a tick to measure, were force-refreshed, fired their `once` callbacks and removed themselves mid-loop. Reproduced deterministically on `/?nomotion` by scrolling to 7000px and starting the modules by hand (old `reveal.js` throws, fixed one does not). Fix: image reveals use a paused timeline played by a separate `ScrollTrigger.create({ once: true, onEnter })`.
+- **Task 4 — safety net:** the crash showed `disable()` left Lenis stopped and `scroll-locked` on (page could not scroll) and could leave GSAP inline hidden states. `disable(error)` now kills all ScrollTriggers, clears inline props on reveal targets and calls `startScroll()`. Verified with a temporarily forced error during the intro: everything visible, scroll unlocked.
+- **Task 4 — deep links skip the intro:** the gate no longer adds `intro` when `location.hash` is set; the intro's scroll lock otherwise swallowed the anchor jump and visitors to `/#contact` landed on the hero. All three gate copies (generator, `index.html`, `resume.html`) are identical.
+- **Verification environment:** when the Claude app window is hidden, the browser pane runs no animation frames or scroll events. Checks drive GSAP with `gsap.ticker.tick()`, dispatch `scroll` events and call `ScrollTrigger.update()` by hand.

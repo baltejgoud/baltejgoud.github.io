@@ -11,7 +11,7 @@ const fontsReady = () =>
 export async function init({ heroReady = Promise.resolve() } = {}) {
   const { gsap, ScrollTrigger } = window;
   revealFades(gsap, ScrollTrigger);
-  revealImages(gsap);
+  revealImages(gsap, ScrollTrigger);
   revealRules(gsap, ScrollTrigger);
   parallax(gsap);
   countUp(gsap);
@@ -39,11 +39,14 @@ function revealFades(gsap, ScrollTrigger) {
   });
 }
 
-function revealImages(gsap) {
+// The timeline is played by a separate trigger: a timeline-attached ScrollTrigger waits a
+// tick to measure itself, and creating later `once` triggers on a page loaded mid-scroll
+// then makes ScrollTrigger refresh it mid-loop and crash.
+function revealImages(gsap, ScrollTrigger) {
   gsap.utils.toArray('[data-reveal="image"]').forEach((frame) => {
     const img = frame.querySelector("img");
     const timeline = gsap.timeline({
-      scrollTrigger: { trigger: frame, start: START, once: true },
+      paused: true,
       onComplete: () => {
         frame.classList.add("is-revealed");
         gsap.set(frame, { clearProps: "clipPath" });
@@ -67,6 +70,12 @@ function revealImages(gsap) {
         { scale: 1, duration: 1.4, ease: EASE.out },
         0,
       );
+    ScrollTrigger.create({
+      trigger: frame,
+      start: START,
+      once: true,
+      onEnter: () => timeline.play(),
+    });
   });
 }
 

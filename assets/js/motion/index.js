@@ -2,12 +2,22 @@
 import { motionOn } from "./gate.js";
 import * as scroll from "./scroll.js";
 import * as reveal from "./reveal.js";
+import * as loader from "./loader.js";
 
 const root = document.documentElement;
 const lite = root.dataset.motion === "lite";
+// Falls back to the static page: content visible, scrolling unlocked.
 const disable = (error) => {
   root.classList.remove("motion", "intro");
-  if (error) console.error("Motion disabled:", error);
+  if (error) {
+    console.error("Motion disabled:", error);
+    const { gsap, ScrollTrigger } = window;
+    ScrollTrigger?.killAll();
+    gsap?.set("[data-reveal], [data-reveal] img, [data-hero], .reveal-line", {
+      clearProps: "all",
+    });
+  }
+  scroll.startScroll();
 };
 const safely = (start) => {
   try {
@@ -24,7 +34,8 @@ if (motionOn()) {
     if (!lite) {
       scroll.init();
     }
-    reveal.init().catch(disable);
+    const heroReady = lite ? Promise.resolve() : loader.init();
+    reveal.init({ heroReady }).catch(disable);
     root.classList.add("motion-ready");
   } catch (error) {
     disable(error);
