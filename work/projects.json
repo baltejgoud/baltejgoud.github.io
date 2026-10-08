@@ -1,0 +1,173 @@
+[
+  {
+    "slug": "sanket",
+    "name": "Sanket",
+    "number": "01",
+    "category": "ai",
+    "discipline": "Predictive intelligence / Business",
+    "theme": "sanket",
+    "image": "sanket-dashboard",
+    "imageWidth": 1672,
+    "imageHeight": 941,
+    "alt": "Sanket development dashboard with planning decisions, inventory signals and a demand overview",
+    "caption": "Development interface · sandbox data. Displayed values are illustrative, not business results.",
+    "tagline": "From business data to a clearer next move.",
+    "summary": "The business I’m building: demand forecasting and inventory intelligence, designed around the decisions a team has to make.",
+    "role": "Founder & CEO · Product & engineering",
+    "status": "Active development",
+    "stack": "React · TypeScript · FastAPI · PostgreSQL · ML forecasting",
+    "problem": "Businesses have to buy, stock and plan before demand is certain. A forecast alone does not tell a team what to do next. Sanket brings that forecast into the same workspace as inventory, risk and the decisions waiting for attention.",
+    "contribution": "I lead Sanket as founder and CEO, bringing product direction and engineering together. The platform connects a React dashboard, a FastAPI gateway and a forecasting service, with tenant-separated data in PostgreSQL.",
+    "decisions": [
+      [
+        "Start with the decision",
+        "The dashboard puts decisions and operational signals ahead of a wall of charts. The aim is to connect the evidence to a practical action: replenish, maintain stock or investigate risk."
+      ],
+      [
+        "Show a range, not a promise",
+        "SKU forecast views show expected demand alongside an uncertainty band. A planning interface should make uncertainty visible, so a precise-looking number does not become false confidence."
+      ],
+      [
+        "Account for different businesses",
+        "Fashion, electronics, pharma and agro have different planning needs. Industry workspaces and model routing let the same platform handle seasonal demand, product lifecycles and cold-start products."
+      ]
+    ],
+    "secondary": "sanket-forecasts",
+    "secondaryWidth": 1672,
+    "secondaryHeight": 941,
+    "secondaryAlt": "Sanket SKU forecasts showing expected demand, uncertainty ranges and suggested inventory actions",
+    "secondaryTitle": "The forecast becomes part of the workflow.",
+    "secondaryText": "Each SKU carries its own demand curve, expected range and planning context. These captures show the actual development product using sandbox records.",
+    "evidenceTitle": "A product being built, with a business behind it.",
+    "evidence": "The development product connects industry workspaces, SKU-level forecasts and inventory planning views. The captures show how planning signals become reviewable decisions, using sandbox records. My next focus is validating the workflow with the businesses it is designed to serve.",
+    "link": "mailto:baltej.panagatla@gmail.com?subject=Let%E2%80%99s%20talk%20about%20Sanket",
+    "linkLabel": "Talk about Sanket"
+  },
+  {
+    "slug": "axon",
+    "name": "Axon AI Studio",
+    "number": "02",
+    "category": "ai",
+    "discipline": "AI workspace / Desktop & 3D",
+    "theme": "axon",
+    "image": "axon-campus",
+    "imageWidth": 1920,
+    "imageHeight": 1080,
+    "alt": "Actual Axon three-dimensional campus with engineering, product, design and business departments",
+    "caption": "Actual application capture · procedural 3D campus.",
+    "tagline": "An AI office you can actually work in.",
+    "summary": "A local-first desktop workspace that brings specialist AI roles, a 3D campus and reviewable code changes into one place.",
+    "role": "Desktop, 3D & AI engineering",
+    "status": "Desktop beta",
+    "stack": "TypeScript · Electron · React · Three.js · Zustand · MCP",
+    "problem": "A chat thread becomes difficult to follow when multiple specialists, files and tasks are involved. Axon gives that work a spatial home, while keeping the actual editing and approval process explicit.",
+    "contribution": "I built across the desktop shell, procedural campus, provider integrations and file-review workflow. The result connects a visible office of specialist roles to a practical editor and streaming conversation workspace.",
+    "decisions": [
+      [
+        "Make a large team legible",
+        "The campus groups specialists into departments. A spatial overview gives the user a way to understand the team before opening an individual desk or task."
+      ],
+      [
+        "Keep the user in control",
+        "File access is bounded to the selected workspace. Proposed edits go through diff review, with native confirmation for changes and retained versions for undo."
+      ],
+      [
+        "Separate the desktop boundaries",
+        "A sandboxed Electron renderer talks through an explicit preload API. Provider streaming, document parsing and local persistence stay behind clear boundaries instead of being mixed into the visual scene."
+      ]
+    ],
+    "secondary": "axon-review",
+    "secondaryWidth": 1920,
+    "secondaryHeight": 1080,
+    "secondaryAlt": "Axon application with campus, file editor, AI task activity and a proposed code diff",
+    "secondaryTitle": "The spectacle has a practical counterpart.",
+    "secondaryText": "The campus shares a workspace with files, task activity and code review. A proposed change stays inspectable before it becomes a saved edit.",
+    "evidenceTitle": "A working beta, with visible boundaries.",
+    "evidence": "The repository documents provider streaming, workspace retrieval, diff approvals and versioned local JSON persistence. End-to-end validation uses a local mock provider. Live paid-provider validation and production distribution are still separate steps.",
+    "link": "https://github.com/baltejgoud/Axon-AI-Office-",
+    "linkLabel": "Explore the repository"
+  },
+  {
+    "slug": "vigor",
+    "name": "VIGOR",
+    "number": "03",
+    "category": "product",
+    "discipline": "Personal data / Health & nutrition",
+    "theme": "vigor",
+    "image": "vigor-health",
+    "imageWidth": 1276,
+    "imageHeight": 718,
+    "alt": "VIGOR development interface displaying imported Apple Health measurements and visible missing data",
+    "caption": "Development capture · synthetic test fixture, not a person’s health information.",
+    "tagline": "Personal data, with its context intact.",
+    "summary": "Apple Health imports and a food diary, with reviewable records, visible gaps and consent-based access for AI assistants.",
+    "role": "Full-stack product engineering",
+    "status": "Development build",
+    "stack": "React · Vite · Node.js · SQLite · MCP · OAuth",
+    "problem": "Health exports contain useful information, but also missing values, overlapping records and unfamiliar units. A polished dashboard can hide those gaps. VIGOR is built to keep the source and limits visible.",
+    "contribution": "I built the import and nutrition workflows, account-owned persistence and scoped integration surface. The interface turns exported records and logged food into a history the user can review, with optional read-only AI access.",
+    "decisions": [
+      [
+        "Review before saving",
+        "Apple Health XML and ZIP imports run through a cancellable worker. The user reviews the import before records are saved, and the original timestamps and units remain part of the data."
+      ],
+      [
+        "Treat missing as missing",
+        "The timeline shows which measurement types were recorded. Missing measurements stay unknown rather than becoming zeroes or invented scores."
+      ],
+      [
+        "Make access an explicit choice",
+        "The AI coach is opt-in and read-only, with visible record access. Scoped connectors and owner checks keep an assistant’s access tied to the user’s consent."
+      ]
+    ],
+    "secondary": "vigor-nutrition",
+    "secondaryWidth": 1276,
+    "secondaryHeight": 2170,
+    "secondaryAlt": "VIGOR food diary with nutrition totals, food search, portions and synthetic meal entries",
+    "secondaryTitle": "A diary that retains the source.",
+    "secondaryText": "Food entries keep their portion and nutrition snapshot. The development capture uses a small test catalogue and synthetic meals; the project also includes a larger USDA food catalogue.",
+    "evidenceTitle": "Built for inspection, not an invented score.",
+    "evidence": "The implementation includes review-before-save imports, a transaction-backed SQLite API, revision checks and consent-scoped connectors. The test captures demonstrate the difference between recorded measurements and missing data, as well as a food diary that retains its source and portions.",
+    "link": "mailto:baltej.panagatla@gmail.com?subject=VIGOR%20project%20walkthrough",
+    "linkLabel": "Request a walkthrough"
+  },
+  {
+    "slug": "extraticket",
+    "name": "ExtraTicket",
+    "number": "04",
+    "category": "product",
+    "discipline": "Marketplace / Digital experience",
+    "theme": "ticket",
+    "image": "extraticket-home",
+    "imageWidth": 1425,
+    "imageHeight": 1069,
+    "alt": "ExtraTicket interface with concert discovery, search, city selection and event listings",
+    "caption": "Development capture · sample event listings, not current ticket availability.",
+    "tagline": "Great nights. A clearer way in.",
+    "summary": "An event-ticket marketplace experience built around discovery, location and a direct path from interest to an event.",
+    "role": "Product design & frontend engineering",
+    "status": "Website & development build",
+    "stack": "React · Vite · React Router · Supabase",
+    "problem": "Event discovery competes for attention with location, pricing and availability. The landing experience needs to communicate the proposition quickly, then give a visitor a useful way to start searching.",
+    "contribution": "I worked on the marketplace interface and frontend implementation, connecting the visual identity to event discovery, category navigation and listing cards in a React application.",
+    "decisions": [
+      [
+        "Lead with the night out",
+        "Concert imagery and a direct headline establish the experience. The search field sits in that same first view, so the visual promise has an immediate next step."
+      ],
+      [
+        "Keep discovery close",
+        "City selection and event categories provide context before visitors explore individual listings. Event cards bring timing, place and price into one scan."
+      ],
+      [
+        "Carry one identity through the flow",
+        "A dark stage, orange accents and clear card structure connect the landing page to the rest of the marketplace. React Router handles the frontend navigation."
+      ]
+    ],
+    "secondary": null,
+    "evidenceTitle": "An interface you can visit and inspect.",
+    "evidence": "The capture shows the development interface with sample listings. The frontend uses React, Vite, React Router and Supabase, bringing event discovery, city selection and listing navigation into one consistent experience.",
+    "link": "https://extraticket.in",
+    "linkLabel": "Visit ExtraTicket"
+  }
+]

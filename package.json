@@ -1,10 +1,12 @@
 {
   "name": "baltej-goud-site",
-  "version": "2.0.0",
-  "description": "Founder site for Baltej Goud — Founder & CEO, product builder and engineer. Centred on Sanket, a predictive intelligence platform.",
+  "version": "3.0.0",
+  "description": "Signal — the portfolio of Baltej Goud. Founder & CEO of Sanket, engineer and product builder.",
   "scripts": {
     "dev": "npx serve . -l 8000",
-    "start": "npx serve . -l 8000"
+    "start": "npx serve . -l 8000",
+    "build:work": "node scripts/build-work.cjs",
+    "check": "node scripts/check-site.cjs"
   },
   "keywords": [
     "founder",
