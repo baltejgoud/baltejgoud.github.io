@@ -98,15 +98,20 @@ filterButtons.forEach((button) =>
 
 document.querySelector(".copy-email")?.addEventListener("click", async () => {
   const status = document.querySelector(".copy-status");
+  // The motion layer's toast announces when present; the inline status is the fallback.
+  const report = (message) => {
+    if (window.bgToast) return window.bgToast(message);
+    status.textContent = message;
+    setTimeout(() => {
+      status.textContent = "";
+    }, 5000);
+  };
   try {
     await navigator.clipboard.writeText("baltej.panagatla@gmail.com");
-    status.textContent = "Email copied.";
+    report("Email copied.");
   } catch {
-    status.textContent = "Select the email address above to copy it.";
+    report("Select the email address above to copy it.");
   }
-  setTimeout(() => {
-    status.textContent = "";
-  }, 5000);
 });
 
 if ("IntersectionObserver" in window) {

@@ -4,6 +4,7 @@ import * as scroll from "./scroll.js";
 import * as reveal from "./reveal.js";
 import * as loader from "./loader.js";
 import * as cursor from "./cursor.js";
+import * as contact from "./contact.js";
 
 const root = document.documentElement;
 const lite = root.dataset.motion === "lite";
@@ -27,6 +28,8 @@ const safely = (start) => {
     console.error(error);
   }
 };
+
+safely(contact.init);
 
 if (motionOn()) {
   try {
