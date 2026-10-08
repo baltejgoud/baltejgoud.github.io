@@ -19,7 +19,7 @@ scrolling"). `DESIGN.md` is rewritten as part of this work.
 | Decision | Choice | Why |
 |---|---|---|
 | Motion level | Premium editorial | Chosen by the user over "immersive 3D" and "refined subtle". |
-| Libraries | GSAP 3.15.0 (core, ScrollTrigger, SplitText, Flip) + Lenis 1.3.26 | Industry standard for this style; GSAP and all its plugins are free under the GSAP Standard License, Lenis is MIT. |
+| Libraries | GSAP 3.15.0 (core, ScrollTrigger, SplitText) + Lenis 1.3.26 | Industry standard for this style; GSAP and all its plugins are free under the GSAP Standard License, Lenis is MIT. |
 | Delivery | Minified files copied into `assets/vendor/` and committed | GitHub Pages serves the repo as-is; no runtime CDN dependency. `node_modules/` stays ignored. |
 | Module format | Native ES modules in `assets/js/motion/`, vendor files as classic `defer` scripts that expose globals | No bundler, no build step for the site itself. Classic deferred scripts and module scripts execute in document order, so globals exist before the modules run. |
 | Pop-ups | Native `<dialog>` with `showModal()` | Focus trapping, Escape, inert background and top layer for free. |
@@ -45,6 +45,8 @@ scrolling"). `DESIGN.md` is rewritten as part of this work.
     scale 1.15 to 1.
   - `rule`: hairline scales from 0 to 1 on the x axis from the left.
 - **Parallax** — images marked `data-parallax` move up to ±8% of their height against scroll.
+  Limited to the portrait and the hero sculpture so real product screenshots are never
+  cropped or shifted.
 - **Count-up** — elements marked `data-count` animate from 0 to their number once, keeping
   any suffix (`500+`).
 - **Magnetic buttons** — `.button`, `.header-contact`, `.contact-arrow`, `.circle-arrow`
@@ -54,9 +56,8 @@ scrolling"). `DESIGN.md` is rewritten as part of this work.
 - **Link underline** — `.text-link` underline sweeps left to right in, right out.
 - **Accordions** — `details` open and close smoothly using `interpolate-size:
   allow-keywords` and `::details-content` (CSS only; browsers without support snap).
-- **Page transitions** — `@view-transition { navigation: auto; }`; the old page is
-  covered by a charcoal curtain rising from the bottom, the new page is revealed as it
-  continues upward (0.6s).
+- **Page transitions** — `@view-transition { navigation: auto; }`; the new page wipes up
+  from the bottom while the old page lifts and fades into charcoal (0.7s).
 
 ### Homepage
 
@@ -79,7 +80,7 @@ scrolling"). `DESIGN.md` is rewritten as part of this work.
 
 ### Project cards (homepage selected work, `/work/` gallery)
 
-- **Hover** — image scales to 1.04; a 96px orange "Quick view" bubble follows the pointer
+- **Hover** — image keeps the existing lift and zoom; a 96px orange "Quick view" bubble follows the pointer
   with easing (fine pointer only) and replaces the default cursor over the card's capture.
 - **Click** — opens Quick view. Modifier clicks (Ctrl, Cmd, Shift, middle button) keep
   native link behaviour, so the case study opens normally. On touch, a tap opens Quick view.
@@ -92,12 +93,13 @@ scrolling"). `DESIGN.md` is rewritten as part of this work.
   status, tagline, primary image, role, stack, problem, the three decisions, secondary
   image with its title, caption text, and a "Read the full story ↗" link to the case
   study. Optional fields are omitted when absent (ExtraTicket has no secondary image).
-- **Open** — GSAP Flip morphs the card image into the dialog's hero image (0.7s,
-  `power4.inOut`); the panel fades in behind it, then the text staggers up.
+- **Open** — a fixed-position copy of the card image flies into the dialog's hero image
+  (0.8s, `power4.inOut`); the panel fades in behind it, then the text staggers up. (GSAP Flip
+  was dropped: the dialog's scrolling body would clip a Flip-animated image.)
 - **Close** — Escape, the close button or a backdrop click; the image flips back to its card
   and focus returns to the card link.
-- **Navigation** — previous/next buttons and ←/→ keys cycle through the projects in the
-  order they appear in the data, cross-fading content.
+- **Navigation** — previous/next buttons and ←/→ keys cycle through the visible cards in page
+  order, cross-fading content.
 - **Scroll** — Lenis stops while open; the dialog body scrolls natively.
 - **Layout** — desktop is a centred panel up to 1180px wide and 88vh tall; below 800px it is
   a full-screen sheet sliding up from the bottom.
@@ -142,7 +144,7 @@ scrolling"). `DESIGN.md` is rewritten as part of this work.
 
 ```
 assets/vendor/            gsap.min.js, ScrollTrigger.min.js, SplitText.min.js,
-                          Flip.min.js, lenis.min.js, LICENSES.md
+                          lenis.min.js, LICENSES.md
 assets/js/motion/
   index.js                entry: reads gate, calls each init, sets html.motion-ready
   gate.js                 motion/pointer capability flags, shared constants (eases, durations)
@@ -152,7 +154,7 @@ assets/js/motion/
   reveal.js               init(root?): data-reveal, data-parallax, data-count, hero
                           sequence, Sanket scrub
   cursor.js               init(): magnetic, button fill, quick-view bubble, hover previews
-  quickview.js            init(): dialog build, Flip open/close, prev/next
+  quickview.js            init(): dialog build, image-morph open/close, prev/next
   contact.js              init(): contact panel; exports toast()
 motion.css                tokens, motion-only initial states, loader, marquee, dialogs,
                           bubble, preview card, toast, progress, view transitions,
@@ -205,7 +207,7 @@ page's location. `quickview.js` parses it once, builds DOM with `textContent` (n
 - `build-work.cjs`: head template gains `motion.css` and the gate script; footer template
   gains the vendor scripts and `<script type="module" src="…/assets/js/motion/index.js">`;
   cards gain `data-quickview`; the data island is emitted; gallery and case-study templates
-  gain `data-reveal` on headings, images and rules and `data-parallax` on case-study images.
+  gain `data-reveal` on headings, images and rules.
   Run `npm run build:work` to regenerate.
 - `index.html` (hand-authored outside the `SELECTED_WORK` block): the same head/footer
   additions, loader markup, `data-reveal` / `data-parallax` / `data-count` /
@@ -219,7 +221,7 @@ page's location. `quickview.js` parses it once, builds DOM with `textContent` (n
 
 ## Performance budget
 
-- Added JS no more than 75KB gzipped (vendor ~65KB plus modules); no new CSS framework.
+- Added JS no more than 75KB gzipped (vendor ~55KB plus modules); no new CSS framework.
 - Animate only `transform`, `opacity` and `clip-path`; `will-change` set only during an
   active animation.
 - No layout shift from motion: the loader is a fixed overlay and initial states use
@@ -240,7 +242,8 @@ page's location. `quickview.js` parses it once, builds DOM with `textContent` (n
 5. Quick view: opens from every card on `/` and `/work/`; Escape, close and backdrop close it;
    focus returns to the card; Tab stays inside; ←/→ cycle; Ctrl-click opens the case study;
    bottom-sheet layout at 390 px.
-6. Contact panel opens from the header on `/`, `/work/`, a case study and the résumé; copy
+6. Contact panel opens from the header on `/`, `/work/` and a case study (the résumé has no
+   site header); copy
    shows the toast; Escape closes and returns focus.
 7. Hover previews show the real image for rows 07/08 and typographic cards for the rest.
 8. `?nomotion` shows all content immediately with no loader and no transforms; dialogs still

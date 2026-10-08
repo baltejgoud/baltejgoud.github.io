@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-intro>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -26,6 +26,8 @@
     />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="work.css" />
+    <link rel="stylesheet" href="motion.css" />
+    <script data-motion-gate>(function(d,w){var h=d.documentElement,c=h.classList;c.add("js");if(w.matchMedia("(prefers-reduced-motion: reduce)").matches||/[?&]nomotion\b/.test(w.location.search))return;c.add("motion");try{if(h.hasAttribute("data-intro")&&!w.sessionStorage.getItem("bg-intro"))c.add("intro")}catch(e){}w.setTimeout(function(){if(!c.contains("motion-ready"))c.remove("motion","intro")},3000)})(document,window);</script>
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://baltejgoud.github.io/" />
     <meta
@@ -350,152 +352,28 @@
             >
           </div>
           <!-- SELECTED_WORK_START -->
-          <div class="project-grid">
-            <article class="project-card real-project" data-category="ai">
-              <a
-                class="project-story-link"
-                href="work/axon/"
-                aria-labelledby="project-axon-title"
-              >
-                <div class="project-capture capture-axon">
-                  <div class="capture-label">
-                    <span>02 / Desktop beta</span
-                    ><span class="capture-cta"
-                      >Read story <span aria-hidden="true">↗</span></span
-                    >
-                  </div>
-                  <div class="capture-window">
-                    <img
-                      src="assets/work/axon-campus.webp"
-                      width="1920"
-                      height="1080"
-                      alt="Actual Axon three-dimensional campus with engineering, product, design and business departments"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-                </div>
-                <div class="project-heading">
-                  <h3 id="project-axon-title">Axon AI Studio</h3>
-                  <span>AI workspace / Desktop &amp; 3D</span>
-                </div>
-                <p class="project-description">
-                  A local-first desktop workspace that brings specialist AI
-                  roles, a 3D campus and reviewable code changes into one place.
-                </p></a
-              >
-            </article>
-            <article class="project-card real-project" data-category="product">
-              <a
-                class="project-story-link"
-                href="work/vigor/"
-                aria-labelledby="project-vigor-title"
-              >
-                <div class="project-capture capture-vigor">
-                  <div class="capture-label">
-                    <span>03 / Development build</span
-                    ><span class="capture-cta"
-                      >Read story <span aria-hidden="true">↗</span></span
-                    >
-                  </div>
-                  <div class="capture-window">
-                    <img
-                      src="assets/work/vigor-health.webp"
-                      width="1276"
-                      height="718"
-                      alt="VIGOR development interface displaying imported Apple Health measurements and visible missing data"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-                </div>
-                <div class="project-heading">
-                  <h3 id="project-vigor-title">VIGOR</h3>
-                  <span>Personal data / Health &amp; nutrition</span>
-                </div>
-                <p class="project-description">
-                  Apple Health imports and a food diary, with reviewable
-                  records, visible gaps and consent-based access for AI
-                  assistants.
-                </p></a
-              >
-            </article>
-            <article class="project-card real-project" data-category="product">
-              <a
-                class="project-story-link"
-                href="work/extraticket/"
-                aria-labelledby="project-extraticket-title"
-              >
-                <div class="project-capture capture-ticket">
-                  <div class="capture-label">
-                    <span>04 / Website &amp; development build</span
-                    ><span class="capture-cta"
-                      >Read story <span aria-hidden="true">↗</span></span
-                    >
-                  </div>
-                  <div class="capture-window">
-                    <img
-                      src="assets/work/extraticket-home.webp"
-                      width="1425"
-                      height="1069"
-                      alt="ExtraTicket interface with concert discovery, search, city selection and event listings"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-                </div>
-                <div class="project-heading">
-                  <h3 id="project-extraticket-title">ExtraTicket</h3>
-                  <span>Marketplace / Digital experience</span>
-                </div>
-                <p class="project-description">
-                  An event-ticket marketplace experience built around discovery,
-                  location and a direct path from interest to an event.
-                </p></a
-              >
-            </article>
-            <article class="project-card real-project" data-category="ai">
-              <a
-                class="project-story-link"
-                href="work/sanket/"
-                aria-labelledby="project-sanket-title"
-              >
-                <div class="project-capture capture-sanket">
-                  <div class="capture-label">
-                    <span>01 / Active development</span
-                    ><span class="capture-cta"
-                      >Read story <span aria-hidden="true">↗</span></span
-                    >
-                  </div>
-                  <div class="capture-window">
-                    <img
-                      src="assets/work/sanket-forecasts.webp"
-                      width="1672"
-                      height="941"
-                      alt="Sanket SKU forecasts showing expected demand, uncertainty ranges and suggested inventory actions"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-                </div>
-                <div class="project-heading">
-                  <h3 id="project-sanket-title">Sanket</h3>
-                  <span>Predictive intelligence / Business</span>
-                </div>
-                <p class="project-description">
-                  The business I’m building: demand forecasting and inventory
-                  intelligence, designed around the decisions a team has to
-                  make.
-                </p></a
-              >
-            </article>
-          </div>
-          <div class="all-work-link">
-            <a class="button button-ink" href="work/"
-              >Explore all case studies <span aria-hidden="true">↗</span></a
-            >
-          </div>
-          <!-- SELECTED_WORK_END -->
+<div class="project-grid"><article class="project-card real-project " data-category="ai">
+<a class="project-story-link" href="work/axon/" aria-labelledby="project-axon-title">
+<div class="project-capture capture-axon"><div class="capture-label"><span>02 / Desktop beta</span><span class="capture-cta">Read story <span aria-hidden="true">↗</span></span></div>
+<div class="capture-window"><img src="assets/work/axon-campus.webp" width="1920" height="1080" alt="Actual Axon three-dimensional campus with engineering, product, design and business departments" loading="lazy" decoding="async"></div></div>
+<div class="project-heading"><h3 id="project-axon-title">Axon AI Studio</h3><span>AI workspace / Desktop &amp; 3D</span></div><p class="project-description">A local-first desktop workspace that brings specialist AI roles, a 3D campus and reviewable code changes into one place.</p></a></article>
+<article class="project-card real-project " data-category="product">
+<a class="project-story-link" href="work/vigor/" aria-labelledby="project-vigor-title">
+<div class="project-capture capture-vigor"><div class="capture-label"><span>03 / Development build</span><span class="capture-cta">Read story <span aria-hidden="true">↗</span></span></div>
+<div class="capture-window"><img src="assets/work/vigor-health.webp" width="1276" height="718" alt="VIGOR development interface displaying imported Apple Health measurements and visible missing data" loading="lazy" decoding="async"></div></div>
+<div class="project-heading"><h3 id="project-vigor-title">VIGOR</h3><span>Personal data / Health &amp; nutrition</span></div><p class="project-description">Apple Health imports and a food diary, with reviewable records, visible gaps and consent-based access for AI assistants.</p></a></article>
+<article class="project-card real-project " data-category="product">
+<a class="project-story-link" href="work/extraticket/" aria-labelledby="project-extraticket-title">
+<div class="project-capture capture-ticket"><div class="capture-label"><span>04 / Website &amp; development build</span><span class="capture-cta">Read story <span aria-hidden="true">↗</span></span></div>
+<div class="capture-window"><img src="assets/work/extraticket-home.webp" width="1425" height="1069" alt="ExtraTicket interface with concert discovery, search, city selection and event listings" loading="lazy" decoding="async"></div></div>
+<div class="project-heading"><h3 id="project-extraticket-title">ExtraTicket</h3><span>Marketplace / Digital experience</span></div><p class="project-description">An event-ticket marketplace experience built around discovery, location and a direct path from interest to an event.</p></a></article>
+<article class="project-card real-project " data-category="ai">
+<a class="project-story-link" href="work/sanket/" aria-labelledby="project-sanket-title">
+<div class="project-capture capture-sanket"><div class="capture-label"><span>01 / Active development</span><span class="capture-cta">Read story <span aria-hidden="true">↗</span></span></div>
+<div class="capture-window"><img src="assets/work/sanket-forecasts.webp" width="1672" height="941" alt="Sanket SKU forecasts showing expected demand, uncertainty ranges and suggested inventory actions" loading="lazy" decoding="async"></div></div>
+<div class="project-heading"><h3 id="project-sanket-title">Sanket</h3><span>Predictive intelligence / Business</span></div><p class="project-description">The business I’m building: demand forecasting and inventory intelligence, designed around the decisions a team has to make.</p></a></article></div>
+<div class="all-work-link"><a class="button button-ink" href="work/">Explore all case studies <span aria-hidden="true">↗</span></a></div>
+<!-- SELECTED_WORK_END -->
           <div class="more-work">
             <div class="more-work-title">
               <h3>More from the workshop.</h3>
@@ -936,5 +814,10 @@
       </div>
     </footer>
     <script src="script.js" defer></script>
+    <script src="assets/vendor/gsap.min.js" defer></script>
+    <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
+    <script src="assets/vendor/SplitText.min.js" defer></script>
+    <script src="assets/vendor/lenis.min.js" defer></script>
+    <script type="module" src="assets/js/motion/index.js"></script>
   </body>
 </html>

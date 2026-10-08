@@ -18,6 +18,14 @@ for (const file of pages) {
   if (new Set(ids).size !== ids.length) failures.push(`${file}: duplicate ID`);
   if ([...html.matchAll(/<h1\b/g)].length !== 1)
     failures.push(`${file}: expected one h1`);
+  for (const needle of [
+    "data-motion-gate",
+    "motion.css",
+    "assets/vendor/gsap.min.js",
+    "assets/js/motion/index.js",
+  ])
+    if (!html.includes(needle))
+      failures.push(`${file}: missing motion asset ${needle}`);
   for (const match of html.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
     const ref = match[1].replaceAll("&amp;", "&");
     if (/^[a-z][\w+.-]*:/i.test(ref)) continue;

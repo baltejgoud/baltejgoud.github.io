@@ -1,0 +1,49 @@
+/* Motion layer. Every hidden initial state sits under .motion inside @media screen. */
+:root {
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+html.scroll-locked {
+  overflow: hidden;
+}
+
+/* The page-in keyframe in work.css is replaced by reveals. */
+.motion .gallery-intro,
+.motion .case-intro {
+  animation: none;
+}
+
+@media print {
+  .intro,
+  .scroll-progress,
+  .toast,
+  .qv-bubble,
+  .hover-preview,
+  dialog {
+    display: none !important;
+  }
+  [data-reveal],
+  [data-reveal] img,
+  [data-hero],
+  .reveal-line {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    visibility: visible !important;
+  }
+}

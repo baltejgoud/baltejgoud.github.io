@@ -14,6 +14,15 @@ const esc = (value) =>
       ],
   );
 const arrow = '<span aria-hidden="true">↗</span>';
+const gate = String.raw`<script data-motion-gate>(function(d,w){var h=d.documentElement,c=h.classList;c.add("js");if(w.matchMedia("(prefers-reduced-motion: reduce)").matches||/[?&]nomotion\b/.test(w.location.search))return;c.add("motion");try{if(h.hasAttribute("data-intro")&&!w.sessionStorage.getItem("bg-intro"))c.add("intro")}catch(e){}w.setTimeout(function(){if(!c.contains("motion-ready"))c.remove("motion","intro")},3000)})(document,window);</script>`;
+const motionScripts = (prefix) =>
+  ["gsap", "ScrollTrigger", "SplitText", "lenis"]
+    .map(
+      (name) =>
+        `<script src="${prefix}assets/vendor/${name}.min.js" defer></script>`,
+    )
+    .join("") +
+  `<script type="module" src="${prefix}assets/js/motion/index.js"></script>`;
 const head = (
   title,
   description,
@@ -26,7 +35,7 @@ const head = (
 <link rel="canonical" href="https://baltejgoud.github.io/${url}"><link rel="icon" href="${prefix}assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="${prefix}style.css"><link rel="stylesheet" href="${prefix}work.css">
+<link rel="stylesheet" href="${prefix}style.css"><link rel="stylesheet" href="${prefix}work.css"><link rel="stylesheet" href="${prefix}motion.css">${gate}
 <meta property="og:type" content="website"><meta property="og:title" content="${esc(title)} — Baltej Goud"><meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="https://baltejgoud.github.io/${url}"><meta property="og:image" content="https://baltejgoud.github.io/assets/${image}"><meta name="twitter:card" content="summary_large_image">
 </head>`;
@@ -39,7 +48,7 @@ const header = (
 <button class="menu-toggle" type="button" aria-label="Open navigation" aria-controls="mobile-nav" aria-expanded="false"><span>Menu</span><span class="menu-icon" aria-hidden="true"><i></i><i></i></span></button></div>
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" hidden><a href="${prefix}work/">Work <span>01</span></a><a href="${prefix}work/sanket/">Sanket <span>02</span></a><a href="${prefix}index.html#experience">Experience <span>03</span></a><a href="${prefix}index.html#about">About <span>04</span></a><a href="${prefix}index.html#contact">Let’s talk <span>↗</span></a></nav></header>`;
 const footer = (prefix) =>
-  `<footer class="site-footer"><div class="wrap"><div class="footer-top"><a class="footer-name" href="${prefix}index.html">Baltej Goud ${arrow}</a><div><a href="https://www.linkedin.com/in/baltejgoud" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href="https://github.com/baltejgoud" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="${prefix}resume.html">Résumé ↗</a></div></div><div class="footer-bottom"><span>© <span id="year">2026</span> Baltej Goud</span><span>Hyderabad, India <span class="local-time"></span></span><a href="#top">Back to top ↑</a></div></div></footer><script src="${prefix}script.js" defer></script></body></html>`;
+  `<footer class="site-footer"><div class="wrap"><div class="footer-top"><a class="footer-name" href="${prefix}index.html">Baltej Goud ${arrow}</a><div><a href="https://www.linkedin.com/in/baltejgoud" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href="https://github.com/baltejgoud" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="${prefix}resume.html">Résumé ↗</a></div></div><div class="footer-bottom"><span>© <span id="year">2026</span> Baltej Goud</span><span>Hyderabad, India <span class="local-time"></span></span><a href="#top">Back to top ↑</a></div></div></footer><script src="${prefix}script.js" defer></script>${motionScripts(prefix)}</body></html>`;
 const nojs =
   "<noscript><style>.menu-toggle,.project-filters,.gallery-view{display:none!important}@media(max-width:800px){.mobile-nav[hidden]{display:flex!important;flex-wrap:wrap;gap:6px 20px}.mobile-nav a{font-size:16px;border:0}.mobile-nav a span{display:none}}</style></noscript>";
 const card = (
