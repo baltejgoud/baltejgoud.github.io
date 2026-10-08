@@ -674,3 +674,79 @@ html.scroll-locked {
     align-items: flex-start;
   }
 }
+
+/* Cursor bubble and hover previews */
+.qv-bubble,
+.hover-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 120;
+  pointer-events: none;
+}
+.qv-bubble {
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  margin: -48px 0 0 -48px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: var(--bg);
+  font-size: 12px;
+  font-weight: 600;
+}
+@media (hover: hover) and (pointer: fine) {
+  .motion-ready [data-quickview] .project-capture {
+    cursor: none;
+  }
+}
+.hover-preview {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 320px;
+  height: 220px;
+  margin: -110px 0 0 -160px;
+  padding: 22px;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 24px 50px #0003;
+}
+.hover-preview.has-image {
+  padding: 0;
+  background: var(--ink);
+}
+.hover-preview.has-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hover-preview.tone-orange {
+  background: var(--orange);
+  color: var(--bg);
+}
+.hover-preview.tone-ivory {
+  background: var(--cream);
+  color: var(--ink);
+  border: 1px solid var(--light-line);
+}
+.hover-preview.tone-charcoal {
+  background: var(--bg);
+  color: var(--text);
+}
+.hover-preview-number {
+  font-size: 12px;
+  opacity: 0.7;
+}
+.hover-preview strong {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+.hover-preview-meta {
+  font-size: 12px;
+  opacity: 0.75;
+}
