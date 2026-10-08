@@ -90,3 +90,48 @@ html.scroll-locked {
   padding-right: 1.8em;
   white-space: nowrap;
 }
+
+/* Reveals */
+@media screen {
+  .motion [data-reveal="lines"]:not(.is-split),
+  .motion [data-hero="lines"]:not(.is-split) {
+    visibility: hidden;
+  }
+  .motion [data-reveal="fade"]:not(.is-revealed),
+  .motion [data-hero="fade"]:not(.is-revealed) {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .motion [data-hero="art"]:not(.is-revealed) {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  .motion [data-reveal="image"]:not(.is-revealed) {
+    clip-path: inset(100% 0 0 0);
+  }
+  .motion [data-reveal="rule"]:not(.is-revealed) {
+    border-top-color: transparent;
+    background: linear-gradient(var(--rule-color), var(--rule-color)) no-repeat
+      left top / calc(var(--rule, 0) * 100%) 1px;
+  }
+  .motion .experience-row[data-reveal="rule"]:not(.is-revealed) {
+    border-bottom-color: transparent;
+    background-position: left bottom;
+  }
+}
+[data-reveal="rule"] {
+  --rule-color: var(--line);
+}
+.light-section [data-reveal="rule"] {
+  --rule-color: var(--light-line);
+}
+.contact-bottom[data-reveal="rule"] {
+  --rule-color: #b94729;
+}
+.reveal-line-mask {
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.motion .portrait img[data-parallax] {
+  scale: 1.2;
+}

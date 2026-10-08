@@ -1,6 +1,7 @@
 // Entry point for the motion layer. Dialogs work everywhere; animation runs only behind the gate.
 import { motionOn } from "./gate.js";
 import * as scroll from "./scroll.js";
+import * as reveal from "./reveal.js";
 
 const root = document.documentElement;
 const lite = root.dataset.motion === "lite";
@@ -23,6 +24,7 @@ if (motionOn()) {
     if (!lite) {
       scroll.init();
     }
+    reveal.init().catch(disable);
     root.classList.add("motion-ready");
   } catch (error) {
     disable(error);
