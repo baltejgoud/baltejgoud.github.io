@@ -3,6 +3,7 @@ import { motionOn } from "./gate.js";
 import * as scroll from "./scroll.js";
 import * as reveal from "./reveal.js";
 import * as loader from "./loader.js";
+import * as cursor from "./cursor.js";
 
 const root = document.documentElement;
 const lite = root.dataset.motion === "lite";
@@ -33,6 +34,7 @@ if (motionOn()) {
     gsap.registerPlugin(...[ScrollTrigger, SplitText].filter(Boolean));
     if (!lite) {
       scroll.init();
+      cursor.init();
     }
     const heroReady = lite ? Promise.resolve() : loader.init();
     reveal.init({ heroReady }).catch(disable);
