@@ -5,6 +5,7 @@ import * as reveal from "./reveal.js";
 import * as loader from "./loader.js";
 import * as cursor from "./cursor.js";
 import * as contact from "./contact.js";
+import * as quickview from "./quickview.js";
 
 const root = document.documentElement;
 const lite = root.dataset.motion === "lite";
@@ -30,6 +31,7 @@ const safely = (start) => {
 };
 
 safely(contact.init);
+safely(quickview.init);
 
 if (motionOn()) {
   try {

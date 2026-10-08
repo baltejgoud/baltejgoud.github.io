@@ -23,6 +23,40 @@ const motionScripts = (prefix) =>
     )
     .join("") +
   `<script type="module" src="${prefix}assets/js/motion/index.js"></script>`;
+// Quick view content, with paths relative to the page that embeds it.
+const dataIsland = (prefix) =>
+  `<script type="application/json" id="project-data">${JSON.stringify(
+    projects.map((p) => ({
+      slug: p.slug,
+      name: p.name,
+      number: p.number,
+      theme: p.theme,
+      discipline: p.discipline,
+      status: p.status,
+      tagline: p.tagline,
+      role: p.role,
+      stack: p.stack,
+      problem: p.problem,
+      decisions: p.decisions,
+      caption: p.caption,
+      url: `${prefix}work/${p.slug}/`,
+      image: {
+        src: `${prefix}assets/work/${p.image}.webp`,
+        width: p.imageWidth,
+        height: p.imageHeight,
+        alt: p.alt,
+      },
+      secondary: p.secondary
+        ? {
+            src: `${prefix}assets/work/${p.secondary}.webp`,
+            width: p.secondaryWidth,
+            height: p.secondaryHeight,
+            alt: p.secondaryAlt,
+            title: p.secondaryTitle,
+          }
+        : null,
+    })),
+  ).replace(/</g, "\\u003c")}</script>`;
 const head = (
   title,
   description,
@@ -56,14 +90,14 @@ const card = (
   prefix = "",
   featured = false,
 ) => `<article class="project-card real-project ${featured ? "project-featured" : ""}" data-category="${esc(p.category)}">
-<a class="project-story-link" href="${prefix}work/${p.slug}/" aria-labelledby="project-${p.slug}-title">
+<a class="project-story-link" data-quickview="${p.slug}" href="${prefix}work/${p.slug}/" aria-labelledby="project-${p.slug}-title">
 <div class="project-capture capture-${p.theme}" data-reveal="image"><div class="capture-label"><span>${p.number} / ${esc(p.status)}</span><span class="capture-cta">Read story ${arrow}</span></div>
 <div class="capture-window"><img src="${prefix}assets/work/${p.image}.webp" width="${p.imageWidth}" height="${p.imageHeight}" alt="${esc(p.alt)}" loading="lazy" decoding="async"></div></div>
 <div class="project-heading" data-reveal="fade"><h3 id="project-${p.slug}-title">${esc(p.name)}</h3><span>${esc(p.discipline)}</span></div><p class="project-description" data-reveal="fade">${esc(p.summary)}</p></a></article>`;
 const gallery = `${head("Selected work", "Products, experiments and a business in progress. Explore the work of Baltej Goud, founder of Sanket.", "../", "work/")}
 <body class="work-page">${nojs}${header("../")}<main id="main"><section class="gallery-intro wrap"><div class="section-kicker" data-reveal="fade"><span>Ideas made tangible</span><span>Selected work / 01–04</span></div><h1 data-reveal="lines">Work, with<br><em>something to say.</em></h1><div class="gallery-lede" data-reveal="fade"><p>Business problems. Technical depth. Interfaces people can use. A closer look at the products I’m building.</p><a class="text-link" href="../index.html#about">The person behind the work ${arrow}</a></div></section>
 <section class="gallery-section light-section" aria-label="Project gallery"><div class="wrap"><div class="work-toolbar" data-reveal="fade"><div class="project-filters" role="group" aria-label="Filter selected projects"><button type="button" data-filter="all" aria-pressed="true">All work <span>04</span></button><button type="button" data-filter="ai" aria-pressed="false">AI & data</button><button type="button" data-filter="product" aria-pressed="false">Digital products</button></div><div class="gallery-view" role="group" aria-label="Gallery layout"><button data-view="grid" aria-pressed="true" aria-label="Grid view">Grid</button><button data-view="list" aria-pressed="false" aria-label="List view">List</button></div><span id="filter-status" role="status">04 selected projects</span></div>
-<div class="project-grid work-gallery">${projects.map((p) => card(p, "../")).join("\n")}</div><p class="gallery-note" data-reveal="fade">Actual development captures. Project pages describe the build and its current status.</p></div></section>
+<div class="project-grid work-gallery">${projects.map((p) => card(p, "../")).join("\n")}</div>${dataIsland("../")}<p class="gallery-note" data-reveal="fade">Actual development captures. Project pages describe the build and its current status.</p></div></section>
 <section class="work-contact wrap"><span class="eyebrow" data-reveal="fade">Have a problem worth solving?</span><h2 data-reveal="lines">Let’s make<br><em>the next thing.</em></h2><a class="button button-orange" href="mailto:baltej.panagatla@gmail.com">Start a conversation ${arrow}</a></section></main>${footer("../")}`;
 fs.writeFileSync(path.join(root, "work/index.html"), gallery);
 projects.forEach((p, index) => {
@@ -87,7 +121,7 @@ const homePath = path.join(root, "index.html");
 let home = fs.readFileSync(homePath, "utf8");
 home = home.replace(
   /<!-- SELECTED_WORK_START -->[\s\S]*?<!-- SELECTED_WORK_END -->/,
-  `<!-- SELECTED_WORK_START -->\n<div class="project-grid">${[projects[1], projects[2], projects[3], { ...projects[0], image: projects[0].secondary, alt: projects[0].secondaryAlt }].map((p) => card(p)).join("\n")}</div>\n<div class="all-work-link"><a class="button button-ink" href="work/">Explore all case studies ${arrow}</a></div>\n<!-- SELECTED_WORK_END -->`,
+  `<!-- SELECTED_WORK_START -->\n<div class="project-grid">${[projects[1], projects[2], projects[3], { ...projects[0], image: projects[0].secondary, alt: projects[0].secondaryAlt }].map((p) => card(p)).join("\n")}</div>\n<div class="all-work-link"><a class="button button-ink" href="work/">Explore all case studies ${arrow}</a></div>\n${dataIsland("")}\n<!-- SELECTED_WORK_END -->`,
 );
 fs.writeFileSync(homePath, home);
 console.log("Generated work gallery, four case studies and homepage cards.");

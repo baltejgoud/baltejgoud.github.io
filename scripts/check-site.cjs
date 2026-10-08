@@ -26,6 +26,34 @@ for (const file of pages) {
   ])
     if (!html.includes(needle))
       failures.push(`${file}: missing motion asset ${needle}`);
+  const quickSlugs = [...html.matchAll(/data-quickview="([^"]+)"/g)].map(
+    (m) => m[1],
+  );
+  if (quickSlugs.length) {
+    const island = html.match(
+      /<script type="application\/json" id="project-data">([\s\S]*?)<\/script>/,
+    );
+    let data = [];
+    try {
+      data = island ? JSON.parse(island[1]) : [];
+    } catch {
+      failures.push(`${file}: #project-data is not valid JSON`);
+    }
+    if (!island)
+      failures.push(`${file}: quick view cards without #project-data`);
+    const known = new Set(data.map((p) => p.slug));
+    for (const slug of quickSlugs)
+      if (!known.has(slug))
+        failures.push(`${file}: no quick view data for ${slug}`);
+    for (const p of data)
+      for (const image of [p.image, p.secondary].filter(Boolean))
+        if (
+          !fs.existsSync(
+            path.resolve(path.dirname(path.join(root, file)), image.src),
+          )
+        )
+          failures.push(`${file}: missing quick view image ${image.src}`);
+  }
   for (const match of html.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
     const ref = match[1].replaceAll("&amp;", "&");
     if (/^[a-z][\w+.-]*:/i.test(ref)) continue;
