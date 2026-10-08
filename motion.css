@@ -47,3 +47,46 @@ html.scroll-locked {
     visibility: visible !important;
   }
 }
+
+/* Header, progress line and marquee */
+.motion .site-header {
+  transition: transform 0.45s var(--ease-in-out);
+}
+.motion .site-header.is-hidden {
+  transform: translateY(-100%);
+}
+.scroll-progress {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 2px;
+  z-index: 60;
+  background: var(--orange);
+  transform: scaleX(0);
+  transform-origin: left;
+  pointer-events: none;
+}
+.marquee-track,
+.marquee-group {
+  display: contents;
+}
+.discipline-strip:not(.is-marquee) .marquee-group > i:last-child {
+  display: none;
+}
+.discipline-strip.is-marquee {
+  display: block;
+  overflow: hidden;
+  padding-inline: 0;
+}
+.is-marquee .marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.is-marquee .marquee-group {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 1.8em;
+  padding-right: 1.8em;
+  white-space: nowrap;
+}

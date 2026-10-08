@@ -1,5 +1,6 @@
 // Entry point for the motion layer. Dialogs work everywhere; animation runs only behind the gate.
 import { motionOn } from "./gate.js";
+import * as scroll from "./scroll.js";
 
 const root = document.documentElement;
 const lite = root.dataset.motion === "lite";
@@ -20,7 +21,7 @@ if (motionOn()) {
     const { gsap, ScrollTrigger, SplitText } = window;
     gsap.registerPlugin(...[ScrollTrigger, SplitText].filter(Boolean));
     if (!lite) {
-      // full-page modules
+      scroll.init();
     }
     root.classList.add("motion-ready");
   } catch (error) {

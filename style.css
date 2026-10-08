@@ -2268,8 +2268,7 @@ summary::-webkit-details-marker {
     gap: 8px 12px;
     font-size: 10px;
   }
-  .discipline-strip i:last-of-type,
-  .discipline-strip span:last-child {
+  .discipline-strip:not(.is-marquee) .marquee-group > :nth-last-child(-n + 3) {
     display: none;
   }
   .section {

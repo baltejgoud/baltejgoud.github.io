@@ -335,7 +335,9 @@ export function startScroll() {
 export function init() {
   const { gsap, ScrollTrigger, Lenis } = window;
   if (finePointer() && Lenis) {
-    lenis = new Lenis({ lerp: 0.1, anchors: { offset: -100 } });
+    // Anchor offsets come from scroll-padding-top in style.css.
+    // (Executed note: an explicit offset of -100 doubled it; Lenis already honours scroll-padding.)
+    lenis = new Lenis({ lerp: 0.1, anchors: true });
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
