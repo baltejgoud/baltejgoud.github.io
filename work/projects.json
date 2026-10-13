@@ -13,11 +13,11 @@
     "caption": "Development interface · sandbox data. Displayed values are illustrative, not business results.",
     "tagline": "From business data to a clearer next move.",
     "summary": "The business I’m building: demand forecasting and inventory intelligence, designed around the decisions a team has to make.",
-    "role": "Founder & CEO · Product & engineering",
+    "role": "Co-founder & CEO · Product & engineering",
     "status": "Active development",
     "stack": "React · TypeScript · FastAPI · PostgreSQL · ML forecasting",
     "problem": "Businesses have to buy, stock and plan before demand is certain. A forecast alone does not tell a team what to do next. Sanket brings that forecast into the same workspace as inventory, risk and the decisions waiting for attention.",
-    "contribution": "I lead Sanket as founder and CEO, bringing product direction and engineering together. The platform connects a React dashboard, a FastAPI gateway and a forecasting service, with tenant-separated data in PostgreSQL.",
+    "contribution": "I lead Sanket as Co-founder and CEO, bringing product direction and engineering together. The platform connects a React dashboard, a FastAPI gateway and a forecasting service, with tenant-separated data in PostgreSQL.",
     "decisions": [
       [
         "Start with the decision",
@@ -41,7 +41,12 @@
     "evidenceTitle": "A product being built, with a business behind it.",
     "evidence": "The development product connects industry workspaces, SKU-level forecasts and inventory planning views. The captures show how planning signals become reviewable decisions, using sandbox records. My next focus is validating the workflow with the businesses it is designed to serve.",
     "link": "mailto:baltej.panagatla@gmail.com?subject=Let%E2%80%99s%20talk%20about%20Sanket",
-    "linkLabel": "Talk about Sanket"
+    "linkLabel": "Talk about Sanket",
+    "cover": "sanket-concept",
+    "coverAlt": "Sanket interface illustration showing demand forecasts and inventory planning",
+    "coverWidth": 1536,
+    "coverHeight": 1024,
+    "coverCaption": ""
   },
   {
     "slug": "axon",
@@ -85,7 +90,12 @@
     "evidenceTitle": "A working beta, with visible boundaries.",
     "evidence": "The repository documents provider streaming, workspace retrieval, diff approvals and versioned local JSON persistence. End-to-end validation uses a local mock provider. Live paid-provider validation and production distribution are still separate steps.",
     "link": "https://github.com/baltejgoud/Axon-AI-Office-",
-    "linkLabel": "Explore the repository"
+    "linkLabel": "Explore the repository",
+    "cover": "axon-concept",
+    "coverAlt": "Axon interface illustration showing a spatial AI campus beside workspace files and code review",
+    "coverWidth": 1536,
+    "coverHeight": 1024,
+    "coverCaption": ""
   },
   {
     "slug": "vigor",
@@ -129,7 +139,12 @@
     "evidenceTitle": "Built for inspection, not an invented score.",
     "evidence": "The implementation includes review-before-save imports, a transaction-backed SQLite API, revision checks and consent-scoped connectors. The test captures demonstrate the difference between recorded measurements and missing data, as well as a food diary that retains its source and portions.",
     "link": "mailto:baltej.panagatla@gmail.com?subject=VIGOR%20project%20walkthrough",
-    "linkLabel": "Request a walkthrough"
+    "linkLabel": "Request a walkthrough",
+    "cover": "vigor-concept",
+    "coverAlt": "VIGOR interface illustration showing health records, nutrition and missing data",
+    "coverWidth": 1536,
+    "coverHeight": 1024,
+    "coverCaption": ""
   },
   {
     "slug": "extraticket",
@@ -168,6 +183,11 @@
     "evidenceTitle": "An interface you can visit and inspect.",
     "evidence": "The capture shows the development interface with sample listings. The frontend uses React, Vite, React Router and Supabase, bringing event discovery, city selection and listing navigation into one consistent experience.",
     "link": "https://extraticket.in",
-    "linkLabel": "Visit ExtraTicket"
+    "linkLabel": "Visit ExtraTicket",
+    "cover": "extraticket-concept",
+    "coverAlt": "ExtraTicket interface illustration showing event discovery, city search and concert posters",
+    "coverWidth": 1536,
+    "coverHeight": 1024,
+    "coverCaption": ""
   }
 ]

@@ -152,7 +152,8 @@ function render(link) {
   const arrow = el("span", null, "↗");
   arrow.setAttribute("aria-hidden", "true");
   cta.append(arrow);
-  foot.append(el("p", "qv-caption", project.caption), cta);
+  if (project.caption) foot.append(el("p", "qv-caption", project.caption));
+  foot.append(cta);
   content.append(foot);
 
   const cards = visibleCards();

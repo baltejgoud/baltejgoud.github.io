@@ -1,0 +1,86 @@
+/* Professional hero and a compact story of Sanket's planning workflow. */
+.hero { background: radial-gradient(ellipse at 90% 12%, #cfdff6 0, transparent 52%), linear-gradient(120deg, #f4f7fb, #e8eff9); }
+.hero-grid { display: grid; grid-template-columns: 1.4fr 1fr; align-items: center; gap: clamp(40px, 6vw, 90px); padding-block: 42px 34px; }
+.hero-copy { text-align: left; }
+.hero-copy .eyebrow { margin-bottom: 22px; }
+.hero-copy h1 { font-size: clamp(52px, 6.3vw, 88px); margin: 0; line-height: 1.08; letter-spacing: -.06em; }
+.hero-copy h1 em { color: #315d9e; }
+.hero-description { margin: 25px 0 0; max-width: 510px; font-size: clamp(17px, 1.6vw, 20px); }
+.hero-founder { margin-top: 22px; font-size: 14px; color: #53616e; }
+.hero-founder a { color: var(--ink); font-weight: 600; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+.hero-founder a:hover { color: var(--orange); }
+.hero-actions { justify-content: flex-start; margin-top: 24px; }
+.hero-profile { width: 100%; max-width: 390px; justify-self: end; padding: 12px; border-radius: 26px; background: #ffffffa8; box-shadow: 0 20px 55px #253f6212; }
+.profile-photo { aspect-ratio: 4 / 4.5; overflow: hidden; border-radius: 18px; }
+.profile-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 39%; }
+.hero-profile figcaption { display: flex; justify-content: space-between; gap: 10px; padding: 16px 7px 6px; font-size: 12px; color: #53616e; }
+.hero-profile figcaption > span:first-child { color: var(--ink); font-weight: 600; }
+.hero-bottom { border-top: 1px solid #c4d2e1; margin-top: 12px; padding-block: 22px 25px; }
+.sanket-workflow { margin-top: 44px; padding: 30px; border: 1px solid #d5e0ed; border-radius: 26px; background: #eef3f9; }
+.workflow-heading { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-bottom: 28px; }
+.workflow-heading .eyebrow { margin-bottom: 9px; color: #526477; }
+.workflow-heading h3 { font-size: clamp(25px, 2.6vw, 36px); line-height: 1.2; letter-spacing: -.035em; }
+.workflow-heading > a { white-space: nowrap; min-height: 44px; }
+.workflow-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; list-style: none; padding: 0; }
+.workflow-steps > li { display: flex; flex-direction: column; padding: 23px; border: 1px solid #dbe3ec; border-radius: 19px; background: #ffffffd9; min-width: 0; }
+.workflow-step-label { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; color: #526477; }
+.workflow-step-label > span:last-child { color: #426da7; }
+.workflow-steps h4 { margin-top: 25px; font-family: var(--display); font-size: clamp(20px, 2vw, 27px); font-weight: 600; line-height: 1.2; letter-spacing: -.035em; }
+.workflow-steps > li > p { color: var(--muted); margin-block: 13px 22px; font-size: 15px; line-height: 1.6; }
+.workflow-visual { margin-top: auto; min-height: 156px; border-top: 1px solid #e0e7ef; padding-top: 19px; }
+.signal-visual { display: flex; align-content: start; align-items: start; flex-wrap: wrap; gap: 9px; }
+.signal-visual > span { border: 1px solid #dae3ee; background: #f6f8fb; border-radius: 8px; padding: 8px 11px; color: #4b617b; font-size: 12px; }
+.signal-output { display: flex; justify-content: space-between; width: 100%; margin-top: 7px; padding: 13px 12px; border-radius: 9px; background: #e7eff9; font-size: 12px; color: #365e94; }
+.forecast-key { display: flex; justify-content: space-between; gap: 8px; font-size: 11px; color: #526477; margin-bottom: 10px; }
+.forecast-key > span:last-child { color: #426da7; }
+.forecast-visual svg { width: 100%; max-height: 92px; }
+.forecast-footer { display: block; margin-top: 10px; color: #526477; font-size: 12px; }
+.decision-visual { display: grid; gap: 10px; }
+.decision-visual > div { display: flex; gap: 9px; align-items: center; background: #f4f7fb; padding: 11px; border-radius: 9px; }
+.decision-visual > div > span:last-child { margin-left: auto; color: #526477; }
+.decision-visual strong { display: block; font-size: 12px; font-weight: 600; }
+.decision-visual small { display: block; font-size: 11px; color: #526477; margin-top: 2px; }
+.decision-indicator { width: 7px; height: 7px; flex-shrink: 0; border-radius: 50%; background: #518274; }
+.decision-indicator.review { background: #aa8554; }
+.real-project .project-proof { margin-bottom: 24px; }
+@media (max-width: 1100px) {
+  .hero-grid { gap: 40px; grid-template-columns: 1.25fr 1fr; }
+  .hero-copy h1 { font-size: clamp(48px, 6.1vw, 72px); }
+  .workflow-steps > li { padding: 19px; }
+  .sanket-workflow { padding: 24px; }
+}
+@media (max-width: 800px) {
+  .hero-grid { grid-template-columns: 1fr 0.85fr; gap: 28px; padding-block: 34px 26px; }
+  .hero-copy h1 { font-size: clamp(41px, 6.4vw, 54px); }
+  .hero-description { font-size: 16px; margin-top: 20px; }
+  .hero-founder { font-size: 13px; margin-top: 14px; }
+  .hero-actions { flex-wrap: wrap; gap: 14px; margin-top: 14px; }
+  .hero-profile { padding: 8px; border-radius: 21px; }
+  .hero-profile figcaption { flex-direction: column; gap: 3px; padding: 12px 5px 5px; }
+  .workflow-steps { grid-template-columns: 1fr; }
+  .workflow-steps > li { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; padding: 24px; }
+  .workflow-step-label, .workflow-steps h4, .workflow-steps > li > p { grid-column: 1; }
+  .workflow-steps h4 { margin-top: 18px; }
+  .workflow-steps > li > p { margin-bottom: 0; }
+  .workflow-visual { grid-column: 2; grid-row: 1 / 4; align-self: center; margin-top: 0; border: 0; padding-top: 0; min-height: 0; }
+}
+@media (max-width: 600px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 28px; padding-block: 31px 25px; }
+  .hero-copy h1 { font-size: clamp(43px, 10vw, 62px); }
+  .hero-profile { max-width: none; justify-self: stretch; }
+  .profile-photo { aspect-ratio: 1.5; }
+  .profile-photo img { object-position: 50% 31%; }
+  .hero-profile figcaption { flex-direction: row; padding: 13px 7px 7px; }
+  .hero-meta { font-size: 11px; }
+  .hero-bottom { margin-top: 0; }
+  .hero-copy .eyebrow { margin-bottom: 17px; }
+  .hero-actions { flex-direction: row; }
+  .hero-actions .button { padding-inline: 21px; }
+  .workflow-heading { align-items: start; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+  .sanket-workflow { padding: 20px; margin-top: 30px; border-radius: 22px; }
+  .workflow-steps > li { display: flex; padding: 21px; }
+  .workflow-steps > li > p { margin-bottom: 20px; }
+  .workflow-visual { align-self: stretch; border-top: 1px solid #e0e7ef; padding-top: 17px; }
+  .forecast-visual svg { max-height: 95px; }
+  .hero-socials { font-size: 12px; }
+}

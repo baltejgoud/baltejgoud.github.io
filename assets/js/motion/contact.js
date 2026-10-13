@@ -133,7 +133,7 @@ function build() {
   dialog.innerHTML = `<div class="panel-inner">
     <div class="panel-top"><span class="eyebrow">Good things start with a conversation</span><button class="panel-close" type="button">Close <span aria-hidden="true">✕</span></button></div>
     <h2 id="contact-panel-title">Let’s <em>talk.</em></h2>
-    <p class="panel-lede">A business idea, a technical challenge, or an interesting conversation. I’m listening.</p>
+    <p class="panel-lede">An AI or data role, a product collaboration, or a conversation about Sanket. Let’s connect.</p>
     <a class="panel-email" href="mailto:${EMAIL}">${EMAIL} <span aria-hidden="true">↗</span></a>
     <button class="panel-copy" type="button">Copy email <span aria-hidden="true">+</span></button>
     <ul class="panel-links">${LINKS.map(([label, href]) => `<li><a href="${href}" target="_blank" rel="noopener noreferrer">${label} <span aria-hidden="true">↗</span></a></li>`).join("")}<li><a href="${resume}">Résumé <span aria-hidden="true">↗</span></a></li></ul>

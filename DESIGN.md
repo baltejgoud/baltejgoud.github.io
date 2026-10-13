@@ -1,5 +1,35 @@
 # Signal — Baltej Goud
 
+## Latest refinements — AI engineering and data analysis
+
+The primary identity is now AI Engineer / Data Analyst in the hero, site header, metadata and résumé. Sanket remains Co-founder & CEO. The homepage preserves its soft-blue theme, with a split introduction and authentic portrait on desktop and a stacked mobile layout. The portrait is preloaded instead of the removed hero project rail.
+
+Sanket’s introduction is retained. The large product image is replaced by a three-step planning workflow: read the signals, see expected demand with uncertainty, and connect it to inventory decisions. Its chart is a code-native illustration without invented numerical results. Styles live in `home-profile.css`.
+
+Generated-image captions have been removed from cards, covers, quick views and archive entries as requested. Source provenance remains in `assets/work/README.md`; original development captures remain accessible in the case studies. The generator preserves those choices on rebuild.
+
+Validation: seven pages at 320, 390, 768 and 1440 pixels showed no horizontal overflow, broken loaded images, old Product Builder identity or generated-concept labels. VIGOR quick view was checked on mobile with no empty caption element. Static page/link checks and JavaScript syntax checks pass.
+
+## Earlier direction — October 13, 2026
+
+The portfolio now takes visual inspiration from [Bevel](https://www.bevel.health/): a spacious centered introduction, soft blue atmosphere, restrained dark pill buttons, rounded product presentations, pale section backgrounds and a consistent sans-serif hierarchy. No Bevel code, images or copy were reused. The static HTML/CSS/JS architecture and existing accessible interactions remain.
+
+`bevel.css` is the final theme layer after the base, work and motion styles. Homepage hero art now introduces the actual project subjects through a three-card product rail. Eight distinct images generated with built-in ImageGen illustrate Sanket, Axon, VIGOR, ExtraTicket, AgriTrust, Tandem, Deepfake Detection and Let’s Get Cooking. Each is visibly labeled as concept artwork. Original development captures and factual project descriptions remain in the case studies. See `assets/work/README.md` for assets, provenance and generation prompt directions.
+
+`work/projects.json` keeps original captures in `image` / `secondary` and concept presentation assets in `cover`. `scripts/build-work.cjs` generates the gallery, all four case studies, homepage cards and quick-view data from that source. Rebuilding preserves the theme and concept labels.
+
+Validation: `npm run check` passes on seven pages and 232 local references. Browser checks on homepage, gallery and four case studies at 320, 768 and 1440 pixels found no horizontal overflow or broken loaded images. The 390-pixel mobile homepage, navigation, archive disclosure, category filters, grid/list switching, quick view and original-capture disclosure were verified. Existing default-motion rendering was visually checked; reduced-motion/static access is preserved.
+
+## Professional and founder positioning
+
+The hero now leads with AI engineering and product building, with Co-founder & CEO of Sanket in the introduction. The résumé is the primary hero action; two audience cards connect hiring teams to the professional profile and collaborators to Sanket. Project cards expose contribution and key technologies, plus direct case-study links independent of quick view. Contact copy covers engineering roles and collaborations consistently in both the page and dialog.
+
+The freelance UI/UX experience entry is removed from the homepage and résumé. Design remains a product capability. The résumé uses a matching light screen theme while retaining its dedicated print styles; professional-profile text stays visible immediately. Titles, metadata, structured data and generated project content carry the updated Sanket role.
+
+Validation after this pass: seven pages checked at 320, 768 and 1440 pixels without horizontal overflow or broken loaded images. Verified experience roles, missing hero caption, category filters, direct case-study navigation and the résumé print control. The static link checker passes.
+
+## Historical direction — October 2026
+
 October 2026 redesign. Founder and working professional, presented with equal clarity.
 
 ## Direction

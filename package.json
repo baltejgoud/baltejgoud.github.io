@@ -1,7 +1,7 @@
 {
   "name": "baltej-goud-site",
   "version": "3.0.0",
-  "description": "Signal — the portfolio of Baltej Goud. Founder & CEO of Sanket, engineer and product builder.",
+  "description": "Signal — the portfolio of Baltej Goud. Co-founder & CEO of Sanket, AI engineer and data analyst.",
   "scripts": {
     "dev": "npx serve . -l 8000",
     "start": "npx serve . -l 8000",
