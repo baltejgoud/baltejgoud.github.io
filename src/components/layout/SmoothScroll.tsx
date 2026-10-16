@@ -3,7 +3,6 @@
 import Lenis from "lenis";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, type ReactNode } from "react";
 
-const NAV_OFFSET = -88;
 type Target = string | HTMLElement | number;
 
 interface ScrollApi {
@@ -23,7 +22,8 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     const lenis = new Lenis({
       lerp: 0.1,
       autoRaf: true,
-      anchors: { offset: NAV_OFFSET },
+      // Lenis honours each section's CSS scroll-margin-top, which already clears the sticky nav.
+      anchors: true,
       // Let inner panels that can actually scroll (data-scroll-area) handle their own wheel events.
       prevent: (node) => node.hasAttribute("data-scroll-area") && node.scrollHeight > node.clientHeight + 1,
     });
@@ -37,7 +37,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
   const scrollTo = useCallback((target: Target) => {
     const lenis = lenisRef.current;
     if (lenis) {
-      lenis.scrollTo(target, { offset: NAV_OFFSET, force: true });
+      lenis.scrollTo(target, { force: true });
       return;
     }
     if (typeof target === "number") window.scrollTo({ top: target });
