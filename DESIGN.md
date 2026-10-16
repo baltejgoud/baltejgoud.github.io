@@ -1,93 +1,72 @@
-# Signal — Baltej Goud
+# Editorial — Baltej Goud
 
-## Latest refinements — AI engineering and data analysis
+The homepage of baltejgoud.github.io, rebuilt on 2026-10-16 as a warm, light, editorial portfolio. The full design is in `docs/superpowers/specs/2026-10-16-editorial-portfolio-design.md`; this file is the working reference. The case studies (`public/work/`) and the résumé (`public/resume.html`) keep the earlier “Signal” styling until they are restyled.
 
-The primary identity is now AI Engineer / Data Analyst in the hero, site header, metadata and résumé. Sanket remains Co-founder & CEO. The homepage preserves its soft-blue theme, with a split introduction and authentic portrait on desktop and a stacked mobile layout. The portrait is preloaded instead of the removed hero project rail.
+## Principles
 
-Sanket’s introduction is retained. The large product image is replaced by a three-step planning workflow: read the signals, see expected demand with uncertainty, and connect it to inventory decisions. Its chart is a code-native illustration without invented numerical results. Styles live in `home-profile.css`.
+- Every fact comes from Baltej’s own résumé and site. No invented metrics, dates, certifications, coding-profile stats, quotes or repository links. Synthetic data inside project widgets is labelled “Illustrative”.
+- Motion is rich but never required: everything reads without JavaScript and with reduced motion.
+- Content lives in `src/content/`. Components only render it.
 
-Generated-image captions have been removed from cards, covers, quick views and archive entries as requested. Source provenance remains in `assets/work/README.md`; original development captures remain accessible in the case studies. The generator preserves those choices on rebuild.
+## Palette
 
-Validation: seven pages at 320, 390, 768 and 1440 pixels showed no horizontal overflow, broken loaded images, old Product Builder identity or generated-concept labels. VIGOR quick view was checked on mobile with no empty caption element. Static page/link checks and JavaScript syntax checks pass.
+| Token | Value | Use |
+| --- | --- | --- |
+| `cream` | `#F6F4EE` | Page background |
+| `ink` | `#181818` | Text, active pills, inverted rows |
+| `stone` | `#7A756D` | Secondary text, metadata |
+| `line` | `#E5E0D8` | Hairlines and borders |
+| `paper` | `#FFFFFF` | Cards |
+| `watermark` | `rgb(122 117 109 / 0.10)` | Giant background words and years |
+| `live` | `#22C55E` | Availability dot |
+| `alert` | `#B4483A` | Broken chain, blocked listing |
 
-## Earlier direction — October 13, 2026
+Skill categories: Languages `#D08A3C`, Frontend `#4A7FB0`, Backend `#5B8C5A`, Databases `#8B6BB1`, Tools `#B85C45`, Core `#B8962E`.
 
-The portfolio now takes visual inspiration from [Bevel](https://www.bevel.health/): a spacious centered introduction, soft blue atmosphere, restrained dark pill buttons, rounded product presentations, pale section backgrounds and a consistent sans-serif hierarchy. No Bevel code, images or copy were reused. The static HTML/CSS/JS architecture and existing accessible interactions remain.
+## Typography
 
-`bevel.css` is the final theme layer after the base, work and motion styles. Homepage hero art now introduces the actual project subjects through a three-card product rail. Eight distinct images generated with built-in ImageGen illustrate Sanket, Axon, VIGOR, ExtraTicket, AgriTrust, Tandem, Deepfake Detection and Let’s Get Cooking. Each is visibly labeled as concept artwork. Original development captures and factual project descriptions remain in the case studies. See `assets/work/README.md` for assets, provenance and generation prompt directions.
+- **Plus Jakarta Sans** (400–800) for headings and body.
+- **Instrument Serif italic** for one accent word or phrase in every section title.
+- **JetBrains Mono** for index numbers, labels and tags: uppercase, 0.72rem, 0.14em tracking.
+- Section titles: `clamp(2.4rem, 5.5vw, 4.75rem)`, weight 800, −0.035em tracking.
 
-`work/projects.json` keeps original captures in `image` / `secondary` and concept presentation assets in `cover`. `scripts/build-work.cjs` generates the gallery, all four case studies, homepage cards and quick-view data from that source. Rebuilding preserves the theme and concept labels.
+## Sections
 
-Validation: `npm run check` passes on seven pages and 232 local references. Browser checks on homepage, gallery and four case studies at 320, 768 and 1440 pixels found no horizontal overflow or broken loaded images. The 390-pixel mobile homepage, navigation, archive disclosure, category filters, grid/list switching, quick view and original-capture disclosure were verified. Existing default-motion rendering was visually checked; reduced-motion/static access is preserved.
+Hero · 01 About · 02 Skills · 03 Selected work · (Certifications, hidden while empty) · Journey · Achievements · Contact. Numbers come from `src/lib/sections.ts`, so adding certifications renumbers the sections after it.
 
-## Professional and founder positioning
+## Interactions
 
-The hero now leads with AI engineering and product building, with Co-founder & CEO of Sanket in the introduction. The résumé is the primary hero action; two audience cards connect hiring teams to the professional profile and collaborators to Sanket. Project cards expose contribution and key technologies, plus direct case-study links independent of quick view. Contact copy covers engineering roles and collaborations consistently in both the page and dialog.
+| Area | Behaviour |
+| --- | --- |
+| Navbar | Ink pill slides to the section in view; glass background after 24px; full-screen menu below 900px. |
+| Hero | “BALTEJ” spans the full width; the cutout and watermark drift with a fine pointer; entrance on load. |
+| Lanyard | Verlet strap and spring-twisted card (`src/lib/physics/rope.ts`). Drag, fling or use the arrow keys. Sleeps at rest and off screen. |
+| Skills | Filter pills highlight a category; hover or focus updates the preview; arrow keys move across the grid. |
+| Work | Horizontal accordion of spines at ≥1280px, vertical accordion below. Each project has a live widget, loaded when opened. |
+| Journey | A dot travels a dashed S-curve with scroll progress. |
+| Achievements | Snap carousel with mouse drag, buttons and a progress bar. |
+| Contact | Copy-email pill with a toast; live Hyderabad time. |
 
-The freelance UI/UX experience entry is removed from the homepage and résumé. Design remains a product capability. The résumé uses a matching light screen theme while retaining its dedicated print styles; professional-profile text stays visible immediately. Titles, metadata, structured data and generated project content carry the updated Sanket role.
+## Motion rules
 
-Validation after this pass: seven pages checked at 320, 768 and 1440 pixels without horizontal overflow or broken loaded images. Verified experience roles, missing hero caption, category filters, direct case-study navigation and the résumé print control. The static link checker passes.
+- An inline script in `<head>` adds `js` (and `reduced` under reduced motion) before first paint. Scroll reveals hide content only under `html.js:not(.reduced):not(.reveal-all)`. If the app has not booted after 3s, `reveal-all` shows everything.
+- Scroll reveals are CSS (`[data-reveal]`, `[data-reveal="mask"]`) driven by one IntersectionObserver. Motion (`motion/react`) is used for interactive pieces only, and never for content that must be visible before hydration.
+- Under reduced motion: no Lenis, parallax, entrance, physics, magnetism or cursor follower. Every feature still works.
+- Lenis yields to inner panels marked `data-scroll-area` when they can scroll.
 
-## Historical direction — October 2026
+## Imagery
 
-October 2026 redesign. Founder and working professional, presented with equal clarity.
+- `public/images/portrait-cutout.webp`: background removed from `public/assets/portrait.webp` with rembg (`u2net_human_seg`, alpha matting), then trimmed and encoded by `scripts/prepare-images.cjs`.
+- `public/images/id-photo.webp`: a square head-and-shoulders crop of the same portrait.
+- Brand logos: simple-icons. Playwright has no entry and shows its symbol.
+- Case-study imagery provenance: `public/assets/work/README.md`.
 
-## Direction
+## Adding content
 
-An editorial portfolio with architectural imagery, generous space, oversized typography and strong shifts between charcoal, warm ivory and orange. The hero reads “Intelligence, put to work.” Sanket is the flagship business; real product captures and detailed case studies demonstrate the founder’s practical range.
-
-Reference research: [Dennis Snellenberg](https://dennissnellenberg.com/work) for project curation, [Brittany Chiang](https://brittanychiang.com/) for professional clarity, and [Bruno Simon](https://bruno-simon.com/html/) for personal creative identity. No reference code or artwork was copied.
-
-UI/UX Pro Max informed the spacious, asymmetric portfolio grid. Custom palette and typography refine its editorial recommendation: Manrope for display, DM Sans for body, Instrument Serif for expressive emphasis. Charcoal `#141414`, ivory `#f1f0e9`, orange `#ff693f`. Hairline structure.
-
-On 2026-10-08 the original restraint (subtle hover feedback, native scrolling, no loader) was reversed at Baltej's request: the site read as static next to contemporary portfolios. It now carries a premium editorial motion layer modelled on the feel of [Dennis Snellenberg](https://dennissnellenberg.com/) — see Motion below and `docs/superpowers/specs/2026-10-08-motion-system-design.md`.
-
-## Content
-
-Home: Hero → Sanket product → selected work and archive → capabilities → professional experience → personal story → contact. Separate work gallery and four dedicated project pages let visitors move from a visual preview to the build decisions.
-
-The second pass replaces project concepts with actual development captures. Sanket captures use sandbox data; VIGOR captures use explicitly synthetic health fixtures and a test account; ExtraTicket shows sample event listings. Axon captures are also present in its public repository. See `assets/work/README.md` for provenance. No invented clients, launch dates or business outcomes.
-
-Content was checked against project source: Axon currently uses versioned local JSON persistence, AgriTrust is a Next.js/NestJS/TypeScript system, and Tandem is an effect-aware browser automation prototype. These descriptions and the Tandem repository URL were corrected in the portfolio and résumé.
-
-## Behavior and accessibility
-
-- Native anchors, semantic sections, one h1, visible keyboard focus and a skip link.
-- Mobile menu has explicit state, Escape dismissal and breakpoint reset.
-- Project filters use pressed buttons and announce the visible count.
-- Native archive and capability disclosures. Dedicated static case studies work without JavaScript.
-- Gallery has pressed-state filters, live result counts and grid/list selection.
-- Project captures have visible story links, hover/focus feedback and full-image links on project pages.
-- Clipboard action has success and fallback feedback; email links work independently.
-- Static HTML/CSS/JS on GitHub Pages; the only runtime libraries are the vendored GSAP and Lenis builds. Optimized WebP hero and portrait.
-
-## Motion
-
-Code: `motion.css` and one ES module per behaviour in `assets/js/motion/` (entry `index.js`). Libraries: GSAP 3.15.0 (core, ScrollTrigger, SplitText; GSAP Standard "no charge" License) and Lenis 1.3.26 (MIT), copied into `assets/vendor/` by `npm run vendor`.
-
-- **Gate.** An inline head script adds `js`, then `motion` unless the visitor prefers reduced motion or the URL has `?nomotion`. Hidden initial states exist only under `.motion` inside `@media screen`. If `motion-ready` is not set within 3s, or any motion module throws, the page falls back to static: classes removed, scroll triggers killed, inline animation styles cleared, scrolling unlocked.
-- **First visit.** A "Hello" loader (English, Telugu, Hindi and five more) runs once per browser session on the homepage, about 2s, and is skipped by any click, key or wheel and on deep links (`/#contact`). The hero headline then rises line by line and the sculpture scales in.
-- **Scrolling.** Lenis smooth scroll on mouse and trackpad (touch keeps native scrolling); auto-hiding header that returns on scroll up or keyboard focus; a 2px orange progress line; the skills strip is a marquee whose speed and direction follow scroll velocity.
-- **Reveals** (`data-reveal`): headings rise line by line behind masks (split only after fonts load, restored afterwards so screen readers read one sentence); copy fades up; images unmask from the bottom; hairlines draw from the left. `data-parallax` on the portrait only, plus a slow drift and rotation of the hero sculpture; real product screenshots are never cropped or shifted. `data-count` counts the 500+ up once. The Sanket dashboard grows from 90% to full size as it scrolls in.
-- **Pointer** (mouse and trackpad only): magnetic buttons, fills that grow from the side the pointer entered, ↗ arrows that slide out and back, underline sweeps, a gentle tilt on the hero sculpture.
-- **Quick view.** Project cards open a dialog built from the `#project-data` island the generator writes from `work/projects.json`. The card image flies into the dialog (a fixed-position copy, so the scrolling body never clips it); previous/next and ←/→ cycle the visible cards; Escape, Close or the backdrop return the image to its card and focus to the link. Modifier clicks still open the case study. Phones get a full-screen sheet. An orange "Quick view" bubble follows the pointer over card images.
-- **Hover previews.** Archive and experience rows show a floating card that trails the pointer: the real image where one exists (Deepfake Detection, Let's Get Cooking), otherwise a typographic card made from the row's own text. Decorative and `aria-hidden`.
-- **"Let's talk" panel.** The header button (and mobile-menu link) slides in an orange contact panel with email, copy, LinkedIn, GitHub, résumé and Hyderabad time. Without JavaScript the links still go to `#contact`.
-- **Toast.** Copying the email shows a pill with an animated check; it is the `role="status"` announcement whenever the motion layer is loaded.
-- **Page transitions.** Cross-document View Transitions (Chromium, Safari 18.2+): the new page wipes up while the old one lifts and fades. Firefox navigates normally.
-- **Accordions** open and close smoothly with `interpolate-size` where supported.
-- **Reduced motion and `?nomotion`:** no loader, smooth scroll, reveals, pointer effects or page transitions; dialogs and the toast still work, instantly. **Print:** every reveal state is forced visible and overlays are hidden.
-
-## Generated artwork
-
-Built-in image-generation tool. Final source: `assets/signal-sculpture.png`; optimized website asset: `assets/signal-sculpture.webp`.
-
-Prompt: “Use case: stylized-concept. Asset type: abstract editorial hero artwork for a premium founder and software engineer portfolio. Subject: an extraordinary sculptural signal form, an open circular loop made of many very fine parallel brushed chrome ribs, slightly twisted like a toroidal helix, with one vivid electric vermilion-orange segment interrupting the silver loop. Visually like a luxurious engineered physical object, intricate silver fin detailing, strong dimensionality. Composition: square 1536x1536 frame, single central large sculptural object filling 85% of the frame, three-quarter view diagonally inclined, black empty centre, completely uncluttered. Backdrop: flat near-black charcoal #141414 that blends seamlessly into a dark website, no horizon, no floor. Lighting: dramatic hard studio side light with realistic silver highlights and subtle orange bounce, premium cinema 4d octane render. Colors only silver, graphite and orange #ff6038. No text, no logo, no watermark, no extra objects, no stars, no UI, no background gradients. Render very high detail, sophisticated architectural sculpture.”
-
-Pre-redesign working files were copied to `C:/Users/admin/.codex/backups/baltej-portfolio-before-redesign-20261008` before implementation.
+- **Certification:** add `{ title, issuer, year?, href? }` to `src/content/certifications.ts`. Section 04 appears and later sections renumber.
+- **Talking-avatar video:** set `hero.video = { src, poster }` in `src/content/profile.ts`, with the files in `public/`. The sound toggle appears.
+- **Skill, project, journey milestone or achievement:** edit the matching file in `src/content/`. `npm test` checks its shape.
 
 ## Verification
 
-Initial redesign: browser checks passed at 320–1920 pixels, including the original illustrative chart, disclosures, clipboard, navigation, résumé and print output. The desktop homepage had no automated axe WCAG A/AA findings.
-
-Work-led refinement: the homepage, work gallery and all four case-study pages were checked at 320, 390, 768, 1024 and 1440 pixels without horizontal page overflow. Verified AI/digital filters and result announcements, grid/list switching, case-study navigation, mobile menu dismissal and Escape focus restoration. `npm run check` validates all seven authored pages for local references, unique IDs and one h1. Case studies and project navigation remain static HTML; JavaScript only enhances the controls. The initial axe result is historical and does not certify the new pages.
+`npm run lint`, `npm test`, `npm run build` and `npm run check` must pass. Check the page in a browser at 1440×900 and 375×812.
