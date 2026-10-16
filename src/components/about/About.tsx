@@ -7,7 +7,8 @@ import { pad2 } from "@/lib/sections";
 
 export function About({ index }: { index: string }) {
   return (
-    <section id="about" aria-labelledby="about-title" className="section">
+    // overflow-x-clip: a swinging ID card must never widen the page on small screens.
+    <section id="about" aria-labelledby="about-title" className="section overflow-x-clip">
       <div className="container-page grid items-start gap-14 lg:grid-cols-[1.05fr_0.9fr_1.05fr] lg:gap-10">
         <div>
           <SectionHeading headingId="about-title" index={index} label="About" lead="Hi, I’m" accent={`${profile.firstName}.`} />
