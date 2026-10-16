@@ -243,6 +243,13 @@ html.js:not(.reduced) .atlas-tile {
   }
 }
 
+/* Cross-document page transitions with the case studies, which opt in too; without this the browser skips them and logs an AbortError. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
