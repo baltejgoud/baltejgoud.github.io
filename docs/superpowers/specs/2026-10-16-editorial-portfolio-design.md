@@ -215,7 +215,7 @@ Watermark years: **2019** (beside milestone 1), **2023** (between 1 and 2), **No
 - Pointer parallax (fine pointers, motion allowed): watermark shifts up to ±12px opposite the pointer, portrait up to ±6px with it.
 - Bottom-left: mono small-caps "PANAGATLA BALTEJ GOUD"; title "Data" (sans 800) over "Analyst." (serif italic), `clamp(3rem, 8vw, 7.5rem)`; tagline in stone.
 - Bottom-right: magnetic ink pill "Explore work ↓" → `#work`.
-- Entrance (CSS keyframes gated by `html.js`): watermark letters rise with a 40ms stagger, portrait fades and rises 24px, title lines reveal through a mask, CTA fades in. Total ≤ 1.2s.
+- Entrance (CSS keyframes gated by `html.js`): watermark letters rise with a 40ms stagger, portrait fades and rises 24px, title lines reveal through a mask, CTA fades in. Everything settles within about 2s.
 - Mobile: watermark stays full width; portrait is centred at `62svh`; the text block stacks under it with the CTA full width.
 
 ### 7.3 About (`components/about/*`)
@@ -224,7 +224,7 @@ Watermark years: **2019** (beside milestone 1), **2023** (between 1 and 2), **No
 - **Left:** index label, heading "Hi, I'm" + *Baltej.*, two bio paragraphs, pills: `Resume ↓` (solid ink, links to `/resume.html`), `GitHub ↗` and `LinkedIn ↗` (outlined, new tab, `rel="noopener noreferrer"`).
 - **Center — lanyard:**
   - A strap hangs from an anchor at the top of the column; a metal clip joins it to the card.
-  - Card (≈ 260×370, paper, 20px radius): header "DEVELOPER ID" and a punched slot; square photo (`public/images/id-photo.webp`, cropped from the portrait); "Panagatla Baltej Goud"; role tags Data Analyst · AI Engineer · Founder; barcode (SVG bars from `lib/barcode.ts`, seeded with "BALTEJGOUD"); ID number "BG-2023-HYD".
+  - Card (260×392, paper, 20px radius): header "DEVELOPER ID" and a punched slot; square photo (`public/images/id-photo.webp`, cropped from the portrait); "Panagatla Baltej Goud"; role tags Data Analyst · AI Engineer · Founder; barcode (SVG bars from `lib/barcode.ts`, seeded with "BALTEJGOUD"); ID number "BG-2023-HYD".
   - Physics (`lib/physics/rope.ts`, pure, no DOM): Verlet chain of 10 particles from a fixed anchor, gravity, damping `0.985`, 12 constraint iterations per frame, fixed 1/120 s substeps. The card hangs from the last particle; its rotation follows the last segment's angle through an angular spring, so it twists and settles.
   - Dragging: pointer down on the card captures the pointer and pins the last particle to the pointer position minus the grab offset; release keeps the Verlet velocity, so the card swings. Maximum stretch is clamped.
   - Rendering: the strap is a smooth SVG path through the particles with "BALTEJ GOUD · DATA ANALYST ·" repeated along it via `<textPath>`; the card is a DOM element positioned with `transform`.
@@ -258,7 +258,7 @@ Each widget is a self-contained client component in a paper card about 340–380
 
 | Widget | Behaviour |
 |---|---|
-| `ForecastWidget` (Sanket) | Vertical tabs Fashion / Electronics / Pharma / Agro. A seeded synthetic series: 26 weeks of history, then an 8-week forecast with an uncertainty band. Scrub with the pointer or a visually hidden range input. A chip shows the decision for the scrubbed week: **Replenish** if the upper band exceeds stock on hand, **Investigate** if the band is wider than 40% of the mean, otherwise **Hold**. Caption: "Illustrative data". |
+| `ForecastWidget` (Sanket) | Vertical tabs Fashion / Electronics / Pharma / Agro. A seeded synthetic series: 26 weeks of history, then an 8-week forecast with an uncertainty band. Scrub with the pointer or a visually hidden range input. A chip shows the decision for the scrubbed week: **Investigate** if the band is wider than 40% of the forecast value (too uncertain to act on), otherwise **Replenish** if the upper band exceeds stock on hand, otherwise **Hold**. History weeks always show **Hold**. Caption: "Illustrative data". |
 | `AtlasWidget` (Axon) | A 16×13 grid of 208 flickering "monitor" tiles. "Batch into atlas" animates them into a single tile while a counter runs 208 → 1 draw calls; "Unbatch" reverses it. |
 | `ImportWidget` (VIGOR) | A simulated `export.zip`. Steps Parse → Review → Save with a progress bar and a working **Cancel** ("Import cancelled — nothing saved"). Review shows illustrative counts and a Save button. Afterwards, a 14-day timeline: filled dots for recorded days, hollow dots labelled "unknown" for missing ones — never zero. |
 | `FairPriceWidget` (ExtraTicket) | Face value ₹2,500 (illustrative). A slider for the asking price (₹1,000–₹4,000, step ₹50). At or below face value the listing shows **Listed** and the saving; above it shows **Blocked — listings are capped at face value**. |
@@ -282,7 +282,7 @@ Rendered only when the array is non-empty. Two columns: left sticky (`top: 112px
 ### 7.9 Achievements (`components/achievements/*`)
 
 - Header: index, "Proud" + *moments.*
-- A horizontally scrolling row with `scroll-snap-type: x mandatory`. Cards are 340×300; `wide` cards are 520px. Each card shows the lucide icon in an ink badge top-left, the mono index top-right, title and description bottom-left, and the metric bottom-right (`clamp(3rem, 6vw, 5rem)`, sans 800).
+- A horizontally scrolling row with `scroll-snap-type: x mandatory`. Cards are 400×320 (82vw max on phones); `wide` cards are 560px. Each card shows the lucide icon in an ink badge top-left, the mono index top-right, title and description bottom-left, and the metric bottom-right (`clamp(3rem, 6vw, 5rem)`, sans 800).
 - Drag to scroll with a mouse (pointer capture, momentum from release velocity), shift-wheel and trackpad scrolling, prev/next round buttons (scroll by one card), and a progress bar under the row. The cursor shows "Drag" over the row.
 - The row is a focusable region labelled "Achievements"; arrow keys scroll it.
 
@@ -296,7 +296,7 @@ Rendered only when the array is non-empty. Two columns: left sticky (`top: 112px
 
 | Layer | Implementation |
 |---|---|
-| Smooth scroll | `SmoothScroll` client provider creates one Lenis instance (`lerp 0.1`); it is not created under reduced motion. Exposes `scrollTo` through context for nav links and CTAs. |
+| Smooth scroll | `SmoothScroll` client provider creates one Lenis instance (`lerp 0.1`, anchors handled with the nav offset); it is not created under reduced motion. Exposes `scrollTo` through context. Inner panels marked `data-scroll-area` keep their own wheel scrolling when they can scroll. |
 | Scroll reveals | `useReveal` hook (one shared `IntersectionObserver`) adds `.is-in` to `[data-reveal]` elements; CSS handles fade-up and masked heading lines. Hidden states apply only under `html.js`. |
 | No-JS safety | An inline head script (same pattern as today's motion gate) adds `js`, skips motion when reduced motion is set, and adds `reveal-all` after 3s unless the app has marked itself ready. Content is never permanently hidden. |
 | Interactive motion | `motion` for the nav pill, accordion content, preview crossfade, widgets, toast and mobile menu. |
@@ -342,7 +342,7 @@ Rules: sections are server components; interactivity lives in small client islan
 
 ## 11. Build and deployment
 
-- Scripts: `dev` (next dev), `build` (next build → `out/`), `start` (static server on `out/`), `test` (vitest run), `lint`, `check`, `build:work`, `vendor`, `cutout` (documented one-off).
+- Scripts: `dev` (next dev), `build` (next build → `out/`), `start` (static server on `out/`), `test` (vitest run), `lint`, `check`, `build:work`, `vendor`, `images` (rebuilds the cutout and ID photo from a rembg output).
 - `.github/workflows/deploy.yml`: on push to `main` → checkout → setup Node 24 with npm cache → `npm ci` → `npm test` → `npm run build` → `npm run check` → upload `out/` as the Pages artifact → deploy with `actions/deploy-pages`. Permissions: `pages: write`, `id-token: write`.
 - **Before the first push to `main`, Baltej switches Settings → Pages → Source to "GitHub Actions".** Otherwise the branch deploy serves a root without `index.html`. Nothing is pushed without his go-ahead.
 - Metadata: title "Baltej Goud — Data Analyst & AI Engineer", description, canonical, Open Graph and Twitter cards using the existing `/assets/social-cover.jpg`, JSON-LD `Person`, favicon `/assets/favicon.svg`.
