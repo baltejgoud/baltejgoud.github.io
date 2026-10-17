@@ -86,3 +86,39 @@ Car, track and scenery were rebuilt for a more photographic look; the drive, cam
 ### Limits
 
 Not checked on a phone, a large high-DPI display or a low-end GPU. Alpha-to-coverage foliage costs more fill rate on big screens than the old opaque trees.
+
+## Journey polish and RB22 reference pass — 17 October 2026
+
+The car now follows the user's three RB22 reference photographs: cobalt paint with dark flecks, a yellow nose and airbox, keylined red bull graphics, sponsor lettering, carbon wings, a wider rear wing, exposed ten-spoke wheels, blue rim rings and white tyre lettering. The car inspection dialog shares the circuit model and offers rotation, zoom, keyboard rotation and front/top camera presets. Its renderer loads on demand, compiles shaders asynchronously and releases its resources on close.
+
+Experience cards now stay in one place. The body scrolls independently while its checkpoint navigation stays visible; reaching the body's edge hands scrolling back to the page. Chapter selection resets the reading position. The journey adds named desktop chapters, 44px phone chapter buttons, a lap-progress rail, a working map toggle and a skip control. Camera framing clears the reading area, travel takes a longer share of each chapter's scroll range, and resizing preserves the current point in the lap. Rendering skips identical frames, coalesces scroll events into one pending animation frame, reduces distant foliage and lowers render resolution after sustained expensive frame submissions.
+
+### Verification
+
+- `npm run lint`, TypeScript checking, `npm test` (85 tests), production build and static link checks passed. The export contains 7 pages and 246 checked local references.
+- New regression coverage checks the full car's bounds, including its front wing and raised airbox, at 1440×900, 1024×768, 800×450, 640×360, 375×812 and 360×812; travel timing and continuity across chapter boundaries are also covered.
+- Browser checks cover desktop/phone/landscape layouts, a production export, night mode, the car viewer's camera presets and Escape dismissal, and opening/closing the viewer without changing page scroll position.
+- Native wheel checks: the expanded Sanket card scrolled from about 53px to 358px while page scroll stayed at 10803px. Another downward gesture at the card's edge moved the page to about 10870px.
+- Rotation check: chapter 04 and the sticky scene's top position were preserved when switching from 640×360 to 375×812 and back. Neither layout introduced horizontal page overflow.
+- Screenshots: `.cache/spa-qa/rb22-car-quarter.png`, `.cache/spa-qa/journey-mobile-refined.png` and `.cache/spa-qa/journey-night-refined.png`.
+
+These checks used an emulated browser viewport, not a physical touchscreen. GPU frame time was not benchmarked, and OS reduced-motion emulation was unavailable; the existing reduced-motion path remains in place.
+
+## RB22 rebuild, road surface and scroll pacing — 17 October 2026 (evening)
+
+Following the user's three RB22 reference photographs (front, top, three-quarter):
+
+- Car: rebuilt to 2026 proportions (3.4 m wheelbase, 1.9 m wide, about 1 m tall). It now has a slim, low nose resting on the front wing, high letterbox sidepod inlets over a deep undercut, a downwash ramp, a yellow roll-hoop airbox with a T-camera, a faired halo, faired wishbones, floor fences, a front wing whose outboard flaps sweep up into tall endplates, and a two-element rear wing with no beam wing. The livery is painted as side and top views (`livery.ts`) and projected onto the bodywork in the shader. Placement follows the photos: nose bull, number plates, CARLYLE / 1Password, the big engine-cover bull on its yellow sun, ORACLE on the sidepod, Ford oval, sponsor stack, roundel, TAG shield, twin-bull emblem, Red Bull / VISA / Gate wing lettering, and blue Mobil endplates. Paint is cobalt with dark flecks that fade to carbon low down. Darker tyres carry larger sidewall lettering.
+- Car viewer: a dark launch-studio set (overhead soft key, cool rims, a painted sun disc with a red glow) with presets matching the photo angles; the top view now has the nose to the left, as in the reference.
+- Road: finer, lower-contrast aggregate with a roughness map, so the surface sheens at a low sun. It has a darker rubbered racing line and braking zones, stretches resurfaced in different shades (some on one lane only), a wear layer with paving seams, a transverse joint, tar-sealed cracks and faint oil stains, and a softer, narrower painted run-off band.
+- Scroll: each chapter's scroll length now follows its leg (a reading share plus one screen per 1.7 km), so long legs drive at a steady, readable pace; the track grew from 8.9 to 10.9 screens. The chase camera drops, hangs back and widens with pace, swings to the outside of bends (averaged over 40 m) and banks up to 1.7°; it calms for hairpins and chicanes. A forward scroll that comes to rest mid-way through the swing to a checkpoint glides on to the stop (scrolling back is left alone; dialogs suppress it). Short landscape screens lift the action above the chapter bar.
+
+### Checks
+
+- `npm run lint` (changed files), TypeScript, `npm test` (87 tests), `npm run build` and `npm run check` (7 pages, 239 local references) passed; `git diff --check` was clean.
+- New tests: chapter scroll scales with leg length at 0.9–2.5 km per screen and fills the intro-to-outro range exactly; the chase widens at speed on the Kemmel straight and calms through the Bus Stop chicane. The existing "car in frame from grid to flag" check caught the first camera swing pushing the car out of the phone frame at the chicane; corner averaging and a pace cut for tight bends fixed it (worst case now 0.74 of the half-frame).
+- Browser (dev server, desktop app pane): the car was compared with the photos from matching front, top, side and three-quarter cameras. Also checked: the inspection dialog presets, the chase on the Kemmel straight and at Pouhon at 800×450, the phone layout at 375×812, night mode, and the checkpoint glide (it moved from 48% to the 64% stop and opened the story; a backward scroll stayed put). There were no console errors from the page.
+
+### Limits
+
+Not checked on a physical phone or touchscreen, a high-DPI display or a low-end GPU. The 4096 px livery canvases are used only in the viewer; the circuit uses 2048 px. Sponsor marks are typeset names, not the brands' artwork.

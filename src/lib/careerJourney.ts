@@ -11,33 +11,70 @@ export const easeJourney = (value: number) => {
   return t * t * (3 - 2 * t);
 };
 
-export function journeyStopProgress(index: number) {
-  const safeIndex = Math.max(
-    0,
-    Math.min(route.stops.length - 1, Math.trunc(index)),
-  );
+const legMetres = route.stops.map(
+  (to, i) => (to - (i > 0 ? route.stops[i - 1] : 0)) * route.circuitLength,
+);
+/**
+ * Scroll given to each chapter, in viewport heights: a fixed share for reading
+ * the story plus one screen per 1.7 km of its leg, so long legs drive at the
+ * same pace as short ones instead of flashing past. The first chapter also
+ * holds the drone dive and the start lights.
+ */
+export const JOURNEY_CHAPTERS = legMetres.map(
+  (metres, i) => 0.6 + metres / 1700 + (i === 0 ? 0.45 : 0),
+);
+const chapterTotal = JOURNEY_CHAPTERS.reduce((sum, h) => sum + h, 0);
+const chapterStarts = JOURNEY_CHAPTERS.reduce<number[]>(
+  (starts, h) => [...starts, starts[starts.length - 1] + h / chapterTotal],
+  [0],
+);
+/**
+ * Scroll track length in viewport heights beyond the pinned screen, sized so
+ * the chapters fill the range between the intro and the outro.
+ */
+export const JOURNEY_SCROLL_SCREENS =
+  chapterTotal / (JOURNEY_END - JOURNEY_INTRO);
+
+const clampIndex = (index: number) =>
+  Math.max(0, Math.min(route.stops.length - 1, Math.trunc(index)));
+/** Scroll progress `fraction` of the way through chapter `index`. */
+export function journeyProgressAt(index: number, fraction: number) {
+  const i = clampIndex(index);
   return (
     JOURNEY_INTRO +
-    ((safeIndex + 0.64) / route.stops.length) * (JOURNEY_END - JOURNEY_INTRO)
+    (chapterStarts[i] + fraction * (chapterStarts[i + 1] - chapterStarts[i])) *
+      (JOURNEY_END - JOURNEY_INTRO)
   );
 }
+/** Share of a chapter by which the car has arrived and the story is up. */
+export const JOURNEY_ARRIVED = 0.64;
+export const journeyStopProgress = (index: number) =>
+  journeyProgressAt(index, JOURNEY_ARRIVED);
 
 export function journeyScrollState(progress: number) {
   const p = clampJourney(progress);
-  const travel =
-    Math.max(0, (p - JOURNEY_INTRO) / (JOURNEY_END - JOURNEY_INTRO)) *
-    route.stops.length;
-  const index = Math.min(route.stops.length - 1, Math.floor(travel));
-  const fraction = travel - index;
-  const t = easeJourney(fraction / 0.38);
+  const travel = Math.max(
+    0,
+    (p - JOURNEY_INTRO) / (JOURNEY_END - JOURNEY_INTRO),
+  );
+  let index = 0;
+  while (index < route.stops.length - 1 && travel >= chapterStarts[index + 1])
+    index++;
+  const fraction =
+    (travel - chapterStarts[index]) /
+    (chapterStarts[index + 1] - chapterStarts[index]);
+  // Give the drive over half a chapter's scroll distance. Short travel windows
+  // made a single wheel gesture fling the chase camera hundreds of metres.
+  const t = easeJourney(fraction / 0.55);
   const from = index > 0 ? route.stops[index - 1] : 0;
   // The first leg starts on the grid: the car only launches once the lights go out.
   const moved =
     index === 0 ? easeJourney((t - LIGHTS_OUT) / (1 - LIGHTS_OUT)) : t;
   return {
     index,
+    fraction,
     overview: p <= JOURNEY_INTRO,
-    arrival: p <= JOURNEY_INTRO ? 0 : clampJourney((fraction - 0.32) / 0.12),
+    arrival: p <= JOURNEY_INTRO ? 0 : clampJourney((fraction - 0.49) / 0.14),
     firstApproach: index === 0 ? t : 1,
     distance:
       p <= JOURNEY_INTRO ? 0 : from + (route.stops[index] - from) * moved,

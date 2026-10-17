@@ -17,6 +17,7 @@ import {
   sweep,
   yawAlong,
 } from "./builder";
+import { mulberry32 } from "@/lib/random";
 import { fbm } from "./terrain";
 import {
   asphaltMaps,
@@ -24,6 +25,7 @@ import {
   gravelMaps,
   kerbMaps,
   markerTexture,
+  roadWearTexture,
   skidTexture,
   tyreWallTexture,
 } from "./textures";
@@ -116,14 +118,33 @@ export function createSurface(scene: T.Object3D) {
       ahead = Math.max(ahead, Math.abs(bend[(i + j) % N]));
     braking[i] = smoothstep(0.006, 0.03, ahead - Math.abs(bend[i]));
   }
+  // Resurfacing: the lap was laid in stretches of 40–200 m, each a shade
+  // apart, and some were relaid on one side only, up to the centre seam.
+  const relaid = new Float64Array(N),
+    laneSide = new Int8Array(N),
+    laneShade = new Float64Array(N);
+  {
+    const random = mulberry32(17);
+    for (let i = 0; i < N; ) {
+      const length = Math.round((40 + random() * 160) / step);
+      const shade = (random() - 0.5) * 0.14;
+      const side = random() < 0.3 ? (random() < 0.5 ? -1 : 1) : 0;
+      const lane = (random() - 0.5) * 0.18;
+      for (let k = 0; k < length && i < N; k++, i++) {
+        relaid[i] = shade;
+        laneSide[i] = side;
+        laneShade[i] = lane;
+      }
+    }
+  }
   const road = asphaltMaps();
   const asphalt = new T.MeshStandardMaterial({
     ...road,
     vertexColors: true,
-    color: 0x7b7e83,
-    roughness: 1,
-    normalScale: new T.Vector2(0.6, 0.6),
-    envMapIntensity: 0.5,
+    color: 0x7a7b7f,
+    roughness: 0.96,
+    normalScale: new T.Vector2(0.75, 0.75),
+    envMapIntensity: 0.65,
   });
   const base = new T.Color(0xffffff);
   add(
@@ -131,18 +152,47 @@ export function createSurface(scene: T.Object3D) {
       left: (i) => -HW[i] - 0.15,
       right: (i) => HW[i] + 0.15,
       lift: 0,
-      across: 16,
-      repeat: [4, 4],
+      across: 28,
+      repeat: [3, 3],
       color: (i, lateral, out) => {
-        const line = Math.exp(-(((lateral - racing[i]) / 1.7) ** 2));
-        const wear = 0.06 + 0.12 * line + 0.24 * line * braking[i];
-        const dust = smoothstep(HW[i] - 2.2, HW[i], Math.abs(lateral)) * 0.1;
-        // Resurfaced stretches and patch repairs.
-        const patch = (fbm((i * step) / 90 + 3.1, lateral / 9 + 0.7) - 0.5) * 0.2;
-        out.copy(base).multiplyScalar(1 - wear + dust + patch);
+        // Rubber laid down on the line, heaviest where the cars brake.
+        const line = Math.exp(-(((lateral - racing[i]) / 1.9) ** 2));
+        const wear = 0.02 + 0.28 * line + 0.22 * line * braking[i];
+        // Off the line the surface stays dusty and pale towards the edges.
+        const dust = smoothstep(HW[i] - 2.6, HW[i], Math.abs(lateral)) * 0.17;
+        const lane =
+          laneSide[i] && Math.sign(lateral) === laneSide[i]
+            ? laneShade[i] * smoothstep(0, 0.5, Math.abs(lateral))
+            : 0;
+        const mottle =
+          (fbm((i * step) / 26 + 3.1, lateral / 6 + 0.7) - 0.5) * 0.12;
+        out
+          .copy(base)
+          .multiplyScalar(1 - wear + dust + relaid[i] + lane + mottle);
       },
     }),
     asphalt,
+  );
+  // Paving seams, tar-sealed cracks and oil stains over the whole surface.
+  add(
+    ribbon({
+      left: (i) => -HW[i],
+      right: (i) => HW[i],
+      lift: 0.004,
+      stretchAcross: true,
+      across: 4,
+      repeat: [1, 64],
+    }),
+    new T.MeshStandardMaterial({
+      map: roadWearTexture(),
+      transparent: true,
+      depthWrite: false,
+      roughness: 0.5,
+      envMapIntensity: 0.8,
+      polygonOffset: true,
+      polygonOffsetFactor: -2,
+      polygonOffsetUnits: -2,
+    }),
   );
   // Rubber streaks laid down under braking, two tyre tracks wide.
   add(
@@ -247,10 +297,11 @@ export function createSurface(scene: T.Object3D) {
     color: 0xe6ddcc,
     roughness: 1,
   });
-  // Spa paints its tarmac run-off with a band of colour beyond the kerbs.
+  // Spa paints its tarmac run-off with a band of colour beyond the kerbs:
+  // weathered paint, with the asphalt grain showing through.
   const band = new T.MeshStandardMaterial({
     ...road,
-    color: 0x5f8fbf,
+    color: 0x5d7d99,
     roughness: 1,
     normalScale: new T.Vector2(0.5, 0.5),
     polygonOffset: true,
@@ -281,8 +332,8 @@ export function createSurface(scene: T.Object3D) {
     add(
       ribbon({
         ...span(
-          (i) => from(i) + 1.2,
-          (i) => from(i) + 1.2 + Math.min(3, runoff[side][i] - 1.2),
+          (i) => from(i) + 0.8,
+          (i) => from(i) + 0.8 + Math.min(2, runoff[side][i] - 0.8),
         ),
         lift: -0.005,
         keep: (i) => wide(i) && runoff[side][i] > 4 && gravel[side][i] === 0,

@@ -28,9 +28,9 @@ const LIGHTING = {
     sunIntensity: 4.2,
     sky: 0xd8e2ea,
     ground: 0x5d6a48,
-    hemisphere: 0.4,
+    hemisphere: 0.75,
     fog: 0xbfd0dc,
-    exposure: 0.62,
+    exposure: 0.72,
     turbidity: 3.2,
     rayleigh: 1.1,
     clouds: 0.38,
@@ -69,7 +69,9 @@ export async function createTracksideScene(
     alpha: false,
     powerPreference: "high-performance",
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, fine ? 1.5 : 1.25));
+  renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio || 1, fine ? 1.5 : 1.25),
+  );
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = T.PCFShadowMap;
   renderer.toneMapping = T.ACESFilmicToneMapping;
@@ -97,7 +99,19 @@ export async function createTracksideScene(
   scene.add(sun, sun.target);
 
   // ── The world ────────────────────────────────────────────────────────────
-  const pause = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
+  const pause = () =>
+    new Promise<void>((resolve) => {
+      // Let pending input and painting run between expensive build stages.
+      if (
+        "scheduler" in window &&
+        typeof (window.scheduler as { yield?: () => Promise<void> }).yield ===
+          "function"
+      )
+        void (window.scheduler as { yield: () => Promise<void> })
+          .yield()
+          .then(resolve);
+      else setTimeout(resolve, 0);
+    });
   const ground = await createGround(fine, pause);
   scene.add(ground.mesh);
   await pause();
@@ -250,11 +264,25 @@ export async function createTracksideScene(
 
   const projected = new T.Vector3();
   const target = new T.Vector3();
+  let previousFrame: DriveFrame | undefined;
+  let previousAnchor = { x: 0, y: 0 };
+  let slowFrames = 0;
+  let pixelRatio = renderer.getPixelRatio();
   return {
     draw(frame) {
       const w = Math.max(1, host.clientWidth),
         h = Math.max(1, host.clientHeight);
-      if (w !== width || h !== height) {
+      const resized = w !== width || h !== height;
+      if (
+        !resized &&
+        previousFrame &&
+        (Object.keys(frame) as (keyof DriveFrame)[]).every(
+          (key) => frame[key] === previousFrame![key],
+        )
+      )
+        return previousAnchor;
+      previousFrame = { ...frame };
+      if (resized) {
         width = w;
         height = h;
         renderer.setSize(w, h, false);
@@ -276,14 +304,18 @@ export async function createTracksideScene(
       target.set(...pose.target);
       camera.position.set(...pose.position);
       camera.lookAt(target);
+      if (pose.roll) camera.rotateZ(pose.roll);
       const distance = camera.position.distanceTo(target);
       camera.near = Math.max(0.25, distance * 0.012);
       camera.fov = pose.fov;
+      // On short landscape screens the chapter bar and dock cover more of the
+      // lower frame, so lift the action a little higher.
+      const lift = w > h && h < 600 ? 0.07 : 0;
       camera.setViewOffset(
         w,
         h,
         -(pose.screen[0] - 0.5) * w,
-        -(pose.screen[1] - 0.5) * h,
+        -(pose.screen[1] - lift - 0.5) * h,
         w,
         h,
       );
@@ -325,12 +357,23 @@ export async function createTracksideScene(
         pin.scale.setScalar(h > w ? 0.032 : 0.045);
       });
 
+      const started = performance.now();
       renderer.render(scene, camera);
+      // Sustained expensive submissions lower resolution instead of making
+      // wheel input wait. Never change quality for a single shader upload.
+      if (performance.now() - started > 24) slowFrames++;
+      else slowFrames = Math.max(0, slowFrames - 1);
+      if (slowFrames >= 10 && pixelRatio > 1) {
+        pixelRatio = Math.max(1, pixelRatio - 0.25);
+        renderer.setPixelRatio(pixelRatio);
+        slowFrames = 0;
+      }
       projected.copy(venue.screens[frame.index].anchor).project(camera);
-      return {
+      previousAnchor = {
         x: ((projected.x + 1) * width) / 2,
         y: ((1 - projected.y) * height) / 2,
       };
+      return previousAnchor;
     },
     dispose,
   };

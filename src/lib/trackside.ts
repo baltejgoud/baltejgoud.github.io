@@ -36,8 +36,7 @@ const smoothLoop = (values: Float64Array, passes: number) => {
   for (let pass = 0; pass < passes; pass++) {
     const copy = values.slice();
     for (let i = 0; i < n; i++)
-      values[i] =
-        (copy[(i + n - 1) % n] + 2 * copy[i] + copy[(i + 1) % n]) / 4;
+      values[i] = (copy[(i + n - 1) % n] + 2 * copy[i] + copy[(i + 1) % n]) / 4;
   }
 };
 
@@ -122,8 +121,7 @@ const CURVE = new Float64Array(SAMPLES);
 for (let i = 0; i < SAMPLES; i++) {
   const a = (i + SAMPLES - 1) % SAMPLES,
     b = (i + 1) % SAMPLES;
-  CURVE[i] =
-    ((TX[b] - TX[a]) * -TZ[i] + (TZ[b] - TZ[a]) * TX[i]) / (2 * STEP);
+  CURVE[i] = ((TX[b] - TX[a]) * -TZ[i] + (TZ[b] - TZ[a]) * TX[i]) / (2 * STEP);
 }
 const BEND = CURVE.slice();
 smoothLoop(BEND, 30);
@@ -196,9 +194,7 @@ const ELEVATION = new Float64Array(SAMPLES).map((_, i) => profile(i * STEP));
 export const PIT_STRAIGHT: [number, number] = [-330, 150];
 const HALF_WIDTH = new Float64Array(SAMPLES).map((_, i) => {
   const s = lapDelta(i * STEP, 0);
-  return (
-    7 + smoothstep(-400, -330, s) * (1 - smoothstep(190, 250, s))
-  );
+  return 7 + smoothstep(-400, -330, s) * (1 - smoothstep(190, 250, s));
 });
 
 // ── Racing line ─────────────────────────────────────────────────────────────
@@ -296,7 +292,8 @@ function buildLayout() {
       kerb[side][i] = near ? 1 : 0;
       gravel[side][i] = inGravel && runoff[side][i] > 4 ? 1 : 0;
       let wall = HALF_WIDTH[i] + 1.3 + Math.max(7, runoff[side][i] + 3);
-      if (inside) wall = Math.min(wall, Math.max(HALF_WIDTH[i] + 3, 0.8 / toward));
+      if (inside)
+        wall = Math.min(wall, Math.max(HALF_WIDTH[i] + 3, 0.8 / toward));
       if (side === 1) {
         const pits =
           smoothstep(PIT_STRAIGHT[0] - 60, PIT_STRAIGHT[0], straight) *
@@ -387,8 +384,8 @@ export function carPose(distance: number) {
     Math.atan2(after[0] - position[0], after[2] - position[2]) -
     Math.atan2(position[0] - before[0], position[2] - before[2]);
   turn = Math.atan2(Math.sin(turn), Math.cos(turn));
-  // Bicycle model: 3.6 m wheelbase over the 6 m it took to turn.
-  const steer = clamp(Math.atan((3.6 * turn) / 6), -0.42, 0.42);
+  // Bicycle model: the 2026 car's 3.4 m wheelbase over the 6 m it took to turn.
+  const steer = clamp(Math.atan((3.4 * turn) / 6), -0.42, 0.42);
   return { s, position, heading, pitch, steer };
 }
 
@@ -418,14 +415,14 @@ function stopCameras(index: number) {
     Math.max(car.position[1], elevationAt(car.s + ahead)) + up,
     car.position[2] + cos * ahead - sin * left,
   ];
-  return { car, desktop: at(34, 10, 5), phone: at(62, 22, 17) };
+  return { car, desktop: at(28, 18, 6), phone: at(34, 40, 18) };
 }
 
 /** Trackside screen for a checkpoint, on a truss at the driver's right just past the car. */
 export function checkpointBoard(index: number) {
   const last = index === route.stops.length - 1;
   const { car, desktop } = stopCameras(index);
-  const s = car.s + (last ? 12 : 16);
+  const s = car.s + (last ? 10 : 9);
   const f = frameAt(s);
   const edge = halfWidthAt(s);
   // The last screen hangs on the pit wall; the rest stand in the verge.
@@ -449,6 +446,8 @@ export interface Shot {
   fov: number;
   /** Where the target sits on screen, as fractions of width and height. */
   screen: [number, number];
+  /** Bank about the view axis, radians. */
+  roll?: number;
 }
 const mix = (a: number, b: number, t: number) => a + (b - a) * t;
 const mix3 = (a: Vec3, b: Vec3, t: number): Vec3 => [
@@ -461,6 +460,7 @@ const blend = (a: Shot, b: Shot, t: number): Shot => ({
   target: mix3(a.target, b.target, t),
   fov: mix(a.fov, b.fov, t),
   screen: [mix(a.screen[0], b.screen[0], t), mix(a.screen[1], b.screen[1], t)],
+  roll: mix(a.roll ?? 0, b.roll ?? 0, t),
 });
 /** A drone move: distance changes geometrically so the descent feels even. */
 function swoop(from: Shot, to: Shot, t: number): Shot {
@@ -496,15 +496,37 @@ const overviewShot = (compact: boolean): Shot =>
         fov: 40,
         screen: [0.6, 0.5],
       };
-function chaseShot(distance: number, compact: boolean): Shot {
+/**
+ * The chase camera. At speed (`cruise` 0–1) it drops, hangs back and widens for
+ * a sense of speed; into a bend it swings to the outside to look across the
+ * corner and banks slightly with it.
+ */
+function chaseShot(distance: number, compact: boolean, cruise = 0): Shot {
   const { s } = carPose(distance);
-  const rail = carLine(s - (compact ? 17 : 10));
-  const ahead = carLine(s + 8);
+  // Cars brake for hairpins and chicanes, so the camera calms down there too.
+  let tight = 0;
+  for (let d = -12; d <= 48; d += 6)
+    tight = Math.max(tight, Math.abs(sample(BEND, s + d)));
+  const pace = cruise * (1 - smoothstep(1 / 140, 1 / 50, tight));
+  const back = (compact ? 17 : 10) + pace * (compact ? 3 : 3.5);
+  const rail = carLine(s - back);
+  const ahead = carLine(s + 8 + pace * 6);
+  // The bend over the next 40 m, averaged so chicanes don't flick the camera.
+  let bend = 0;
+  for (let d = 6; d <= 42; d += 6) bend += sample(BEND, s + d) / 7;
+  const f = frameAt(s - back);
+  // Outside of a right-hander is the driver's left (negative lateral).
+  const swing = clamp(-bend * 240, -2.6, 2.6) * (compact ? 0.35 : 1);
   return {
-    position: [rail[0], rail[1] + (compact ? 6.5 : 3), rail[2]],
+    position: [
+      rail[0] + f.rx * swing,
+      rail[1] + (compact ? 6.5 : 3) - pace * 0.7,
+      rail[2] + f.rz * swing,
+    ],
     target: [ahead[0], ahead[1] + 1, ahead[2]],
-    fov: compact ? 52 : 40,
-    screen: compact ? [0.5, 0.32] : [0.56, 0.5],
+    fov: (compact ? 52 : 40) + pace * (compact ? 6 : 9),
+    screen: compact ? [0.5, 0.32] : [0.56, 0.42],
+    roll: clamp(-bend * 2.2, -0.03, 0.03) * pace,
   };
 }
 /** The stop shot: the screen left of centre (the story opens beside it), the car right. */
@@ -517,8 +539,8 @@ function showcaseShot(index: number, compact: boolean): Shot {
     mix(car.position[2], anchor[2], 0.5),
   ];
   return compact
-    ? { position: phone, target, fov: 54, screen: [0.52, 0.27] }
-    : { position: desktop, target, fov: 40, screen: [0.55, 0.47] };
+    ? { position: phone, target, fov: 54, screen: [0.52, 0.28] }
+    : { position: desktop, target, fov: 46, screen: [0.65, 0.47] };
 }
 /** The camera dives from the overview while the car waits on the grid. */
 export const DIVE_END = 0.32;
@@ -546,7 +568,13 @@ const fromCarFrame = (car: CarPose, [ahead, up, left]: Vec3): Vec3 => {
  * carried along with the car in its own frame, and the camera's bearing, range
  * and height round the car are interpolated, so the car never leaves the frame.
  */
-function orbit(car: CarPose, chase: Shot, stop: Shot, stopCar: CarPose, t: number): Shot {
+function orbit(
+  car: CarPose,
+  chase: Shot,
+  stop: Shot,
+  stopCar: CarPose,
+  t: number,
+): Shot {
   const a = toCarFrame(car, chase.position),
     b = toCarFrame(stopCar, stop.position);
   const from = Math.atan2(a[2], a[0]),
@@ -564,12 +592,17 @@ function orbit(car: CarPose, chase: Shot, stop: Shot, stopCar: CarPose, t: numbe
   position[1] = Math.max(position[1], elevationAt(car.s + ahead) + 2);
   return {
     position,
-    target: mix3(chase.target, fromCarFrame(car, toCarFrame(stopCar, stop.target)), t),
+    target: mix3(
+      chase.target,
+      fromCarFrame(car, toCarFrame(stopCar, stop.target)),
+      t,
+    ),
     fov: mix(chase.fov, stop.fov, t),
     screen: [
       mix(chase.screen[0], stop.screen[0], t),
       mix(chase.screen[1], stop.screen[1], t),
     ],
+    roll: mix(chase.roll ?? 0, stop.roll ?? 0, t),
   };
 }
 
@@ -592,7 +625,10 @@ export function tracksidePose(
     index > 0
       ? 1 - smoothstep(0, Math.min(150, leg / 2), (frame.distance - from) * LAP)
       : 0;
-  let shot = chaseShot(frame.distance, compact);
+  // Pace peaks mid-leg and only builds on legs long enough to get going.
+  const along = clamp((frame.distance - from) / (to - from || 1), 0, 1);
+  const pace = Math.sin(Math.PI * along) * smoothstep(150, 700, leg);
+  let shot = chaseShot(frame.distance, compact, pace);
   const weight = easeJourney(Math.max(arriving, leaving));
   if (weight > 0) {
     const stop = arriving >= leaving ? index : index - 1;

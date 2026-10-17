@@ -6,6 +6,11 @@ import {
   clampJourney,
   journeyLegProgress,
   journeyLegs,
+  JOURNEY_CHAPTERS,
+  JOURNEY_INTRO,
+  JOURNEY_END,
+  JOURNEY_SCROLL_SCREENS,
+  journeyProgressAt,
   journeyScrollState,
   journeyStopProgress,
   pointOnJourney,
@@ -62,6 +67,47 @@ describe("career journey navigation", () => {
         ),
       ).toBeLessThan(20);
     }
+  });
+
+  it("spreads travel across the scroll gesture before revealing the story", () => {
+    for (let index = 1; index < route.stops.length; index++) {
+      const at = (fraction: number) =>
+        journeyScrollState(journeyProgressAt(index, fraction));
+      expect(at(0.45).distance).toBeLessThan(route.stops[index]);
+      expect(at(0.45).arrival).toBe(0);
+      expect(at(0.64).distance).toBeCloseTo(route.stops[index], 6);
+      expect(at(0.64).arrival).toBe(1);
+      // A chapter boundary must not teleport the car when scrolling either way.
+      expect(
+        Math.abs(at(0.000001).distance - at(-0.000001).distance),
+      ).toBeLessThan(0.00001);
+    }
+  });
+  it("gives each chapter scroll in proportion to its leg, at a steady pace", () => {
+    const legs = route.stops.map(
+      (to, i) => (to - (i > 0 ? route.stops[i - 1] : 0)) * route.circuitLength,
+    );
+    for (let i = 2; i < legs.length; i++)
+      expect(Math.sign(JOURNEY_CHAPTERS[i] - JOURNEY_CHAPTERS[i - 1])).toBe(
+        Math.sign(legs[i] - legs[i - 1]),
+      );
+    // Driving takes the first 55% of a chapter: roughly 1–2.5 km per screen.
+    legs.forEach((metres, i) => {
+      if (i === 0) return;
+      const pace = metres / (0.55 * JOURNEY_CHAPTERS[i]);
+      expect(pace).toBeGreaterThan(900);
+      expect(pace).toBeLessThan(2500);
+    });
+    // The chapters exactly fill the scroll between the intro and the outro.
+    expect(journeyProgressAt(0, 0)).toBeCloseTo(JOURNEY_INTRO, 10);
+    expect(journeyProgressAt(route.stops.length - 1, 1)).toBeCloseTo(
+      JOURNEY_END,
+      10,
+    );
+    expect(JOURNEY_SCROLL_SCREENS * (JOURNEY_END - JOURNEY_INTRO)).toBeCloseTo(
+      JOURNEY_CHAPTERS.reduce((sum, h) => sum + h, 0),
+      10,
+    );
   });
   it("keeps the route ordered while Haritha and the internship overlap in time", () => {
     expect(

@@ -80,7 +80,9 @@ class Field {
   }
   index(x: number, y: number) {
     const { w, h } = this;
-    return (((Math.round(y) % h) + h) % h) * w + (((Math.round(x) % w) + w) % w);
+    return (
+      (((Math.round(y) % h) + h) % h) * w + (((Math.round(x) % w) + w) % w)
+    );
   }
   at(x: number, y: number) {
     return this.data[this.index(x, y)];
@@ -183,31 +185,35 @@ function tiled(
 }
 
 // ── Track surfaces ─────────────────────────────────────────────────────────
-/** Aggregate in binder with relief and roughness. Vertex colours carry the rubbered line. */
+/**
+ * Aggregate in binder with relief and roughness. Stones are low-contrast and
+ * polished smoother than the binder, so the surface sheens at a low sun.
+ * Vertex colours carry the rubbered line and resurfaced patches.
+ */
 export function asphaltMaps() {
   const size = 512,
     random = mulberry32(11);
   const tone = new Field(size, size),
     height = new Field(size, size),
-    rough = new Field(size, size, 0.92);
+    rough = new Field(size, size, 0.95);
   for (let y = 0; y < size; y++)
     for (let x = 0; x < size; x++) {
       const i = y * size + x;
       tone.data[i] =
-        0.55 +
-        (tileFbm(x, y, size, 5, 4, 3) - 0.5) * 0.26 +
-        (random() - 0.5) * 0.12;
-      height.data[i] = random() * 0.35;
+        0.5 +
+        (tileFbm(x, y, size, 6, 4, 3) - 0.5) * 0.18 +
+        (random() - 0.5) * 0.07;
+      height.data[i] = random() * 0.3;
     }
-  for (let n = 0; n < 12000; n++) {
-    const r = 0.7 + random() ** 2.2 * 2.8;
+  for (let n = 0; n < 14000; n++) {
+    const r = 0.6 + random() ** 2.4 * 2.4;
     const pick = random();
     const shade =
-      pick < 0.1
-        ? 0.86 + random() * 0.14
-        : pick < 0.34
-          ? 0.28 + random() * 0.12
-          : 0.48 + random() * 0.24;
+      pick < 0.12
+        ? 0.66 + random() * 0.1
+        : pick < 0.4
+          ? 0.3 + random() * 0.1
+          : 0.44 + random() * 0.16;
     tone.ellipse(
       random() * size,
       random() * size,
@@ -215,15 +221,20 @@ export function asphaltMaps() {
       r * (0.6 + random() * 0.4),
       random() * 3,
       (i, d) => {
-        tone.data[i] = shade * (1 - 0.3 * d * d);
-        height.data[i] = Math.max(height.data[i], (1 - d * d) * (0.5 + r * 0.45));
-        rough.data[i] = 0.72 + d * 0.12;
+        tone.data[i] = shade * (1 - 0.25 * d * d);
+        height.data[i] = Math.max(
+          height.data[i],
+          (1 - d * d) * (0.5 + r * 0.45),
+        );
+        rough.data[i] = 0.62 + d * 0.2;
       },
     );
   }
   return {
-    map: canvasTexture(size, size, (ctx, w, h) => pixels(ctx, w, h, grey(tone))),
-    normalMap: normalTexture(height, 0.85),
+    map: canvasTexture(size, size, (ctx, w, h) =>
+      pixels(ctx, w, h, grey(tone)),
+    ),
+    normalMap: normalTexture(height, 0.8),
     roughnessMap: canvasTexture(
       size,
       size,
@@ -232,6 +243,103 @@ export function asphaltMaps() {
     ),
   };
 }
+
+/**
+ * Road wear over one 64 m stretch, stretched across the full width: paving
+ * seams between the three laid lanes, a transverse joint, tar-sealed cracks
+ * (some following the seams) and faint oil stains. Black with alpha.
+ */
+export const roadWearTexture = () =>
+  canvasTexture(512, 2048, (ctx, w, h) => {
+    const random = mulberry32(91);
+    ctx.clearRect(0, 0, w, h);
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    for (const [u, alpha] of [
+      [1 / 3, 0.2],
+      [2 / 3, 0.2],
+    ]) {
+      ctx.strokeStyle = `rgba(10, 10, 12, ${alpha})`;
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      for (let y = 0; y <= h; y += 64)
+        ctx.lineTo(u * w + Math.sin(y / 300 + u * 9) * 1.5, y);
+      ctx.stroke();
+    }
+    ctx.strokeStyle = "rgba(10, 10, 12, 0.18)";
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(0, h * 0.62);
+    ctx.lineTo(w, h * 0.62 + 6);
+    ctx.stroke();
+    // Tar snakes: glossy black sealant laid along cracks, with short branches.
+    const stroke = (points: [number, number][]) => {
+      for (const oy of [-h, 0, h]) {
+        ctx.beginPath();
+        points.forEach(([x, y], k) =>
+          k ? ctx.lineTo(x, y + oy) : ctx.moveTo(x, y + oy),
+        );
+        ctx.stroke();
+      }
+    };
+    const snake = (x: number, y: number, heading: number, steps: number) => {
+      ctx.strokeStyle = `rgba(6, 6, 7, ${0.4 + random() * 0.2})`;
+      const width = 1.2 + random() * 1.4;
+      const points: [number, number][] = [[x, y]];
+      const branches: [number, number][][] = [];
+      for (let k = 0; k < steps; k++) {
+        heading += (random() - 0.5) * 0.9;
+        x += Math.cos(heading) * (6 + random() * 10);
+        y += Math.sin(heading) * (6 + random() * 10);
+        points.push([x, y]);
+        if (random() < 0.08) {
+          const branch: [number, number][] = [[x, y]];
+          let a = heading + (random() < 0.5 ? 1.2 : -1.2),
+            bx = x,
+            by = y;
+          for (let b = 0; b < 4; b++) {
+            a += (random() - 0.5) * 0.8;
+            bx += Math.cos(a) * 9;
+            by += Math.sin(a) * 9;
+            branch.push([bx, by]);
+          }
+          branches.push(branch);
+        }
+      }
+      ctx.lineWidth = width;
+      stroke(points);
+      ctx.lineWidth = width * 0.7;
+      branches.forEach(stroke);
+    };
+    for (let n = 0; n < 5; n++) {
+      // Along a seam…
+      const u = random() < 0.5 ? 1 / 3 : 2 / 3;
+      snake(
+        u * w,
+        random() * h,
+        Math.PI / 2 + (random() - 0.5) * 0.3,
+        10 + Math.floor(random() * 26),
+      );
+    }
+    for (let n = 0; n < 7; n++)
+      // …and across the lanes.
+      snake(
+        random() * w,
+        random() * h,
+        (random() < 0.5 ? 0 : Math.PI) + (random() - 0.5) * 0.7,
+        4 + Math.floor(random() * 12),
+      );
+    for (let n = 0; n < 6; n++) {
+      const x = random() * w,
+        y = random() * h,
+        r = 8 + random() * 22;
+      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, "rgba(0, 0, 0, 0.16)");
+      g.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(x - r, y - r, r * 2, r * 2);
+    }
+  });
 
 /** Mown turf: blades over soft mottling. Mixed at two scales in the terrain shader. */
 export const grassTexture = () =>
@@ -246,7 +354,14 @@ export const grassTexture = () =>
         (random() - 0.5) * 0.1;
       return [v * 0.9, v, v * 0.76];
     });
-    const blades = ["#f3fadc", "#dbeab4", "#b4cc86", "#8ea862", "#6f8a4c", "#c8d49a"];
+    const blades = [
+      "#f3fadc",
+      "#dbeab4",
+      "#b4cc86",
+      "#8ea862",
+      "#6f8a4c",
+      "#c8d49a",
+    ];
     ctx.lineCap = "round";
     for (let n = 0; n < 16000; n++) {
       const x = random() * w,
@@ -303,7 +418,9 @@ export function gravelMaps() {
     );
   }
   return {
-    map: canvasTexture(size, size, (ctx, w, h) => pixels(ctx, w, h, colours(rgb))),
+    map: canvasTexture(size, size, (ctx, w, h) =>
+      pixels(ctx, w, h, colours(rgb)),
+    ),
     normalMap: normalTexture(height, 0.7),
   };
 }
@@ -329,7 +446,10 @@ export function kerbMaps() {
       height.data[i] = ridge * outer * 1.6 + (seam ? -1 : 0);
       const base = y < h / 2 ? red : white;
       const grime =
-        1 - 0.18 * tileFbm(x, y, w, 4, 3, 52) - 0.08 * random() - (seam ? 0.25 : 0);
+        1 -
+        0.18 * tileFbm(x, y, w, 4, 3, 52) -
+        0.08 * random() -
+        (seam ? 0.25 : 0);
       rgb.set([base[0] * grime, base[1] * grime, base[2] * grime], i * 3);
     }
   // Rubber laid down by the inside wheels.
@@ -425,7 +545,14 @@ export const spruceTexture = () =>
     core.addColorStop(0.7, "rgba(41, 69, 47, 0)");
     ctx.fillStyle = core;
     ctx.fillRect(0, 0, w, h);
-    const greens = ["#2b4a31", "#335a38", "#3d6741", "#4a7546", "#5a854f", "#739a5c"];
+    const greens = [
+      "#2b4a31",
+      "#335a38",
+      "#3d6741",
+      "#4a7546",
+      "#5a854f",
+      "#739a5c",
+    ];
     ctx.lineCap = "round";
     const boughs = 22;
     for (let b = 0; b < boughs; b++) {
@@ -440,7 +567,8 @@ export const spruceTexture = () =>
           const side = k % 2 ? 1 : -1,
             reach = spread * (0.5 + random() * 0.6),
             drop = reach * (0.5 + random() * 0.7);
-          ctx.strokeStyle = greens[Math.min(5, Math.floor(random() * 2.5 + t * 3.5))];
+          ctx.strokeStyle =
+            greens[Math.min(5, Math.floor(random() * 2.5 + t * 3.5))];
           ctx.lineWidth = 1 + random() * 0.8;
           tiled(x, y, 14, w, h, (px, py) => {
             ctx.beginPath();
@@ -460,7 +588,14 @@ export const leafTexture = () =>
   canvasTexture(256, 256, (ctx, w, h) => {
     const random = mulberry32(81);
     ctx.clearRect(0, 0, w, h);
-    const greens = ["#36602a", "#437032", "#517f39", "#5f8e41", "#73a24e", "#2f5525"];
+    const greens = [
+      "#36602a",
+      "#437032",
+      "#517f39",
+      "#5f8e41",
+      "#73a24e",
+      "#2f5525",
+    ];
     for (let c = 0; c < 150; c++) {
       const cx = random() * w,
         cy = random() * h,
@@ -529,16 +664,25 @@ export const crowdTexture = (seed: number) =>
       ctx.fillStyle = r % 2 ? "#3b4552" : "#424d5b";
       ctx.fillRect(0, y, w, rowH);
       ctx.fillStyle = "#1f5aa8";
-      for (let x = 0; x < w; x += seatW) ctx.fillRect(x + 1, y + rowH * 0.5, seatW - 2, rowH * 0.45);
+      for (let x = 0; x < w; x += seatW)
+        ctx.fillRect(x + 1, y + rowH * 0.5, seatW - 2, rowH * 0.45);
       for (let x = 0; x < w; x += seatW) {
         if (random() < 0.12) continue;
-        const shirt = shirts[Math.floor(random() * (random() < 0.4 ? 3 : shirts.length))];
+        const shirt =
+          shirts[Math.floor(random() * (random() < 0.4 ? 3 : shirts.length))];
         const jitter = (random() - 0.5) * 3;
         ctx.fillStyle = shirt;
         ctx.fillRect(x + 2 + jitter, y + rowH * 0.42, seatW - 4, rowH * 0.5);
-        ctx.fillStyle = random() < 0.2 ? shirt : skin[Math.floor(random() * skin.length)];
+        ctx.fillStyle =
+          random() < 0.2 ? shirt : skin[Math.floor(random() * skin.length)];
         ctx.beginPath();
-        ctx.arc(x + seatW / 2 + jitter, y + rowH * 0.3, seatW * 0.24, 0, Math.PI * 2);
+        ctx.arc(
+          x + seatW / 2 + jitter,
+          y + rowH * 0.3,
+          seatW * 0.24,
+          0,
+          Math.PI * 2,
+        );
         ctx.fill();
       }
     }
@@ -575,41 +719,59 @@ export const screenTexture = (
   name: string,
   place: string,
   color: string,
+  title: string,
 ) =>
   canvasTexture(
     1024,
     512,
     (ctx, w, h) => {
       const g = ctx.createLinearGradient(0, 0, 0, h);
-      g.addColorStop(0, "#0e1f33");
-      g.addColorStop(1, "#08131f");
+      g.addColorStop(0, "#132c3d");
+      g.addColorStop(1, "#060f1b");
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, w, h);
       ctx.fillStyle = color;
-      ctx.fillRect(0, 0, w, 26);
-      ctx.fillRect(58, 120, 10, 270);
+      ctx.fillRect(0, 0, 14, h);
+      ctx.fillRect(48, 99, w - 96, 2);
+      ctx.fillStyle = "#d7e5e9";
+      ctx.font = "600 22px monospace";
+      ctx.fillText("THE CAREER GRAND PRIX", 48, 62);
+      ctx.textAlign = "right";
+      ctx.fillStyle = color;
+      ctx.fillText(`${String(number).padStart(2, "0")} / 07`, w - 48, 62);
+      ctx.textAlign = "left";
       ctx.fillStyle = "#ffffff";
-      ctx.font = "800 210px Arial, sans-serif";
+      ctx.font = "800 132px Arial, sans-serif";
       ctx.textBaseline = "alphabetic";
-      ctx.fillText(String(number).padStart(2, "0"), 96, 300);
-      ctx.font = "700 30px Arial, sans-serif";
-      ctx.fillStyle = "#9fb3c8";
-      ctx.fillText("CAREER CHECKPOINT", 100, 110);
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "800 70px Arial, sans-serif";
-      ctx.fillText(name.toUpperCase(), 96, 400, w - 150);
-      ctx.fillStyle = "#9fb3c8";
-      ctx.font = "600 34px Arial, sans-serif";
-      ctx.fillText(place.toUpperCase(), 100, 455, w - 150);
+      ctx.fillText(name.toUpperCase(), 48, 260, w - 96);
+      ctx.fillStyle = "#c4d2da";
+      ctx.font = "500 36px Arial, sans-serif";
+      ctx.fillText(title, 52, 330, w - 104);
+      ctx.fillStyle = "#ffffff30";
+      ctx.fillRect(48, 394, w - 96, 1);
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(59, 449, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#c4d2da";
+      ctx.font = "600 25px monospace";
+      ctx.fillText(place.toUpperCase(), 84, 457, w - 300);
+      ctx.textAlign = "right";
+      ctx.fillText("SPA / 7.004 KM", w - 48, 457);
       // LED pixel grid
-      ctx.fillStyle = "#00000030";
+      ctx.fillStyle = "#00000018";
       for (let x = 0; x < w; x += 4) ctx.fillRect(x, 0, 1, h);
       for (let y = 0; y < h; y += 4) ctx.fillRect(0, y, w, 1);
     },
     { repeat: false },
   );
 
-export const signTexture = (text: string, bg: string, fg: string, width = 1024) =>
+export const signTexture = (
+  text: string,
+  bg: string,
+  fg: string,
+  width = 1024,
+) =>
   canvasTexture(
     width,
     128,

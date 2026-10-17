@@ -114,17 +114,25 @@ export function createVenue(scene: T.Object3D, ground: Ground) {
     orange: new T.MeshStandardMaterial({ color: 0xf47b20, roughness: 0.6 }),
   };
   const teams = TEAMS.map(
-    (color) => new T.MeshStandardMaterial({ color, roughness: 0.45, metalness: 0.2 }),
+    (color) =>
+      new T.MeshStandardMaterial({ color, roughness: 0.45, metalness: 0.2 }),
   );
   const crowds = [3, 5, 8].map(
-    (seed) => new T.MeshStandardMaterial({ map: crowdTexture(seed), roughness: 0.9 }),
+    (seed) =>
+      new T.MeshStandardMaterial({ map: crowdTexture(seed), roughness: 0.9 }),
   );
   const hoardings = HOARDINGS.map(
-    (design) => new T.MeshStandardMaterial({ map: hoardingTexture(design), roughness: 0.55 }),
+    (design) =>
+      new T.MeshStandardMaterial({
+        map: hoardingTexture(design),
+        roughness: 0.55,
+      }),
   );
   const clearOf = (x: number, z: number, margin: number) => {
     const hit = nearestSample(x, z, 120);
-    return hit.index < 0 || hit.distance > trackModel.halfWidth[hit.index] + margin;
+    return (
+      hit.index < 0 || hit.distance > trackModel.halfWidth[hit.index] + margin
+    );
   };
   /** Placer whose local +z points away from the track on `side`. */
   const trackside = (s: number, side: Side, lateral: number) => {
@@ -138,8 +146,14 @@ export function createVenue(scene: T.Object3D, ground: Ground) {
   // ── Grandstands ──────────────────────────────────────────────────────────
   const quad = (a: Vec3, b: Vec3, c: Vec3, d: Vec3, u: number, v: number) => {
     const g = new T.BufferGeometry();
-    g.setAttribute("position", new T.Float32BufferAttribute([...a, ...b, ...c, ...d], 3));
-    g.setAttribute("uv", new T.Float32BufferAttribute([0, 0, u, 0, u, v, 0, v], 2));
+    g.setAttribute(
+      "position",
+      new T.Float32BufferAttribute([...a, ...b, ...c, ...d], 3),
+    );
+    g.setAttribute(
+      "uv",
+      new T.Float32BufferAttribute([0, 0, u, 0, u, v, 0, v], 2),
+    );
     g.setIndex([0, 1, 2, 0, 2, 3]);
     g.computeVertexNormals();
     return g;
@@ -175,7 +189,9 @@ export function createVenue(scene: T.Object3D, ground: Ground) {
     ]);
     if (!corners.every(([x, z]) => clearOf(x, z, 9))) {
       if (process.env.NODE_ENV !== "production")
-        console.warn(`[trackside] grandstand at ${stand.s} m overlaps the circuit`);
+        console.warn(
+          `[trackside] grandstand at ${stand.s} m overlaps the circuit`,
+        );
       return;
     }
     const base = Math.min(...corners.map(([x, z]) => ground.heightAt(x, z)));
@@ -194,14 +210,43 @@ export function createVenue(scene: T.Object3D, ground: Ground) {
       ),
       p.matrix,
     );
-    p.box(mat.cladding, stand.length, top + 6, 0.5, 0, (top + 6) / 2 - 5, depth + 0.35);
+    p.box(
+      mat.cladding,
+      stand.length,
+      top + 6,
+      0.5,
+      0,
+      (top + 6) / 2 - 5,
+      depth + 0.35,
+    );
     p.add(mat.concrete, sideWall(depth, top), -half, 0, 0);
     p.add(mat.concrete, sideWall(depth, top), half + 0.5, 0, 0);
     if (stand.roof) {
       const height = top + 6.5;
-      p.box(mat.roof, stand.length + 3, 0.5, depth + 7, 0, height, depth / 2 - 2.5, -0.06);
-      for (let x = -half; x <= half + 0.1; x += stand.length / Math.ceil(stand.length / 18))
-        p.box(mat.steel, 0.6, height + 5, 0.6, x, height / 2 - 2.5, depth + 0.9);
+      p.box(
+        mat.roof,
+        stand.length + 3,
+        0.5,
+        depth + 7,
+        0,
+        height,
+        depth / 2 - 2.5,
+        -0.06,
+      );
+      for (
+        let x = -half;
+        x <= half + 0.1;
+        x += stand.length / Math.ceil(stand.length / 18)
+      )
+        p.box(
+          mat.steel,
+          0.6,
+          height + 5,
+          0.6,
+          x,
+          height / 2 - 2.5,
+          depth + 0.9,
+        );
     }
     // Ad boards along the front of the stand.
     for (let x = -half + 4; x < half - 3; x += 6.4)
@@ -232,7 +277,10 @@ export function createVenue(scene: T.Object3D, ground: Ground) {
     dz = (b.z - a.z) / length;
   const pitYaw = yawAlong(dx, dz);
   const garageFront = halfWidthAt(0) + 16;
-  const mid = { x: (a.x + b.x) / 2 - dz * garageFront, z: (a.z + b.z) / 2 + dx * garageFront };
+  const mid = {
+    x: (a.x + b.x) / 2 - dz * garageFront,
+    z: (a.z + b.z) / 2 + dx * garageFront,
+  };
   const midY = (a.y + b.y) / 2;
   const pits = new Placer(batch, { x: mid.x, y: midY - 0.2, z: mid.z }, pitYaw);
   const halfLength = length / 2;
@@ -242,7 +290,15 @@ export function createVenue(scene: T.Object3D, ground: Ground) {
   for (let g = 0; g < garages; g++) {
     const x = -halfLength + bay * (g + 0.5);
     pits.box(mat.interior, bay - 1.6, 4.2, 0.3, x, 2.1, -0.1);
-    pits.box(teams[Math.floor(g / 2) % teams.length], bay - 0.6, 0.7, 0.3, x, 4.7, -0.12);
+    pits.box(
+      teams[Math.floor(g / 2) % teams.length],
+      bay - 0.6,
+      0.7,
+      0.3,
+      x,
+      4.7,
+      -0.12,
+    );
   }
   pits.box(mat.roof, length + 2, 0.35, 25, 0, 5.4, 9.5);
   pits.box(mat.glass, length, 3.3, 20, 0, 7.2, 12);
@@ -254,7 +310,9 @@ export function createVenue(scene: T.Object3D, ground: Ground) {
     pits.box(mat.dark, 0.18, 3.3, 0.2, x, 10.6, 1.9);
   }
   pits.add(
-    new T.MeshBasicMaterial({ map: signTexture("SPA-FRANCORCHAMPS", "#0d1724", "#ffffff") }),
+    new T.MeshBasicMaterial({
+      map: signTexture("SPA-FRANCORCHAMPS", "#0d1724", "#ffffff"),
+    }),
     new T.PlaneGeometry(64, 8),
     0,
     16.5,
@@ -292,14 +350,24 @@ export function createVenue(scene: T.Object3D, ground: Ground) {
       const p = new Placer(batch, { x: wx, y: y - 1, z: wz }, pitYaw);
       p.box(material, w, h + 1, d, 0, (h + 1) / 2, 0);
       if (h > 5) p.box(mat.glass, w + 0.2, 2.6, d + 0.2, 0, h - 1.2, 0);
-      clearings.push({ x: wx, z: wz, yaw: pitYaw, halfLength: w / 2 + 8, halfDepth: d / 2 + 8 });
+      clearings.push({
+        x: wx,
+        z: wz,
+        yaw: pitYaw,
+        halfLength: w / 2 + 8,
+        halfDepth: d / 2 + 8,
+      });
     }
   }
 
   // ── Start gantry with the five red lights ────────────────────────────────
   const g = frameAt(3);
   const span = halfWidthAt(3) + 2.4;
-  const gantry = new Placer(batch, { x: g.x, y: g.y, z: g.z }, yawAlong(g.tx, g.tz));
+  const gantry = new Placer(
+    batch,
+    { x: g.x, y: g.y, z: g.z },
+    yawAlong(g.tx, g.tz),
+  );
   for (const z of [-span, span]) gantry.box(mat.dark, 0.9, 10, 0.9, 0, 4.6, z);
   gantry.box(mat.dark, 1.2, 1.5, span * 2 + 0.9, 0, 8.9, 0);
   gantry.add(
@@ -329,7 +397,16 @@ export function createVenue(scene: T.Object3D, ground: Ground) {
     const z = (k - 2) * 1.05;
     gantry.box(mat.dark, 0.5, 1.8, 0.75, 0, 7.2, z);
     for (const y of [7.62, 6.78])
-      gantry.add(lamp, new T.CircleGeometry(0.24, 20), -0.27, y, z, 0, -Math.PI / 2, 0);
+      gantry.add(
+        lamp,
+        new T.CircleGeometry(0.24, 20),
+        -0.27,
+        y,
+        z,
+        0,
+        -Math.PI / 2,
+        0,
+      );
   });
 
   // ── Marshal posts and TV camera towers ──────────────────────────────────
@@ -361,7 +438,8 @@ export function createVenue(scene: T.Object3D, ground: Ground) {
       [1.2, 2.4],
     ])
       p.box(mat.steel, 0.16, 11, 0.16, lx, 5.5, lz);
-    for (let y = 2; y < 11; y += 3) p.box(mat.steel, 2.5, 0.1, 0.1, 0, y, 0, Math.PI / 5);
+    for (let y = 2; y < 11; y += 3)
+      p.box(mat.steel, 2.5, 0.1, 0.1, 0, y, 0, Math.PI / 5);
     p.box(mat.hut, 3.4, 0.25, 3.4, 0, 11, 1.2);
     p.box(mat.dark, 0.5, 0.5, 1, 0, 11.6, 0.6);
     p.box(mat.orange, 0.06, 1, 3.4, -1.7, 11.6, 1.2);
@@ -374,17 +452,60 @@ export function createVenue(scene: T.Object3D, ground: Ground) {
   const screenBatch = new Batch();
   journeyStories.forEach((story, i) => {
     const board = checkpointBoard(i);
-    const y = Math.min(board.base[1], ground.heightAt(board.base[0], board.base[2]));
-    const p = new Placer(screenBatch, { x: board.base[0], y, z: board.base[2] }, board.yaw);
+    const y = Math.min(
+      board.base[1],
+      ground.heightAt(board.base[0], board.base[2]),
+    );
+    const p = new Placer(
+      screenBatch,
+      { x: board.base[0], y, z: board.base[2] },
+      board.yaw,
+    );
     const { width, height, clearance } = BOARD;
     const centre = clearance + height / 2;
     for (const x of [-width / 2 + 1.2, width / 2 - 1.2])
-      p.box(mat.dark, 0.5, centre + 0.5, 0.5, x, (centre + 0.5) / 2 - 0.5, -0.5);
+      p.box(
+        mat.dark,
+        0.5,
+        centre + 0.5,
+        0.5,
+        x,
+        (centre + 0.5) / 2 - 0.5,
+        -0.5,
+      );
     p.box(mat.dark, width + 0.7, height + 0.7, 0.45, 0, centre, -0.3);
+    const trim = new T.MeshStandardMaterial({
+      color: story.color,
+      metalness: 0.4,
+      roughness: 0.4,
+      emissive: story.color,
+      emissiveIntensity: 0.3,
+    });
+    p.box(trim, width + 0.8, 0.08, 0.12, 0, centre + height / 2 + 0.22, -0.02);
+    p.box(
+      mat.steel,
+      width + 1,
+      0.14,
+      0.75,
+      0,
+      centre - height / 2 - 0.35,
+      -0.3,
+    );
+    // Ribbed rear housing and braced feet give the screens a physical presence.
+    for (const x of [-width / 2 + 1.2, width / 2 - 1.2]) {
+      p.box(mat.steel, 1.7, 0.18, 2.2, x, 0.1, -0.5);
+      p.box(mat.steel, 0.16, clearance, 0.16, x, clearance / 2, -0.9);
+    }
     const mesh = new T.Mesh(
       new T.PlaneGeometry(width, height),
       new T.MeshBasicMaterial({
-        map: screenTexture(i + 1, story.name, route.corners[i], story.color),
+        map: screenTexture(
+          i + 1,
+          story.name,
+          route.corners[i],
+          story.color,
+          story.title,
+        ),
         toneMapped: false,
       }),
     );

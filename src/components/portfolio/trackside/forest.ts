@@ -44,7 +44,10 @@ function shade(
   }
   g.setAttribute("color", new T.BufferAttribute(colors, 3));
   if (!g.getAttribute("uv"))
-    g.setAttribute("uv", new T.BufferAttribute(new Float32Array(position.count * 2), 2));
+    g.setAttribute(
+      "uv",
+      new T.BufferAttribute(new Float32Array(position.count * 2), 2),
+    );
   return g;
 }
 
@@ -79,7 +82,11 @@ function spruce(tiers: number, segments: number, rows: number, trunk: boolean) {
   if (trunk)
     parts.push(
       shade(
-        new T.CylinderGeometry(0.011, 0.022, 0.34, 5, 1, true).translate(0, 0.17, 0),
+        new T.CylinderGeometry(0.011, 0.022, 0.34, 5, 1, true).translate(
+          0,
+          0.17,
+          0,
+        ),
         new T.Vector3(0, 0.17, 0),
         0,
         () => 0.75,
@@ -127,7 +134,11 @@ function beech(detail: number) {
   const random = mulberry32(17 + detail);
   const parts = [
     shade(
-      new T.CylinderGeometry(0.016, 0.032, 0.52, 6, 1, true).translate(0, 0.26, 0),
+      new T.CylinderGeometry(0.016, 0.032, 0.52, 6, 1, true).translate(
+        0,
+        0.26,
+        0,
+      ),
       new T.Vector3(0, 0.26, 0),
       0,
       () => 0.7,
@@ -150,8 +161,19 @@ function beech(detail: number) {
     for (let i = 0; i < position.count; i++) {
       v.fromBufferAttribute(position, i).normalize();
       const lump =
-        0.82 + 0.36 * (0.5 + 0.5 * Math.sin(v.x * 4.1 + a) * Math.sin(v.y * 3.7 + b) * Math.sin(v.z * 4.4 + c));
-      position.setXYZ(i, mx + v.x * r * lump, my + v.y * r * lump * 0.88, mz + v.z * r * lump);
+        0.82 +
+        0.36 *
+          (0.5 +
+            0.5 *
+              Math.sin(v.x * 4.1 + a) *
+              Math.sin(v.y * 3.7 + b) *
+              Math.sin(v.z * 4.4 + c));
+      position.setXYZ(
+        i,
+        mx + v.x * r * lump,
+        my + v.y * r * lump * 0.88,
+        mz + v.z * r * lump,
+      );
     }
     g.deleteAttribute("normal");
     g.computeVertexNormals();
@@ -175,18 +197,34 @@ export async function createForest(
   pause: () => Promise<void>,
 ) {
   const random = mulberry32(91);
-  type Tree = { x: number; y: number; z: number; h: number; w: number; r: number; c: T.Color };
+  type Tree = {
+    x: number;
+    y: number;
+    z: number;
+    h: number;
+    w: number;
+    r: number;
+    c: T.Color;
+  };
   const near: Tree[] = [],
     leafy: Tree[] = [],
     far: Tree[] = [];
-  const plant = (spacing: number, extentX: number, extentZ: number, ring: [number, number]) => {
+  const plant = (
+    spacing: number,
+    extentX: number,
+    extentZ: number,
+    ring: [number, number],
+  ) => {
     for (let gx = -extentX; gx <= extentX; gx += spacing)
       for (let gz = -extentZ; gz <= extentZ; gz += spacing) {
         const x = gx + (random() - 0.5) * spacing * 0.9,
           z = gz + (random() - 0.5) * spacing * 0.9;
         const { distance, index } = ground.trackDistance(x, z);
         if (distance < ring[0] || distance >= ring[1]) continue;
-        const wall = Math.max(trackModel.barrier[0][index], trackModel.barrier[1][index]);
+        const wall = Math.max(
+          trackModel.barrier[0][index],
+          trackModel.barrier[1][index],
+        );
         if (distance < Math.max(24, wall + 9)) continue;
         const chance =
           forestMask(x, z) * 0.95 + 0.3 * (1 - smoothstep(40, 220, distance));
@@ -198,10 +236,22 @@ export async function createForest(
         // Near trees tint their textures; distant ones carry the whole colour.
         const c =
           ring[0] > 0
-            ? new T.Color().setHSL(0.36 + random() * 0.04, 0.3 + random() * 0.14, 0.12 + random() * 0.06)
+            ? new T.Color().setHSL(
+                0.36 + random() * 0.04,
+                0.3 + random() * 0.14,
+                0.12 + random() * 0.06,
+              )
             : conifer
-              ? new T.Color().setHSL(0.36 + random() * 0.08, 0.12 + random() * 0.14, 0.46 + random() * 0.16)
-              : new T.Color().setHSL(0.2 + random() * 0.08, 0.3 + random() * 0.25, 0.62 + random() * 0.2);
+              ? new T.Color().setHSL(
+                  0.36 + random() * 0.08,
+                  0.12 + random() * 0.14,
+                  0.46 + random() * 0.16,
+                )
+              : new T.Color().setHSL(
+                  0.2 + random() * 0.08,
+                  0.3 + random() * 0.25,
+                  0.62 + random() * 0.2,
+                );
         const tree = {
           x,
           y,
@@ -220,9 +270,11 @@ export async function createForest(
         else leafy.push(tree);
       }
   };
-  plant(fine ? 13 : 18, 1900, 1450, [0, 520]);
+  // Spend geometry beside the road; the broader distant canopy fills the
+  // aerial view without drawing detailed foliage across the entire valley.
+  plant(fine ? 15 : 19, 1900, 1450, [0, 340]);
   await pause();
-  plant(fine ? 22 : 32, 4600, 3800, [520, Infinity]);
+  plant(fine ? 25 : 34, 4600, 3800, [340, Infinity]);
   await pause();
 
   const matrix = new T.Matrix4(),
@@ -238,11 +290,20 @@ export async function createForest(
       side: T.DoubleSide,
       roughness: 0.9,
     });
-  const distant = new T.MeshStandardMaterial({ vertexColors: true, roughness: 0.95 });
+  const distant = new T.MeshStandardMaterial({
+    vertexColors: true,
+    roughness: 0.95,
+  });
   const meshes: T.InstancedMesh[] = [];
   // Chunk the forest so whole patches outside the view (or the shadow camera) are culled.
   for (const [list, geometry, material, shadow, chunk] of [
-    [near, fine ? spruce(5, 7, 2, true) : spruce(4, 6, 1, true), foliage(spruceTexture()), true, 450],
+    [
+      near,
+      fine ? spruce(5, 7, 2, true) : spruce(4, 6, 1, true),
+      foliage(spruceTexture()),
+      true,
+      450,
+    ],
     [leafy, beech(fine ? 1 : 0), foliage(leafTexture()), true, 450],
     [far, spruce(2, 5, 1, false), distant, false, 1600],
   ] as [Tree[], T.BufferGeometry, T.Material, boolean, number][]) {
@@ -257,7 +318,11 @@ export async function createForest(
       const mesh = new T.InstancedMesh(geometry, material, trees.length);
       trees.forEach((t, i) => {
         q.setFromAxisAngle(up, t.r);
-        matrix.compose(new T.Vector3(t.x, t.y, t.z), q, new T.Vector3(t.w, t.h, t.w));
+        matrix.compose(
+          new T.Vector3(t.x, t.y, t.z),
+          q,
+          new T.Vector3(t.w, t.h, t.w),
+        );
         mesh.setMatrixAt(i, matrix);
         mesh.setColorAt(i, t.c);
       });

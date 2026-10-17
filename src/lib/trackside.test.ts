@@ -2,9 +2,9 @@ import { PerspectiveCamera, Vector3 } from "three";
 import { describe, expect, it } from "vitest";
 import route from "@/content/journey-route.json";
 import {
-  JOURNEY_END,
   JOURNEY_INTRO,
   LIGHTS_OUT,
+  journeyProgressAt,
   journeyScrollState,
   journeyStopProgress,
 } from "./careerJourney";
@@ -45,10 +45,7 @@ describe("trackside drive", () => {
     }
     route.stops.forEach((_, index) => {
       expect(journeyScrollState(journeyStopProgress(index)).arrival).toBe(1);
-      const traveling =
-        JOURNEY_INTRO +
-        ((index + 0.1) / route.stops.length) * (JOURNEY_END - JOURNEY_INTRO);
-      expect(journeyScrollState(traveling).arrival).toBe(0);
+      expect(journeyScrollState(journeyProgressAt(index, 0.1)).arrival).toBe(0);
     });
   });
 
@@ -133,14 +130,34 @@ describe("trackside drive", () => {
 
   it("dives from the overview to the car waiting on the grid", () => {
     for (const compact of [false, true]) {
-      const overview = tracksidePose({ distance: 0, approach: 0, overview: true, compact });
+      const overview = tracksidePose({
+        distance: 0,
+        approach: 0,
+        overview: true,
+        compact,
+      });
       expect(overview.position[1]).toBeGreaterThan(1400);
-      const opening = tracksidePose({ distance: 0, approach: 0, overview: false, compact });
-      opening.position.forEach((v, i) => expect(v).toBeCloseTo(overview.position[i], 3));
-      const grid = tracksidePose({ distance: 0, approach: DIVE_END, overview: false, compact });
+      const opening = tracksidePose({
+        distance: 0,
+        approach: 0,
+        overview: false,
+        compact,
+      });
+      opening.position.forEach((v, i) =>
+        expect(v).toBeCloseTo(overview.position[i], 3),
+      );
+      const grid = tracksidePose({
+        distance: 0,
+        approach: DIVE_END,
+        overview: false,
+        compact,
+      });
       expect(grid.position[1] - grid.car.position[1]).toBeLessThan(20);
       expect(
-        Math.hypot(grid.position[0] - grid.car.position[0], grid.position[2] - grid.car.position[2]),
+        Math.hypot(
+          grid.position[0] - grid.car.position[0],
+          grid.position[2] - grid.car.position[2],
+        ),
       ).toBeLessThan(40);
     }
   });
@@ -154,7 +171,12 @@ describe("trackside drive", () => {
           approach: state.overview ? 0 : state.firstApproach,
           compact,
         });
-        const values = [...pose.position, ...pose.target, ...pose.car.position, pose.fov];
+        const values = [
+          ...pose.position,
+          ...pose.target,
+          ...pose.car.position,
+          pose.fov,
+        ];
         expect(values.every(Number.isFinite)).toBe(true);
         const under = nearestSample(pose.position[0], pose.position[2]);
         expect(pose.position[1]).toBeGreaterThan(y[under] + 2);
@@ -168,13 +190,27 @@ describe("trackside drive", () => {
     ] as [number, number, boolean][])
       for (let i = 0; i <= 2000; i++) {
         const state = journeyScrollState(i / 2000);
-        if (state.overview || (state.index === 0 && state.firstApproach < DIVE_END))
+        if (
+          state.overview ||
+          (state.index === 0 && state.firstApproach < DIVE_END)
+        )
           continue;
-        const pose = tracksidePose({ ...state, approach: state.firstApproach, compact });
+        const pose = tracksidePose({
+          ...state,
+          approach: state.firstApproach,
+          compact,
+        });
         const camera = new PerspectiveCamera(pose.fov, w / h, 0.3, 40000);
         camera.position.set(...pose.position);
         camera.lookAt(new Vector3(...pose.target));
-        camera.setViewOffset(w, h, -(pose.screen[0] - 0.5) * w, -(pose.screen[1] - 0.5) * h, w, h);
+        camera.setViewOffset(
+          w,
+          h,
+          -(pose.screen[0] - 0.5) * w,
+          -(pose.screen[1] - 0.5) * h,
+          w,
+          h,
+        );
         camera.updateProjectionMatrix();
         camera.updateMatrixWorld();
         const p = new Vector3(...pose.car.position).project(camera);
@@ -200,15 +236,93 @@ describe("trackside drive", () => {
         const camera = new PerspectiveCamera(pose.fov, w / h, 0.3, 40000);
         camera.position.set(...pose.position);
         camera.lookAt(new Vector3(...pose.target));
-        camera.setViewOffset(w, h, -(pose.screen[0] - 0.5) * w, -(pose.screen[1] - 0.5) * h, w, h);
+        camera.setViewOffset(
+          w,
+          h,
+          -(pose.screen[0] - 0.5) * w,
+          -(pose.screen[1] - 0.5) * h,
+          w,
+          h,
+        );
         camera.updateProjectionMatrix();
         camera.updateMatrixWorld();
-        for (const point of [pose.car.position, checkpointBoard(index).anchor]) {
+        for (const point of [
+          pose.car.position,
+          checkpointBoard(index).anchor,
+        ]) {
           const p = new Vector3(...point).project(camera);
           expect(p.z).toBeLessThan(1);
-          expect(Math.abs(p.x)).toBeLessThan(0.92);
+          expect(
+            Math.abs(p.x),
+            `checkpoint ${index + 1} at ${w} × ${h}`,
+          ).toBeLessThan(0.92);
           expect(Math.abs(p.y)).toBeLessThan(0.92);
         }
+      });
+  });
+
+  it("widens the chase at speed and calms it for the Bus Stop chicane", () => {
+    const chase = (distance: number, index: number) =>
+      tracksidePose({
+        distance,
+        approach: 1,
+        overview: false,
+        compact: false,
+        index,
+      });
+    // Half-way down the Kemmel straight the camera is at full pace…
+    const kemmel = chase((route.stops[1] + route.stops[2]) / 2, 2);
+    expect(kemmel.fov).toBeGreaterThan(46);
+    // …but not through the chicane before the flag.
+    const chicane = chase(6620 / LAP, 6);
+    expect(chicane.fov).toBeLessThan(42);
+    expect(Math.abs(chicane.roll ?? 0)).toBeLessThan(0.01);
+  });
+
+  it("keeps the whole car visible at checkpoints across desktop and phone sizes", () => {
+    for (const [w, h, compact] of [
+      [1440, 900, false],
+      [1024, 768, false],
+      [800, 450, false],
+      [640, 360, false],
+      [375, 812, true],
+      [360, 812, true],
+    ] as [number, number, boolean][])
+      route.stops.forEach((stop, index) => {
+        const pose = tracksidePose({
+          distance: stop,
+          approach: 1,
+          overview: false,
+          compact,
+          index,
+        });
+        const camera = new PerspectiveCamera(pose.fov, w / h, 0.3, 40000);
+        camera.position.set(...pose.position);
+        camera.lookAt(new Vector3(...pose.target));
+        camera.setViewOffset(
+          w,
+          h,
+          -(pose.screen[0] - 0.5) * w,
+          -(pose.screen[1] - 0.5) * h,
+          w,
+          h,
+        );
+        camera.updateProjectionMatrix();
+        camera.updateMatrixWorld();
+        for (const x of [-1.05, 1.05])
+          for (const z of [-2.8, 3.1])
+            for (const y of [0, 1.25]) {
+              const point = new Vector3(x, y, z)
+                .applyAxisAngle(new Vector3(1, 0, 0), pose.car.pitch)
+                .applyAxisAngle(new Vector3(0, 1, 0), pose.car.heading)
+                .add(new Vector3(...pose.car.position))
+                .project(camera);
+              expect(
+                Math.abs(point.x),
+                `whole car at checkpoint ${index + 1}, ${w} × ${h}`,
+              ).toBeLessThan(0.98);
+              expect(Math.abs(point.y)).toBeLessThan(0.95);
+            }
       });
   });
 });
