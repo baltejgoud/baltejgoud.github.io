@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 200" fill="none">
+  <title>Red Bull Formula 1 car, top view</title>
+  <defs>
+    <linearGradient id="body" x1="29" y1="30" x2="73" y2="178" gradientUnits="userSpaceOnUse"><stop stop-color="#1e3154"/><stop offset=".45" stop-color="#091528"/><stop offset="1" stop-color="#22324b"/></linearGradient>
+    <linearGradient id="tyre" x1="0" x2="1"><stop stop-color="#0b0c10"/><stop offset=".45" stop-color="#32343a"/><stop offset="1" stop-color="#08090c"/></linearGradient>
+  </defs>
+  <g stroke="#060c16" stroke-width="2.5" stroke-linejoin="round">
+    <path d="M23 58 49 48 77 58M22 70 49 60 78 70M20 145 49 132 80 145M20 154 50 145 80 154" stroke="#8390a2" stroke-width="3"/>
+    <rect x="9" y="43" width="18" height="34" rx="5" fill="url(#tyre)"/>
+    <rect x="73" y="43" width="18" height="34" rx="5" fill="url(#tyre)"/>
+    <rect x="7" y="132" width="22" height="39" rx="5" fill="url(#tyre)"/>
+    <rect x="71" y="132" width="22" height="39" rx="5" fill="url(#tyre)"/>
+    <path d="M12 48V72M88 48V72M11 137V166M89 137V166" stroke="#e74437" stroke-width="1.3"/>
+    <path d="M29 83 38 58 43 25 57 25 62 58 71 83 76 125 65 151 61 179H39L35 151 24 125Z" fill="url(#body)"/>
+    <path d="M47 14H53L57 73 50 83 43 73Z" fill="#f6cf37"/>
+    <path d="M32 90 22 109 26 137 36 137 39 94M68 90 78 109 74 137 64 137 61 94" fill="#17294a"/>
+    <path d="M14 18 37 20 44 26H56L63 20 86 18 90 30 63 36H37L10 30Z" fill="#111c34"/>
+    <path d="M11 22 36 25M64 25 89 22" stroke="#e63335" stroke-width="4"/>
+    <path d="M14 31 37 35M63 35 86 31" stroke="#f6cf37" stroke-width="2"/>
+    <path d="M17 175H83V190H17Z" fill="#111c34"/>
+    <path d="M18 187H82" stroke="#ed323c" stroke-width="4"/>
+    <path d="M37 93Q50 79 63 93L59 114Q50 124 41 114Z" fill="#070d17" stroke="#415675"/>
+    <ellipse cx="50" cy="100" rx="7" ry="9" fill="#f3cd37" stroke="#f5efcd" stroke-width="1"/>
+    <path d="M39 93Q50 79 61 93M50 85V111" stroke="#b3c0ce" stroke-width="3"/>
+    <path d="M42 120H58L61 162H39Z" fill="#e7343c" stroke="none"/>
+    <circle cx="50" cy="138" r="11" fill="#f2c939" stroke="none"/>
+    <path d="m40 138 5-5 5 2 4-3 6 2-3 3 4 3-6-1-4 5-2-5-5 3 1-4-5 2Z" fill="#d92735" stroke="none"/>
+    <path d="M31 88 27 125M69 88 73 125" stroke="#f5cb37" stroke-width="2"/>
+  </g>
+  <g fill="#fff" font-family="Arial,sans-serif" font-weight="700" text-anchor="middle">
+    <text x="50" y="184" font-size="7" letter-spacing=".7">ORACLE</text>
+    <text x="50" y="158" font-size="5">Red Bull</text>
+  </g>
+</svg>

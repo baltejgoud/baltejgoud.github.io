@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type CSSProperties, type ReactNode, type RefObject } from "react";
-import { motion, useMotionValue } from "motion/react";
+import { motion, useDragControls, useMotionValue } from "motion/react";
 
 let topLayer = 10;
 
@@ -27,6 +27,7 @@ export function Draggable({
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const self = useRef<HTMLDivElement>(null);
+  const dragControls = useDragControls();
   const raise = () => {
     if (self.current) self.current.style.zIndex = String(++topLayer);
   };
@@ -45,18 +46,29 @@ export function Draggable({
       ref={self}
       className={`p-drag ${className}`}
       drag
+      dragControls={dragControls}
+      dragListener={false}
       dragConstraints={board}
       dragElastic={0.12}
       dragMomentum={false}
       whileDrag={{ scale: 1.05, rotate: rotate + 2, cursor: "grabbing" }}
       whileHover={{ y: -4 }}
-      onPointerDown={raise}
+      onPointerDown={(event) => {
+        raise();
+        // Touch stays available for page scrolling, including on touch laptops.
+        // Buttons inside a card should remain clickable without starting a drag.
+        if (event.pointerType !== "mouse" || event.button !== 0 ||
+          (event.target as HTMLElement).closest("button, a, input, textarea, select")) return;
+        event.preventDefault();
+        dragControls.start(event);
+      }}
       style={{ x, y, rotate, ...style }}
       tabIndex={0}
       role="group"
       aria-roledescription="draggable item"
       aria-label={`${label}. Drag to move, or use the arrow keys.`}
       onKeyDown={(event) => {
+        if (event.target !== event.currentTarget) return;
         const step = event.shiftKey ? 40 : 14;
         const moves: Record<string, [number, number]> = {
           ArrowLeft: [-step, 0],

@@ -1,6 +1,6 @@
 # Baltej Goud — Portfolio
 
-Illustrated, interactive portfolio for Baltej Goud: data analyst, AI engineer and co-founder & CEO of Sanket. Features a painted valley you fly into, live project models, a career map, a forecast-chart process, a periodic-table toolkit, a personal corkboard and a note composer. Built with Next.js (static export), Tailwind CSS v4, Motion and Lenis, and deployed to GitHub Pages by GitHub Actions.
+Illustrated, interactive portfolio for Baltej Goud: data analyst, AI engineer and co-founder & CEO of Sanket. Features a painted valley you fly into, live project models, a Spa career circuit, a forecast-chart process, a periodic-table toolkit, a personal corkboard and a note composer. Built with Next.js (static export), Tailwind CSS v4, Motion and Lenis, and deployed to GitHub Pages by GitHub Actions.
 
 ## Develop
 
@@ -43,7 +43,7 @@ That serves `out/` at http://localhost:8000.
 | `src/content/skills.ts` | The 32 toolkit elements and where each is used |
 | `src/content/journey.ts` | Education and experience timeline |
 | `src/content/journey-stories.ts` | Journey narratives, companies, logos and galleries |
-| `src/content/journey-route.json` | City-map route geometry and milestone positions |
+| `src/content/journey-route.json` | Spa circuit geometry and career checkpoint positions |
 | `src/content/life.ts` | Personal photos pinned to the board |
 | `src/content/notes.ts` | Notes people sent that you chose to show |
 
@@ -62,4 +62,4 @@ Pushing to `main` runs `.github/workflows/deploy.yml`: lint, test, build, check,
 
 One-time setup: in GitHub, open **Settings → Pages → Build and deployment** and set **Source** to **GitHub Actions**. Do this before the first push of this version to `main`. The previous branch deploy serves the repository root, which no longer has an `index.html`.
 
-The journey is implemented in `src/components/portfolio/CareerJourney.tsx` and `career-journey.css`. Desktop scrolling follows the route; mobile uses swipe and previous/next controls. Asset sources are documented in `docs/journey-assets.md`.
+The journey is a full-viewport 3D drive around Spa-Francorchamps at true scale, implemented in `src/components/portfolio/CareerJourney.tsx`, `career-journey.css`, `trackside/` and `src/lib/trackside.ts`. The car starts on pole, the five start lights go out as you scroll, and a broadcast-style camera follows it round the lap past grandstands, the pit building and trackside screens; floating career panels appear at checkpoints. Reduced motion uses manual chapter selection. The plan is in `docs/spa-journey-plan.md`; geometry, modelling and reproduction details are in `docs/journey-assets.md`.

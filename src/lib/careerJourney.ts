@@ -1,7 +1,9 @@
 import route from "@/content/journey-route.json";
 
-export const JOURNEY_INTRO = 0.14;
+export const JOURNEY_INTRO = 0.05;
 export const JOURNEY_END = 0.94;
+/** Share of the first approach the car waits on the grid before the lights go out. */
+export const LIGHTS_OUT = 0.5;
 export const clampJourney = (value: number) =>
   Math.max(0, Math.min(1, Number.isFinite(value) ? value : 0));
 export const easeJourney = (value: number) => {
@@ -29,11 +31,16 @@ export function journeyScrollState(progress: number) {
   const fraction = travel - index;
   const t = easeJourney(fraction / 0.38);
   const from = index > 0 ? route.stops[index - 1] : 0;
+  // The first leg starts on the grid: the car only launches once the lights go out.
+  const moved =
+    index === 0 ? easeJourney((t - LIGHTS_OUT) / (1 - LIGHTS_OUT)) : t;
   return {
     index,
     overview: p <= JOURNEY_INTRO,
+    arrival: p <= JOURNEY_INTRO ? 0 : clampJourney((fraction - 0.32) / 0.12),
     firstApproach: index === 0 ? t : 1,
-    distance: p <= JOURNEY_INTRO ? 0 : from + (route.stops[index] - from) * t,
+    distance:
+      p <= JOURNEY_INTRO ? 0 : from + (route.stops[index] - from) * moved,
   };
 }
 

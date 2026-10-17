@@ -12,6 +12,40 @@ import {
 } from "./careerJourney";
 
 describe("career journey navigation", () => {
+  it("uses a closed Spa lap with an exact start/finish arrival", () => {
+    expect(route.sourceId).toBe("be-1925");
+    expect(route.circuitLength).toBe(7004);
+    expect(route.points.at(-1)).toEqual(route.points[0]);
+    expect(route.stops.at(-1)).toBe(1);
+    const start = pointOnJourney(0);
+    const finish = pointOnJourney(1);
+    expect(finish.x).toBeCloseTo(start.x, 3);
+    expect(finish.y).toBeCloseTo(start.y, 3);
+    expect(journeyLegs.every((leg) => journeyLegProgress(1, leg) === 1)).toBe(
+      true,
+    );
+  });
+  it("keeps every sample within the circuit board and arc lengths monotonic", () => {
+    expect(route.lengths[0]).toBe(0);
+    expect(route.lengths.at(-1)).toBe(route.totalLength);
+    route.points.forEach(([x, y], i) => {
+      expect(x).toBeGreaterThan(0);
+      expect(y).toBeGreaterThan(0);
+      expect(x).toBeLessThan(route.width);
+      expect(y).toBeLessThan(route.height);
+      if (i > 0)
+        expect(route.lengths[i]).toBeGreaterThanOrEqual(route.lengths[i - 1]);
+    });
+  });
+  it("never sends the car backwards during forward scrolling", () => {
+    let previous = 0;
+    for (let i = 0; i <= 2000; i++) {
+      const current = journeyScrollState(i / 2000).distance;
+      expect(current).toBeGreaterThanOrEqual(previous - 1e-10);
+      previous = current;
+    }
+    expect(previous).toBe(1);
+  });
   it("gives every career milestone a story and a reachable map stop", () => {
     expect(journeyStories.length).toBe(journey.length);
     expect(route.stops.length).toBe(journey.length);
@@ -73,9 +107,9 @@ describe("career journey navigation", () => {
       1, 1, 1, 0, 0, 0, 0,
     ]);
     const third = journeyLegs[3];
-    expect(
-      journeyLegProgress((third.from + third.to) / 2, third),
-    ).toBeCloseTo(0.5);
+    expect(journeyLegProgress((third.from + third.to) / 2, third)).toBeCloseTo(
+      0.5,
+    );
     expect(journeyLegs.every((leg) => journeyLegProgress(0, leg) === 0)).toBe(
       true,
     );

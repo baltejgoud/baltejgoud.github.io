@@ -37,7 +37,7 @@ export function Work() {
   };
   const openStage = (next: Tab = "try") => {
     setTab(next);
-    if (stage.current) scrollTo(stage.current.offsetTop - 90);
+    if (stage.current) scrollTo(window.scrollY + stage.current.getBoundingClientRect().top - 90);
   };
   const onDeckKey = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "ArrowRight") select(selected + 1);
@@ -194,8 +194,19 @@ export function Work() {
                   id={`w-tab-${id}`}
                   aria-selected={tab === id}
                   aria-controls="w-panel"
+                  tabIndex={tab === id ? 0 : -1}
                   className={tab === id ? "is-active" : ""}
                   onClick={() => setTab(id)}
+                  onKeyDown={(event) => {
+                    const index = tabs.findIndex((item) => item.id === id);
+                    const next = event.key === "ArrowRight" ? (index + 1) % tabs.length
+                      : event.key === "ArrowLeft" ? (index + tabs.length - 1) % tabs.length
+                      : event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : null;
+                    if (next === null) return;
+                    event.preventDefault();
+                    setTab(tabs[next].id);
+                    document.getElementById(`w-tab-${tabs[next].id}`)?.focus();
+                  }}
                 >
                   {tab === id && <motion.span layoutId="w-tab-pill" className="w-tab-pill" transition={{ type: "spring", stiffness: 420, damping: 34 }} />}
                   <Icon size={15} />

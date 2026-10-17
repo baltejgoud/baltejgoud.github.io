@@ -7,6 +7,7 @@ import { depths, fadeOut, layerPose } from "@/lib/valley/camera";
 import { mulberry32 } from "@/lib/random";
 import { heroArt, heroPins, type HeroLayer } from "@/content/hero";
 import { lqip } from "@/content/lqip";
+import { useSmoothScroll } from "@/components/layout/SmoothScroll";
 import { Sketch } from "../motion/Sketch";
 import { useSite } from "../SiteContext";
 import "./hero.css";
@@ -72,6 +73,7 @@ export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotion() ?? false;
   const { goToStop, openMusic } = useSite();
+  const { scrollTo } = useSmoothScroll();
   const [loaded, setLoaded] = useState(false);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const copyY = useTransform(scrollYProgress, [0, 0.6], reduced ? [0, 0] : [0, -90]);
@@ -81,7 +83,7 @@ export function Hero() {
   const frontY = useTransform(scrollYProgress, (v) => `${(reduced ? 0 : layerPose(v, depths.front).y) * 100}%`);
   const frontScale = useTransform(scrollYProgress, (v) => (reduced ? 1 : layerPose(v, depths.front).scale));
 
-  const scrollToLife = () => document.getElementById("life")?.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
+  const scrollToLife = () => scrollTo("#life");
 
   return (
     <section

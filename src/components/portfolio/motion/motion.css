@@ -123,8 +123,12 @@ html.js:not(.reduced):not(.reveal-all) .p-ink {
 
 /* Draggable board items */
 .p-drag {
-  touch-action: none;
-  cursor: grab;
+  touch-action: pan-y pinch-zoom;
+}
+@media (hover: hover) and (pointer: fine) {
+  .p-drag {
+    cursor: grab;
+  }
 }
 .p-drag:focus-visible {
   outline-offset: 6px;

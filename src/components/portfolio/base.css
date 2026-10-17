@@ -626,11 +626,12 @@ html.js:not(.reduced) .p-availability > span {
     display: none;
   }
   .p-dock {
-    bottom: 14px;
+    bottom: max(14px, env(safe-area-inset-bottom));
     padding: 6px;
     gap: 0;
   }
   .p-dock a {
+    min-height: 44px;
     padding: 12px 10px;
     font-size: 11px;
   }
@@ -659,7 +660,16 @@ html.js:not(.reduced) .p-availability > span {
     font-size: 37px;
   }
   .p-dock a {
-    padding-inline: 8px;
+    padding-inline: 7px;
+    font-size: 10px;
+  }
+  .p-dock a > svg,
+  .p-dock .p-dock-resume svg {
+    display: none;
+  }
+  .p-dock .p-dock-resume {
+    padding-inline: 10px;
+    margin-left: 3px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

@@ -82,6 +82,7 @@ export function Portfolio() {
       el.close();
       startScroll();
     }
+    return () => startScroll();
   }, [musicOpen, startScroll, stopScroll]);
 
   const toggleTheme = () => {
