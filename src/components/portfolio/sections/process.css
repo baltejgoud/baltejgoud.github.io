@@ -1,0 +1,257 @@
+.r-process {
+  background: var(--p-white);
+}
+.r-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 0;
+  padding: 12px 18px;
+  list-style: none;
+  border: 1px solid var(--p-line);
+  border-radius: 12px;
+  font-size: 12px;
+  color: var(--p-muted);
+  background: var(--p-paper);
+}
+.r-legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.r-legend i {
+  display: block;
+  width: 26px;
+  height: 0;
+}
+.r-key-forecast {
+  border-top: 2px dashed var(--p-muted);
+}
+.r-key-band {
+  height: 12px !important;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--p-marker) 45%, transparent);
+}
+.r-key-actual {
+  border-top: 3px solid var(--p-ink);
+}
+
+/* The chart */
+.r-chart {
+  --trace: 1;
+  position: relative;
+  margin-top: 30px;
+  padding: 90px 0 70px;
+}
+html.js:not(.reduced):not(.reveal-all) .r-chart {
+  --trace: 0;
+}
+.r-plot {
+  position: relative;
+}
+.r-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.r-grid {
+  stroke: var(--p-line);
+  stroke-dasharray: 2 8;
+}
+.r-band {
+  fill: color-mix(in srgb, var(--p-marker) 34%, transparent);
+}
+.r-forecast {
+  fill: none;
+  stroke: var(--p-muted);
+  stroke-width: 2;
+  stroke-dasharray: 7 8;
+  opacity: 0.7;
+}
+.r-actual {
+  fill: none;
+  stroke: var(--p-ink);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--trace));
+}
+.r-point circle {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.r-point-halo {
+  fill: color-mix(in srgb, var(--p-signal) 22%, transparent);
+  transform: scale(0);
+  transition: transform 0.6s var(--p-spring);
+}
+.r-point-dot {
+  fill: var(--p-white);
+  stroke: var(--p-muted);
+  stroke-width: 2.5;
+  transition:
+    fill 0.3s,
+    stroke 0.3s;
+}
+.r-point.is-reached .r-point-halo {
+  transform: scale(1);
+}
+.r-point.is-reached .r-point-dot {
+  fill: var(--p-signal);
+  stroke: var(--p-white);
+}
+
+/* Step cards pinned to their points */
+.r-steps {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+.r-step {
+  --tx: -50%;
+  position: absolute;
+  left: calc(var(--px) * 1%);
+  top: calc(var(--py) * 1%);
+  width: 214px;
+  padding: 16px 18px;
+  border: 1px solid var(--p-line);
+  border-radius: 14px;
+  background: var(--p-white);
+  box-shadow: var(--p-shadow);
+  pointer-events: auto;
+  transition:
+    opacity 0.5s,
+    translate 0.6s var(--p-spring);
+}
+.r-step.is-above {
+  transform: translate(var(--tx), calc(-100% - 30px));
+}
+.r-step.is-below {
+  transform: translate(var(--tx), 30px);
+}
+.r-step:first-child {
+  --tx: -14%;
+}
+.r-step:last-child {
+  --tx: -86%;
+}
+.r-step::after {
+  content: "";
+  position: absolute;
+  left: calc(var(--tx) * -1);
+  height: 22px;
+  border-left: 1.5px dashed var(--p-muted);
+  opacity: 0.6;
+}
+.r-step.is-above::after {
+  top: 100%;
+}
+.r-step.is-below::after {
+  bottom: 100%;
+}
+html.js:not(.reduced):not(.reveal-all) .r-step:not(.is-reached) {
+  opacity: 0;
+  translate: 0 12px;
+}
+.r-step-n {
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--p-signal);
+}
+.r-step h3 {
+  margin-top: 6px;
+  font-size: 18px;
+}
+.r-step p {
+  margin-top: 6px !important;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--p-muted);
+}
+.r-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--p-line);
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 11px;
+  color: var(--p-muted);
+}
+
+@media (max-width: 1100px) {
+  .r-step {
+    width: 180px;
+    padding: 13px 14px;
+  }
+  .r-step p {
+    display: none;
+  }
+}
+
+/* Phones: the chart becomes a vertical line you scroll down */
+@media (max-width: 760px) {
+  .r-chart {
+    padding: 0;
+    margin-top: 44px;
+  }
+  .r-svg,
+  .r-axis {
+    display: none;
+  }
+  .r-steps {
+    position: relative;
+    display: grid;
+    gap: 16px;
+    padding-left: 34px;
+  }
+  .r-steps::before,
+  .r-steps::after {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 6px;
+    width: 3px;
+    border-radius: 3px;
+  }
+  .r-steps::before {
+    bottom: 6px;
+    background: var(--p-line);
+  }
+  .r-steps::after {
+    height: calc(var(--trace) * (100% - 12px));
+    background: var(--p-ink);
+  }
+  .r-step,
+  .r-step.is-above,
+  .r-step.is-below {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: auto;
+    transform: none;
+  }
+  .r-step::after {
+    left: -29px;
+    top: 20px;
+    bottom: auto;
+    width: 13px;
+    height: 13px;
+    border: 3px solid var(--p-white);
+    border-radius: 50%;
+    background: var(--p-muted);
+    opacity: 1;
+    box-shadow: 0 0 0 1px var(--p-line);
+  }
+  .r-step.is-reached::after {
+    background: var(--p-signal);
+  }
+  .r-step p {
+    display: block;
+  }
+}

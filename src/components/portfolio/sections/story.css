@@ -1,0 +1,173 @@
+.s-story {
+  background: var(--p-paper);
+  padding-top: 125px;
+  padding-bottom: 110px;
+}
+.s-layout {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 90px;
+  align-items: center;
+}
+.s-copy {
+  font-family: var(--font-bricolage), sans-serif;
+  font-size: clamp(28px, 3.1vw, 46px);
+  letter-spacing: -0.045em;
+  line-height: 1.4;
+  color: var(--p-ink);
+  font-weight: 600;
+}
+
+/* The notes board */
+.s-board {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 35px;
+  padding: 30px 0 50px;
+}
+.s-sticky {
+  position: relative;
+  padding: 28px;
+  width: 262px;
+  box-shadow: 0 15px 20px -12px #30281840;
+  color: #253640;
+}
+.s-sticky strong {
+  display: block;
+  font-family: var(--font-bricolage);
+  font-size: 24px;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+  margin: 18px 0 12px;
+}
+.s-sticky p {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.s-sticky small {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  margin-top: 22px;
+  opacity: 0.7;
+}
+.s-sticky-yellow {
+  background: #f7e5a1;
+  align-self: flex-end;
+}
+.s-sticky-blue {
+  background: #c5e1f1;
+  align-self: flex-start;
+  margin-top: -15px;
+}
+.s-board-hint {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font-size: 18px;
+  rotate: -4deg;
+}
+
+/* "Fig. 1 — Sources": the places this story comes from, set like a chart footnote */
+.s-sources {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-top: 90px;
+  padding-top: 26px;
+  border-top: 1px dashed var(--p-line);
+}
+.s-sources figcaption {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--p-muted);
+}
+.s-sources figcaption span {
+  font-family: var(--font-jetbrains), monospace;
+  font-weight: 600;
+  color: var(--p-ink);
+  margin-right: 6px;
+}
+.s-sources ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.s-sources li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 15px 6px 6px;
+  border: 1px solid var(--p-line);
+  border-radius: 99px;
+  background: var(--p-white);
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: var(--p-shadow);
+  transition:
+    transform 0.4s var(--p-spring),
+    opacity 0.6s;
+}
+.s-sources li:hover {
+  transform: translateY(-3px) rotate(-1deg);
+}
+.s-sources img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: white;
+  padding: 3px;
+  border: 1px solid var(--p-line);
+}
+
+@media (max-width: 1100px) {
+  .s-layout {
+    gap: 50px;
+  }
+}
+@media (max-width: 760px) {
+  .s-story {
+    padding-block: 95px 80px;
+  }
+  .s-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .s-copy {
+    font-size: 29px;
+  }
+  .s-board {
+    flex-direction: row;
+    gap: 14px;
+    padding-bottom: 40px;
+  }
+  .s-sticky {
+    width: 50%;
+    padding: 18px;
+  }
+  .s-sticky strong {
+    font-size: 18px;
+    margin: 12px 0 8px;
+  }
+  .s-sticky p {
+    font-size: 11px;
+  }
+  .s-sticky-blue {
+    margin-top: 30px;
+  }
+  .s-sources {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-top: 50px;
+  }
+  .s-sources li {
+    font-size: 12px;
+  }
+}

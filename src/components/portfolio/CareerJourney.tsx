@@ -445,16 +445,16 @@ export const CareerJourney = forwardRef<CareerJourneyHandle>(
             <header className="jm-heading" aria-hidden={!overview}>
               <p>The journey</p>
               <h2>
-                Engineer by degree,
+                From a classroom
                 <br />
-                builder by curiosity.
+                to a company.
               </h2>
               <p className="jm-subtitle">
-                Seven stops between 2019 and now.
+                Seven stops since 2019, one line through all of them.
                 <br className="jm-mobile-break" />{" "}
                 {stepMode
-                  ? "Tap through them, or swipe the map."
-                  : "Scroll to walk the path."}
+                  ? "Tap a stop, or swipe the map."
+                  : "Keep scrolling to follow it."}
               </p>
             </header>
             {!overview && (

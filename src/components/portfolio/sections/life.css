@@ -1,0 +1,494 @@
+.l-life {
+  background: var(--p-butter);
+}
+.l-board {
+  position: relative;
+  margin-top: 56px;
+  height: 900px;
+  border: 16px solid #a27c4e;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 20% 30%, #ffffff14 0 1px, transparent 1.5px) 0 0 / 7px 9px,
+    radial-gradient(circle at 70% 60%, #5a3b1a22 0 1px, transparent 1.5px) 0 0 / 11px 8px,
+    radial-gradient(120% 90% at 50% 40%, #c39b67, #a9814f);
+  box-shadow:
+    inset 0 0 0 2px #d6b887,
+    inset 0 0 50px #6b421d50,
+    0 30px 45px -25px #66513260;
+}
+.p-site[data-theme="dark"] .l-board {
+  filter: brightness(0.82) saturate(0.9);
+}
+.l-item {
+  position: absolute;
+  box-shadow: 0 10px 18px -8px #34210f90;
+  color: #20313c;
+}
+.l-pin {
+  position: absolute;
+  top: -8px;
+  left: calc(50% - 8px);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  z-index: 2;
+  box-shadow: 1px 5px 4px #33210c50;
+  background: radial-gradient(circle at 34% 26%, #ffded4, #d94d37 50%, #9a2b22);
+}
+.l-pin-blue {
+  background: radial-gradient(circle at 34% 26%, #e4f5ff, #438db6 50%, #25618e);
+}
+.l-pin-yellow {
+  background: radial-gradient(circle at 34% 26%, #fff8d8, #e0a92e 50%, #a5701a);
+}
+
+/* Polaroids */
+.l-polaroid {
+  background: #fffdf8;
+  padding: 12px 12px 16px;
+}
+.l-polaroid img {
+  width: 100%;
+  height: 290px;
+  object-fit: cover;
+  object-position: 50% 26%;
+  pointer-events: none;
+}
+.l-polaroid > p {
+  padding-top: 12px;
+  font-family: var(--font-instrument), serif;
+  font-style: italic;
+  font-size: 18px;
+  text-align: center;
+}
+.l-me {
+  left: 3%;
+  top: 50px;
+  width: 262px;
+}
+.l-photo {
+  width: 220px;
+}
+.l-photo img {
+  height: 220px;
+}
+
+/* Hackathon ticket */
+.l-ticket {
+  left: 30%;
+  top: 64px;
+  display: flex;
+  width: 262px;
+  border-radius: 10px;
+  background: #fef6e4;
+  overflow: visible;
+}
+.l-ticket-main {
+  flex: 1;
+  padding: 18px 18px 16px;
+  border-right: 2px dashed #c9b391;
+}
+.l-ticket-main small {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  color: #3d6d97;
+}
+.l-ticket-main strong {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--font-bricolage);
+  font-size: 44px;
+  letter-spacing: -0.06em;
+  line-height: 1;
+}
+.l-ticket-main span {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.l-ticket-stub {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  color: #3d6d97;
+  background: repeating-linear-gradient(-45deg, #3d6d9714 0 6px, transparent 6px 12px);
+  border-radius: 0 10px 10px 0;
+}
+
+/* Lined note */
+.l-note {
+  right: 3%;
+  top: 52px;
+  width: 340px;
+  padding: 24px 28px;
+  background: repeating-linear-gradient(#fffdf3 0 29px, #8cafa730 29px 30px);
+}
+.l-note > small {
+  color: #c77053;
+  letter-spacing: 0.1em;
+  font-size: 9px;
+}
+.l-note h3 {
+  margin: 12px 0 20px;
+  font-size: 28px;
+}
+.l-note > p {
+  font-size: 12px;
+  font-weight: 600;
+}
+.l-note ul {
+  margin: 8px 0 18px;
+  padding-left: 17px;
+  font-size: 13px;
+  line-height: 2.25;
+}
+.l-note .p-handnote {
+  font-size: 20px;
+  color: #647579;
+}
+
+/* Captain */
+.l-captain {
+  left: 34%;
+  top: 330px;
+  width: 228px;
+  padding: 24px;
+  background: #e5e7bc;
+}
+.l-captain > svg {
+  margin-bottom: 18px;
+  color: #7e8860;
+}
+.l-captain > span:not(.l-pin) {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+}
+.l-captain > strong {
+  display: block;
+  font-family: var(--font-bricolage);
+  font-size: 38px;
+  letter-spacing: -0.06em;
+  line-height: 1.35;
+}
+.l-captain > p {
+  font-size: 14px;
+}
+.l-captain > small {
+  display: block;
+  margin-top: 16px;
+  font-size: 10px;
+}
+
+/* Music */
+.l-music {
+  left: 4%;
+  top: 520px;
+  width: 228px;
+  padding: 26px;
+  color: #f9e6b3;
+}
+/* The card face is a pseudo-element so the record (z-index −2) can sit tucked behind it. */
+.l-music::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #1d3443;
+}
+.l-record {
+  position: absolute;
+  z-index: -2;
+  top: 26px;
+  right: -64px;
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #e6574a 0 14%, #111 15% 17%, transparent 18%),
+    repeating-radial-gradient(circle, #1a1a1a 0 2px, #2a2a2a 2px 4px);
+  box-shadow: 0 8px 16px -6px #000a;
+}
+html.js:not(.reduced) .l-record {
+  animation: l-spin 6s linear infinite;
+}
+.l-music > svg {
+  margin-bottom: 14px;
+}
+.l-music > small {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+.l-music h3 {
+  margin: 12px 0 18px;
+  font-size: 32px;
+}
+.l-play {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  white-space: nowrap;
+  padding: 9px 11px;
+  border: 0;
+  border-radius: 99px;
+  background: #f8e6b326;
+  color: inherit;
+  font-size: 11px;
+  font-weight: 650;
+  transition: background 0.2s;
+}
+.l-play:hover {
+  background: #f8e6b340;
+}
+
+/* MUN pennant */
+.l-pennant {
+  left: 37%;
+  top: 660px;
+  width: 210px;
+  height: 120px;
+  padding: 22px 0 0 24px;
+  background: #b7463a;
+  color: #fff4e2;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  box-shadow: none;
+  filter: drop-shadow(0 8px 8px #34210f70);
+}
+.l-pennant .l-pin {
+  left: 10px;
+  top: 8px;
+}
+.l-pennant strong {
+  display: block;
+  font-family: var(--font-bricolage);
+  font-size: 36px;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+.l-pennant span:not(.l-pin) {
+  display: block;
+  max-width: 120px;
+  margin-top: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Boarding pass */
+.l-pass {
+  right: 3%;
+  bottom: 60px;
+  width: 292px;
+  padding: 21px;
+  border-radius: 10px;
+  background: #fffaf0;
+}
+.l-pass > span:not(.l-pin) {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: #ac614a;
+  font-weight: 700;
+}
+.l-pass > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18px;
+}
+.l-pass > div > strong {
+  font-family: var(--font-bricolage);
+  font-size: 33px;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+.l-pass > div > svg {
+  color: #b77459;
+}
+.l-pass > p {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 9px !important;
+  font-size: 9px;
+  color: #657078;
+}
+.l-pass hr {
+  margin: 22px 0 14px;
+  border: 0;
+  border-top: 1px dashed #a2a39b;
+}
+.l-pass > small {
+  display: block;
+  font-size: 7px;
+  letter-spacing: 0.1em;
+  color: #798079;
+}
+.l-pass > b {
+  display: block;
+  margin: 5px 0 16px;
+  font-size: 14px;
+}
+
+.l-caption {
+  position: absolute;
+  right: 22px;
+  bottom: 14px;
+  font-family: var(--font-instrument), serif;
+  font-style: italic;
+  font-size: 18px;
+  color: #ffedce;
+  pointer-events: none;
+}
+
+/* Items settle onto the board one by one when it scrolls in. `translate`/`scale`, not
+   `transform`: motion owns the transform for dragging. */
+html.js:not(.reduced) .l-board.is-in .l-item {
+  animation: l-drop 0.8s var(--p-spring) both;
+}
+.l-board .l-item:nth-of-type(2) {
+  animation-delay: 0.08s;
+}
+.l-board .l-item:nth-of-type(3) {
+  animation-delay: 0.16s;
+}
+.l-board .l-item:nth-of-type(4) {
+  animation-delay: 0.24s;
+}
+.l-board .l-item:nth-of-type(5) {
+  animation-delay: 0.32s;
+}
+.l-board .l-item:nth-of-type(6) {
+  animation-delay: 0.4s;
+}
+.l-board .l-item:nth-of-type(7) {
+  animation-delay: 0.48s;
+}
+
+@keyframes l-drop {
+  from {
+    opacity: 0;
+    translate: 0 -40px;
+    scale: 1.08;
+  }
+}
+@keyframes l-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@media (max-width: 1100px) {
+  .l-board {
+    height: 980px;
+  }
+  .l-me {
+    width: 230px;
+  }
+  .l-ticket {
+    left: 33%;
+  }
+  .l-note {
+    width: 300px;
+  }
+  .l-captain {
+    left: 36%;
+    top: 360px;
+  }
+  .l-pennant {
+    top: 720px;
+  }
+}
+@media (max-width: 760px) {
+  .l-board {
+    height: 1740px;
+    border-width: 10px;
+    margin-inline: -6px;
+  }
+  .l-me {
+    left: 3%;
+    top: 34px;
+    width: 52%;
+  }
+  .l-polaroid img {
+    height: 210px;
+  }
+  .l-ticket {
+    left: auto;
+    right: 3%;
+    top: 90px;
+    width: 42%;
+    flex-direction: column;
+  }
+  .l-ticket-main {
+    border-right: 0;
+    border-bottom: 2px dashed #c9b391;
+    padding: 14px;
+  }
+  .l-ticket-main strong {
+    font-size: 34px;
+  }
+  .l-ticket-stub {
+    width: auto;
+    height: 40px;
+    border-radius: 0 0 10px 10px;
+  }
+  .l-note {
+    left: 5%;
+    right: auto;
+    top: 470px;
+    width: 88%;
+  }
+  .l-captain {
+    left: 3%;
+    top: 940px;
+    width: 50%;
+    padding: 18px;
+  }
+  .l-captain > strong {
+    font-size: 28px;
+  }
+  .l-pennant {
+    left: auto;
+    right: 4%;
+    top: 990px;
+    width: 42%;
+    height: 104px;
+    padding: 18px 0 0 16px;
+  }
+  .l-pennant strong {
+    font-size: 28px;
+  }
+  .l-pennant span:not(.l-pin) {
+    font-size: 8px;
+    max-width: 80px;
+  }
+  .l-music {
+    left: 4%;
+    top: 1230px;
+    width: 56%;
+    padding: 20px;
+  }
+  .l-record {
+    right: -54px;
+    width: 104px;
+    height: 104px;
+  }
+  .l-music h3 {
+    font-size: 26px;
+  }
+  .l-pass {
+    right: 3%;
+    bottom: 54px;
+    width: 76%;
+  }
+  .l-caption {
+    font-size: 15px;
+    right: 14px;
+  }
+}

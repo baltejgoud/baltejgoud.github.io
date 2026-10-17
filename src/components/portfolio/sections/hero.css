@@ -1,0 +1,859 @@
+/* Hero — the valley, a camera that drifts in as you scroll, and the places as data points. */
+
+.h-hero {
+  position: relative;
+  height: 100svh;
+  min-height: 640px;
+  max-height: 1120px;
+  color: white;
+  isolation: isolate;
+  overflow: hidden;
+  background: #9cc2e4;
+}
+.h-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  container-type: size;
+}
+.h-world {
+  position: absolute;
+  inset: 0;
+  transform-origin: 52% 62%;
+}
+html.js:not(.reduced) .h-world {
+  animation: h-settle 2.8s var(--p-ease) both;
+}
+
+/* A box with the painting's aspect ratio that covers the stage, so pins can use painting coordinates. */
+.h-canvas {
+  --fx: 0.5;
+  --fy: 0.5;
+  --cw: max(100cqw, 100cqh * var(--ratio));
+  --ch: max(100cqh, 100cqw / var(--ratio));
+  position: absolute;
+  width: var(--cw);
+  height: var(--ch);
+  left: calc((100cqw - var(--cw)) * var(--fx));
+  top: calc((100cqh - var(--ch)) * var(--fy));
+}
+.h-canvas img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.h-placeholder {
+  background: var(--lqip) center / 100% 100% no-repeat;
+  filter: blur(16px) saturate(1.1);
+  transform: scale(1.04);
+}
+.h-layer {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 70%;
+  will-change: transform;
+  transition: opacity 1.1s ease;
+}
+html.js:not(.reveal-all) .h-hero:not(.is-loaded) .h-layer {
+  opacity: 0;
+}
+
+/* Out-of-focus foreground leaves: the nearest plane, so they rush past fastest. */
+.h-bokeh {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform-origin: 50% 80%;
+  will-change: transform;
+}
+.h-bokeh span {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #2c4a1c 0%, #1c3312 60%, transparent 72%);
+  filter: blur(10px);
+  opacity: 0.75;
+}
+.h-bokeh span:nth-child(1) {
+  width: 300px;
+  height: 220px;
+  left: -110px;
+  bottom: -120px;
+}
+.h-bokeh span:nth-child(2) {
+  width: 200px;
+  height: 160px;
+  left: 90px;
+  bottom: -110px;
+  opacity: 0.55;
+}
+.h-bokeh span:nth-child(3) {
+  width: 340px;
+  height: 240px;
+  right: -140px;
+  bottom: -130px;
+}
+.h-bokeh span:nth-child(4) {
+  width: 120px;
+  height: 120px;
+  right: 160px;
+  bottom: -70px;
+  opacity: 0.45;
+}
+.h-bokeh span:nth-child(5) {
+  width: 90px;
+  height: 90px;
+  left: 4%;
+  top: -40px;
+  opacity: 0.35;
+}
+
+/* Baltej, standing in the foreground (cropped by the bottom edge, like someone on the path) */
+.h-me {
+  position: absolute;
+  z-index: 1;
+  right: max(3%, calc((100vw - 1320px) / 2));
+  bottom: -2%;
+  height: min(60%, 600px);
+  aspect-ratio: 557 / 1146;
+  padding: 0;
+  border: 0;
+  background: none;
+  transform-origin: 50% 100%;
+}
+.h-me img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom;
+  filter: saturate(1.04) sepia(0.1) brightness(1.02) drop-shadow(-10px 6px 18px #1b2a1a55);
+  transition: transform 0.6s var(--p-spring);
+  transform-origin: 50% 100%;
+}
+.h-me:hover img,
+.h-me:focus-visible img {
+  transform: rotate(-1.5deg) translateY(-6px);
+}
+html.js:not(.reduced) .h-me {
+  animation: h-me-in 1.4s 0.9s var(--p-ease) both;
+}
+.h-me-tag {
+  position: absolute;
+  top: 28%;
+  right: calc(100% - 12px);
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 7px 13px;
+  border-radius: 99px;
+  background: #fffdf8;
+  color: #142336;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 8px 20px -8px #0a2036a0;
+  rotate: -4deg;
+}
+.h-me-tag .p-sketch {
+  position: absolute;
+  left: 100%;
+  top: 70%;
+  width: 40px;
+  height: 26px;
+  stroke: white;
+  stroke-width: 2.6;
+  filter: drop-shadow(0 1px 3px #0a203680);
+  transform: rotate(18deg);
+}
+.p-site[data-theme="dark"] .h-me img {
+  filter: brightness(0.62) saturate(0.8) hue-rotate(-8deg) drop-shadow(-10px 6px 18px #00000066);
+}
+
+/* Light, stars, birds, floating motes */
+.h-sky-light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 82% 8%, #fff2c855 0%, transparent 70%),
+    radial-gradient(40% 30% at 70% 30%, #ffe6a822 0%, transparent 70%);
+  mix-blend-mode: screen;
+}
+html.js:not(.reduced) .h-sky-light {
+  animation: h-breathe 7s ease-in-out infinite alternate;
+}
+.h-stars {
+  position: absolute;
+  inset: 0 0 55% 0;
+  pointer-events: none;
+  opacity: 0;
+  background-image:
+    radial-gradient(1.4px 1.4px at 12% 18%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 28% 9%, #fff 50%, transparent 51%),
+    radial-gradient(1.6px 1.6px at 46% 22%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 58% 6%, #fff 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 71% 15%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 84% 27%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 93% 8%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 37% 31%, #fff 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 5% 34%, #fff 50%, transparent 51%);
+  transition: opacity 1s;
+}
+.h-birds {
+  position: absolute;
+  top: 13%;
+  left: 0;
+  width: 150px;
+  height: 50px;
+  fill: none;
+  stroke: #1f2c33;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  opacity: 0.55;
+  pointer-events: none;
+}
+html.js:not(.reduced) .h-birds {
+  animation: h-flock 46s linear infinite;
+  animation-delay: -12s;
+}
+html.js:not(.reduced) .h-bird {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: h-flap 0.9s ease-in-out infinite alternate;
+  animation-delay: calc(var(--b) * -0.23s);
+}
+.h-motes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.h-motes span {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff6cf;
+  box-shadow: 0 0 6px #fff1b0;
+  opacity: 0;
+}
+html.js:not(.reduced) .h-motes span {
+  animation: h-mote linear infinite;
+}
+.h-shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, #071b3066, transparent 62%),
+    linear-gradient(180deg, transparent 62%, #0b242944);
+}
+
+/* Night */
+.p-site[data-theme="dark"] .h-world {
+  filter: brightness(0.56) saturate(0.78) hue-rotate(-10deg);
+}
+.p-site[data-theme="dark"] .h-hero {
+  background: #1b2b45;
+}
+.p-site[data-theme="dark"] .h-stars {
+  opacity: 0.9;
+}
+.p-site[data-theme="dark"] .h-sky-light {
+  background: radial-gradient(28% 22% at 84% 12%, #dfe8ff40 0%, transparent 70%);
+}
+.p-site[data-theme="dark"] .h-motes span {
+  background: #fdf3a0;
+  box-shadow: 0 0 8px 2px #f7e36a;
+}
+.p-site[data-theme="dark"] .h-birds {
+  opacity: 0;
+}
+
+/* Pins: places in the painting drawn as data points on a chart */
+.h-pins {
+  position: absolute;
+  inset: 0;
+}
+.h-pin {
+  --scale: 1;
+  position: absolute;
+  left: calc(var(--x) * 100%);
+  top: calc(var(--y) * 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: white;
+  transform: translate(-50%, calc(-100% + 7px));
+}
+html.js:not(.reduced) .h-pin {
+  animation: h-pin-in 0.9s var(--p-spring) both;
+  animation-delay: calc(1.3s + var(--d) * 0.14s);
+}
+.h-pin-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 13px 5px 5px;
+  border-radius: 99px;
+  background: #13263a70;
+  border: 1px solid #ffffff6e;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 6px 20px #0a203630;
+  text-align: left;
+  white-space: nowrap;
+  transition:
+    transform 0.4s var(--p-spring),
+    background 0.25s;
+}
+.h-pin-label img {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: white;
+  object-fit: contain;
+  padding: 2px;
+}
+.h-pin-label strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+.h-pin-label small {
+  display: block;
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 9px;
+  letter-spacing: 0.02em;
+  opacity: 0.85;
+  line-height: 1.2;
+}
+.h-pin-tip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  padding: 6px 11px;
+  border-radius: 8px;
+  background: #fffdf8;
+  color: #142336;
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+  box-shadow: 0 10px 24px -8px #0a2036a0;
+  opacity: 0;
+  transform: translateY(6px) scale(0.96);
+  pointer-events: none;
+  transition:
+    opacity 0.2s,
+    transform 0.35s var(--p-spring);
+}
+.h-pin-stem {
+  width: 0;
+  height: 22px;
+  border-left: 1.5px dashed #ffffffb0;
+}
+.h-pin-dot {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--p-marker);
+  border: 3px solid white;
+  box-shadow: 0 2px 6px #0a203650;
+}
+.h-pin-dot::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid #ffffffcc;
+}
+html.js:not(.reduced) .h-pin-dot::after {
+  animation: h-ping 2.6s ease-out infinite;
+  animation-delay: calc(var(--d) * 0.4s);
+}
+.h-pin:hover .h-pin-label,
+.h-pin:focus-visible .h-pin-label {
+  transform: translateY(-4px);
+  background: #13263ab8;
+}
+.h-pin:hover .h-pin-tip,
+.h-pin:focus-visible .h-pin-tip {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.h-pin-me .h-pin-label img {
+  object-fit: cover;
+  padding: 0;
+}
+.h-pin-me .h-pin-dot {
+  background: #ef8a5c;
+}
+/* Sits beside the Haritha pin (0.5, 0.6 in painting coordinates). */
+.h-pin-hint {
+  position: absolute;
+  left: calc(0.5 * 100% + 74px);
+  top: calc(0.6 * 100% - 80px);
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  font-family: var(--font-instrument), serif;
+  font-style: italic;
+  font-size: 19px;
+  color: white;
+  text-shadow: 0 2px 8px #0a203680;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.h-pin-hint .p-sketch {
+  position: static;
+  width: 44px;
+  height: 28px;
+  stroke: white;
+  stroke-width: 2.4;
+  transform: rotate(150deg);
+  margin-left: 4px;
+}
+html.js:not(.reduced) .h-pin-hint {
+  animation: h-fade-in 0.8s 2.4s both;
+}
+html.js:not(.reduced) .h-pin-hint .p-sketch path {
+  animation: h-draw 0.9s 2.6s var(--p-ease) both;
+}
+
+/* Copy */
+.h-copy {
+  position: absolute;
+  z-index: 2;
+  top: 15%;
+  left: max(7%, calc((100vw - 1140px) / 2));
+  max-width: 760px;
+  pointer-events: none;
+}
+.h-hello {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 19px;
+  font-weight: 500;
+  margin-bottom: 18px !important;
+  text-shadow: 0 2px 10px #11232280;
+}
+.h-signal {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--p-marker);
+  box-shadow: 0 0 0 3px #ffffff90;
+}
+.h-signal i {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 1.5px solid #fff7cf;
+  opacity: 0;
+}
+html.js:not(.reduced) .h-signal i {
+  animation: h-ping 2.2s ease-out infinite;
+}
+.h-copy h1 {
+  font-size: clamp(44px, 5.4vw, 80px);
+  font-weight: 750;
+  letter-spacing: -0.065em;
+  line-height: 1.04;
+  text-shadow: 0 3px 22px #0824232b;
+}
+.h-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.h-line > span {
+  display: inline-block;
+}
+html.js:not(.reduced) .h-line > span {
+  animation: h-rise 1.15s var(--p-ease) both;
+}
+html.js:not(.reduced) .h-line + .h-line > span {
+  animation-delay: 0.12s;
+}
+.h-useful {
+  position: relative;
+  color: #152b35;
+  text-shadow: none;
+  padding-inline: 0.08em;
+  background: linear-gradient(transparent 18%, var(--p-marker) 18%, var(--p-marker) 90%, transparent 90%) no-repeat 0 0 /
+    100% 100%;
+}
+html.js:not(.reduced) .h-useful {
+  animation: h-marker 0.9s 0.75s var(--p-ease) both;
+}
+.h-trend {
+  left: 4%;
+  bottom: -0.36em;
+  width: 92%;
+  height: 0.42em;
+  stroke: white;
+  stroke-width: 3;
+  filter: drop-shadow(0 2px 4px #0a203660);
+}
+html.js:not(.reduced) .h-trend path {
+  animation: h-draw 1.3s 1.25s var(--p-ease) both;
+}
+.h-sub {
+  font-size: 17px;
+  font-weight: 450;
+  margin-top: 30px !important;
+  opacity: 0.94;
+  line-height: 1.6;
+  text-shadow: 0 2px 10px #11232280;
+}
+html.js:not(.reduced) .h-hello,
+html.js:not(.reduced) .h-sub {
+  animation: h-fade-up 1s var(--p-ease) both;
+}
+html.js:not(.reduced) .h-sub {
+  animation-delay: 0.45s;
+}
+
+/* Ribbon, music, scroll cue */
+.h-ribbon {
+  position: absolute;
+  z-index: 2;
+  top: 104px;
+  left: 50%;
+  translate: -50% 0;
+  transform-origin: 50% -30px;
+  background: #fff9ed;
+  color: #515a54;
+  padding: 8px 25px;
+  border: 1px solid #dca78a;
+  border-bottom: 3px solid #dca78a;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  box-shadow: 0 8px 15px #16283b18;
+  white-space: nowrap;
+  rotate: -2deg;
+}
+html.js:not(.reduced) .h-ribbon {
+  animation: h-sway 5s ease-in-out infinite alternate;
+}
+.h-music {
+  position: absolute;
+  z-index: 2;
+  left: max(7%, calc((100vw - 1140px) / 2));
+  bottom: 14%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff9ed25;
+  color: white;
+  border: 1px solid #ffffff80;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 99px;
+  padding: 10px 17px 10px 13px;
+  font-size: 12px;
+  font-weight: 650;
+  transition:
+    background 0.25s,
+    transform 0.4s var(--p-spring);
+}
+.h-music:hover {
+  background: #fff9ed45;
+  transform: translateY(-3px);
+}
+.h-eq {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 13px;
+}
+.h-eq i {
+  width: 3px;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--p-marker);
+  transform-origin: bottom;
+  transform: scaleY(0.4);
+}
+html.js:not(.reduced) .h-eq i {
+  animation: h-eq 0.9s ease-in-out infinite alternate;
+}
+.h-eq i:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.h-eq i:nth-child(3) {
+  animation-delay: -0.6s;
+}
+.h-cue {
+  position: absolute;
+  z-index: 2;
+  bottom: 104px;
+  left: 50%;
+  translate: -50% 0;
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  padding: 9px 15px;
+  border-radius: 99px;
+  background: #13263a40;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid #ffffff40;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+}
+.h-mouse {
+  position: relative;
+  width: 14px;
+  height: 20px;
+  border: 1.5px solid white;
+  border-radius: 8px;
+}
+.h-mouse i {
+  position: absolute;
+  left: 50%;
+  top: 4px;
+  width: 2px;
+  height: 4px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: white;
+}
+html.js:not(.reduced) .h-mouse i {
+  animation: h-scroll-dot 1.6s ease-in-out infinite;
+}
+
+@keyframes h-settle {
+  from {
+    transform: scale(1.14);
+  }
+}
+/* `translate`, not `transform`: motion owns the transform for the scroll parallax. */
+@keyframes h-me-in {
+  from {
+    opacity: 0;
+    translate: 0 60px;
+  }
+}
+@keyframes h-breathe {
+  to {
+    opacity: 0.55;
+  }
+}
+@keyframes h-flock {
+  from {
+    transform: translate(-160px, 0);
+  }
+  50% {
+    transform: translate(50vw, -24px);
+  }
+  to {
+    transform: translate(105vw, 10px);
+  }
+}
+@keyframes h-flap {
+  to {
+    transform: scaleY(0.35);
+  }
+}
+@keyframes h-mote {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  20% {
+    opacity: 0.85;
+  }
+  80% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(40px, -140px);
+  }
+}
+@keyframes h-pin-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% + 27px)) scale(0.7);
+  }
+}
+@keyframes h-ping {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.3);
+  }
+}
+@keyframes h-rise {
+  from {
+    transform: translateY(108%);
+  }
+}
+@keyframes h-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@keyframes h-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes h-marker {
+  from {
+    background-size: 0% 100%;
+  }
+}
+@keyframes h-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes h-sway {
+  from {
+    rotate: -2.6deg;
+  }
+  to {
+    rotate: -0.8deg;
+  }
+}
+@keyframes h-eq {
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes h-scroll-dot {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(7px);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (min-width: 1600px) {
+  .h-copy {
+    top: 18%;
+  }
+}
+@media (max-width: 1100px) {
+  .h-copy h1 {
+    font-size: 60px;
+  }
+}
+@media (max-width: 760px) {
+  .h-hero {
+    min-height: 660px;
+    max-height: none;
+  }
+  .h-canvas {
+    --ratio: var(--ratio-m);
+    --fx: 0.54;
+    --fy: 0.62;
+  }
+  .h-placeholder {
+    background-image: var(--lqip-m);
+  }
+  .h-pin {
+    left: calc(var(--mx) * 100%);
+    top: calc(var(--my) * 100%);
+  }
+  .h-pin-label {
+    gap: 6px;
+    padding: 3px 9px 3px 3px;
+  }
+  .h-pin-label img {
+    width: 21px;
+    height: 21px;
+  }
+  .h-pin-label strong {
+    font-size: 10px;
+  }
+  .h-pin-label small {
+    font-size: 8px;
+  }
+  .h-pin-stem {
+    height: 14px;
+  }
+  .h-pin-dot {
+    width: 11px;
+    height: 11px;
+    border-width: 2px;
+  }
+  .h-pin-tip,
+  .h-pin-hint,
+  .h-pin-wide,
+  .h-birds {
+    display: none;
+  }
+  .h-shade {
+    background:
+      linear-gradient(180deg, #12364e70 0%, #0d304d22 42%, transparent 58%),
+      linear-gradient(180deg, transparent 75%, #0b242944);
+  }
+  .h-ribbon {
+    top: 84px;
+    font-size: 9px;
+    padding: 6px 14px;
+  }
+  .h-copy {
+    top: 19%;
+    left: 20px;
+    right: 20px;
+  }
+  .h-hello {
+    font-size: 16px;
+    margin-bottom: 14px !important;
+  }
+  .h-copy h1 {
+    font-size: clamp(36px, 10.4vw, 52px);
+  }
+  .h-sub {
+    font-size: 14px;
+    margin-top: 24px !important;
+  }
+  .h-music {
+    left: 20px;
+    bottom: 104px;
+    font-size: 11px;
+    padding: 8px 13px 8px 11px;
+  }
+  .h-cue {
+    display: none;
+  }
+  .h-bokeh span {
+    transform: scale(0.6);
+  }
+  .h-me {
+    right: -4%;
+    height: 40%;
+  }
+  .h-me-tag {
+    font-size: 10px;
+    padding: 5px 10px;
+    top: 42%;
+  }
+  .h-me-tag .p-sketch {
+    display: none;
+  }
+}

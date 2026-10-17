@@ -1,0 +1,132 @@
+/* Ink-in copy: one --ink variable (0..1) drives every word and annotation in the block. */
+.p-ink {
+  --ink: 1;
+}
+html.js:not(.reduced):not(.reveal-all) .p-ink {
+  --ink: 0;
+}
+.p-ink-word {
+  --w: clamp(0, (var(--ink) * var(--span) - var(--i)) / var(--soft), 1);
+  opacity: calc(0.2 + 0.8 * var(--w));
+}
+.p-ink-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28em;
+  padding: 0.04em 0.34em 0.06em 0.2em;
+  margin-inline: 0.06em;
+  border-radius: 0.3em;
+  background: var(--p-white);
+  border: 1px solid var(--p-line);
+  box-shadow: 0 6px 14px -10px #20304060;
+  vertical-align: 0.06em;
+  line-height: 1.1;
+  font-size: 0.86em;
+  transform: translateY(calc((1 - var(--w)) * 0.3em)) rotate(calc((1 - var(--w)) * -6deg));
+}
+.p-ink-chip > svg,
+.p-ink-chip > img {
+  width: 0.92em;
+  height: 0.92em;
+  flex-shrink: 0;
+}
+
+/* Annotations */
+.p-annot {
+  --draw: clamp(0, (var(--ink) * var(--span) - var(--end) - 1) / 2.5, 1);
+}
+/* A note never starts a line on its own: it stays beside the phrase it points at. */
+.p-annot:has(.p-mark-note) {
+  white-space: nowrap;
+}
+.p-mark {
+  position: relative;
+  color: var(--p-ink);
+}
+.p-mark-marker {
+  background: linear-gradient(transparent 56%, var(--p-marker) 56%, var(--p-marker) 92%, transparent 92%) no-repeat 0 0 /
+    calc(var(--draw) * 100%) 100%;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding-inline: 0.06em;
+}
+.p-site[data-theme="dark"] .p-mark-marker {
+  background-image: linear-gradient(transparent 60%, #b8923a99 60%, #b8923a99 92%, transparent 92%);
+}
+.p-mark-loop,
+.p-mark-wave,
+.p-mark-trend {
+  white-space: nowrap;
+}
+.p-sketch {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.p-sketch path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--draw, 1));
+}
+.p-mark-loop > .p-sketch {
+  left: -7%;
+  top: -24%;
+  width: 114%;
+  height: 150%;
+  stroke: var(--p-red);
+  stroke-width: 2.4;
+}
+.p-mark-wave > .p-sketch {
+  left: 0;
+  bottom: -0.22em;
+  width: 100%;
+  height: 0.3em;
+  stroke: var(--p-signal);
+  stroke-width: 2.6;
+}
+.p-mark-trend > .p-sketch {
+  left: 0;
+  bottom: -0.42em;
+  width: 100%;
+  height: 0.5em;
+  stroke: var(--p-green);
+  stroke-width: 2.6;
+}
+/* A handwritten aside that flows inline after the annotated phrase, pointing back at it. */
+.p-mark-note {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  margin-left: 0.55em;
+  vertical-align: 0.5em;
+  font-family: var(--font-instrument), serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: max(16px, 0.52em);
+  letter-spacing: 0;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--p-red);
+  opacity: var(--draw);
+  transform: translateY(calc((1 - var(--draw)) * 8px)) rotate(-6deg);
+}
+.p-mark-note > .p-sketch {
+  position: static;
+  width: 1.6em;
+  height: 1em;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  transform: scaleX(-1) rotate(12deg);
+}
+
+/* Draggable board items */
+.p-drag {
+  touch-action: none;
+  cursor: grab;
+}
+.p-drag:focus-visible {
+  outline-offset: 6px;
+}
+
