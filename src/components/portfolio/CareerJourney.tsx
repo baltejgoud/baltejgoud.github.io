@@ -30,6 +30,8 @@ import route from "@/content/journey-route.json";
 import {
   clampJourney,
   easeJourney,
+  journeyLegProgress,
+  journeyLegs,
   journeyScrollState,
   journeyStopProgress,
   pointOnJourney,
@@ -69,8 +71,10 @@ export const CareerJourney = forwardRef<CareerJourneyHandle>(
     const track = useRef<HTMLDivElement>(null);
     const scene = useRef<HTMLDivElement>(null);
     const world = useRef<HTMLDivElement>(null);
-    const routeStroke = useRef<SVGPathElement>(null);
+    const legs = useRef<(SVGPathElement | null)[]>([]);
     const cursor = useRef<HTMLDivElement>(null);
+    // Last values written to the DOM, so a frame only touches what actually moved.
+    const written = useRef<Record<string, string>>({});
     const lightbox = useRef<HTMLDialogElement>(null);
     const animation = useRef(0);
     const frame = useRef(0);
@@ -146,24 +150,52 @@ export const CareerJourney = forwardRef<CareerJourneyHandle>(
       const closeY = height * (config.mobile ? 0.32 : 0.58) - point.y * scale;
       const x = farX + (closeX - farX) * approach + config.panX;
       const y = farY + (closeY - farY) * approach + config.panY;
-      world.current.style.transform = `translate3d(${x}px,${y}px,0) scale(${scale})`;
-      world.current.style.setProperty("--jm-inverse", String(1 / scale));
-      world.current.style.setProperty(
+      const last = written.current;
+      const write = (
+        key: string,
+        target: HTMLElement | SVGElement | null | undefined,
+        property: string,
+        value: string,
+      ) => {
+        if (!target || last[key] === value) return;
+        last[key] = value;
+        target.style.setProperty(property, value);
+      };
+      write(
+        "world",
+        world.current,
+        "transform",
+        `translate3d(${x}px,${y}px,0) scale(${scale})`,
+      );
+      // Pins counter-scale through these, so they only change while the camera zooms.
+      write("inverse", world.current, "--jm-inverse", (1 / scale).toFixed(4));
+      write(
+        "pin",
+        world.current,
         "--jm-pin-size",
         config.overview ? (config.mobile ? "0.48" : "1") : "1.3",
       );
-      if (routeStroke.current)
-        routeStroke.current.style.strokeDashoffset = String(
-          1 - config.distance,
-        );
-      if (cursor.current) {
-        cursor.current.style.left = `${point.x}px`;
-        cursor.current.style.top = `${point.y}px`;
-        cursor.current.style.transform = `translate(-50%,-50%) scale(${1 / scale}) rotate(${point.angle}deg)`;
-        cursor.current.style.opacity = String(
-          config.overview ? 0 : Math.min(1, approach * 3),
-        );
-      }
+      journeyLegs.forEach((leg, i) =>
+        write(
+          `leg${i}`,
+          legs.current[i],
+          "stroke-dashoffset",
+          (1 - journeyLegProgress(config.distance, leg)).toFixed(4),
+        ),
+      );
+      // Transform only (no left/top), so moving the cursor never triggers layout.
+      write(
+        "cursor",
+        cursor.current,
+        "transform",
+        `translate(${point.x}px,${point.y}px) translate(-50%,-50%) scale(${1 / scale}) rotate(${point.angle}deg)`,
+      );
+      write(
+        "cursorOpacity",
+        cursor.current,
+        "opacity",
+        String(config.overview ? 0 : Math.min(1, approach * 3)),
+      );
     }, []);
 
     useEffect(() => {
@@ -367,7 +399,11 @@ export const CareerJourney = forwardRef<CareerJourneyHandle>(
                   className="jm-city"
                   draggable={false}
                 />
-                <svg viewBox="0 0 4720 3900" className="jm-route" aria-hidden>
+                <svg
+                  viewBox="0 0 4720 3900"
+                  className="jm-route jm-route-base"
+                  aria-hidden
+                >
                   <path
                     d={route.path}
                     fill="none"
@@ -383,18 +419,25 @@ export const CareerJourney = forwardRef<CareerJourneyHandle>(
                     strokeWidth="28"
                     strokeLinecap="round"
                   />
-                  <path
-                    ref={routeStroke}
-                    d={route.path}
-                    fill="none"
-                    stroke="#4285f4"
-                    strokeWidth="12"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    pathLength={1}
-                    strokeDasharray="1"
-                    strokeDashoffset="1"
-                  />
+                </svg>
+                <svg viewBox="0 0 4720 3900" className="jm-route" aria-hidden>
+                  {journeyLegs.map((leg, i) => (
+                    <path
+                      key={leg.to}
+                      ref={(node) => {
+                        legs.current[i] = node;
+                      }}
+                      d={leg.path}
+                      fill="none"
+                      stroke="#4285f4"
+                      strokeWidth="12"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      pathLength={1}
+                      strokeDasharray="1"
+                      strokeDashoffset="1"
+                    />
+                  ))}
                 </svg>
                 {journeyStories.map((item, index) => (
                   <button
@@ -463,7 +506,6 @@ export const CareerJourney = forwardRef<CareerJourneyHandle>(
                 style={{ "--jm-color": story.color } as CSSProperties}
                 aria-live="polite"
                 data-scroll-area
-                data-lenis-prevent
               >
                 <motion.div
                   key={selected}

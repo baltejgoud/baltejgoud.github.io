@@ -13,6 +13,12 @@ interface ScrollApi {
 
 const ScrollContext = createContext<ScrollApi | null>(null);
 
+function canScrollInside(target: EventTarget | null, deltaY: number) {
+  const area = target instanceof Element ? target.closest<HTMLElement>("[data-scroll-area]") : null;
+  if (!area) return false;
+  return deltaY > 0 ? area.scrollTop + area.clientHeight < area.scrollHeight - 1 : deltaY < 0 && area.scrollTop > 0;
+}
+
 /** One Lenis instance for the page; skipped entirely under reduced motion. */
 export function SmoothScroll({ children }: { children: ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
@@ -24,8 +30,9 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       autoRaf: true,
       // Lenis honours each section's CSS scroll-margin-top, which already clears the sticky nav.
       anchors: true,
-      // Let inner panels that can actually scroll (data-scroll-area) handle their own wheel events.
-      prevent: (node) => node.hasAttribute("data-scroll-area") && node.scrollHeight > node.clientHeight + 1,
+      // An inner panel (data-scroll-area) takes the wheel only while it can still scroll that way;
+      // otherwise the page scrolls, so a panel under the cursor never swallows the wheel.
+      virtualScroll: ({ deltaY, event }) => !(event.type === "wheel" && canScrollInside(event.target, deltaY)),
     });
     lenisRef.current = lenis;
     return () => {

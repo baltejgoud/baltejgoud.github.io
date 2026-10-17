@@ -54,6 +54,12 @@
 .jm-city {
   height: 3900px !important;
 }
+/* The painted city and the grey road under the route never change, so each gets its own layer:
+   the moving pieces (blue leg, pins, cursor) then repaint without redrawing the whole map. */
+.jm-city,
+.jm-route-base {
+  will-change: transform;
+}
 .jm-route {
   overflow: visible;
 }
@@ -137,6 +143,8 @@
 }
 .jm-cursor {
   position: absolute;
+  left: 0;
+  top: 0;
   width: 42px;
   height: 42px;
   z-index: 7;
@@ -224,7 +232,8 @@
   z-index: 10;
   border-radius: 28px;
   overflow: auto;
-  overscroll-behavior: contain;
+  /* No overscroll containment: a card with nothing left to scroll must hand touch and wheel
+     scrolling back to the page, or the left third of the journey becomes a dead zone. */
   scrollbar-width: thin;
   background: #fff;
   color: #13233a;

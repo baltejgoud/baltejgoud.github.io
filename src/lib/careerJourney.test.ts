@@ -4,6 +4,8 @@ import { journey } from "@/content/journey";
 import { journeyStories } from "@/content/journey-stories";
 import {
   clampJourney,
+  journeyLegProgress,
+  journeyLegs,
   journeyScrollState,
   journeyStopProgress,
   pointOnJourney,
@@ -46,6 +48,36 @@ describe("career journey navigation", () => {
     expect(journeyStopProgress(-20)).toBe(journeyStopProgress(0));
     expect(journeyStopProgress(100)).toBe(
       journeyStopProgress(journey.length - 1),
+    );
+  });
+  it("splits the drawn route into one leg per stop that joins up end to end", () => {
+    expect(journeyLegs.length).toBe(route.stops.length);
+    expect(journeyLegs[0].from).toBe(0);
+    const ends = (path: string) => {
+      const numbers = path.match(/-?\d+(\.\d+)?/g)!.map(Number);
+      return [numbers.slice(0, 2), numbers.slice(-2)];
+    };
+    journeyLegs.forEach((leg, i) => {
+      expect(leg.to).toBe(route.stops[i]);
+      if (i > 0) expect(leg.from).toBe(journeyLegs[i - 1].to);
+      const [start, end] = ends(leg.path);
+      const a = pointOnJourney(leg.from);
+      const b = pointOnJourney(leg.to);
+      expect(Math.hypot(start[0] - a.x, start[1] - a.y)).toBeLessThan(0.5);
+      expect(Math.hypot(end[0] - b.x, end[1] - b.y)).toBeLessThan(0.5);
+    });
+  });
+  it("draws the legs behind the traveller in full and nothing ahead of it", () => {
+    const at = route.stops[2];
+    expect(journeyLegs.map((leg) => journeyLegProgress(at, leg))).toEqual([
+      1, 1, 1, 0, 0, 0, 0,
+    ]);
+    const third = journeyLegs[3];
+    expect(
+      journeyLegProgress((third.from + third.to) / 2, third),
+    ).toBeCloseTo(0.5);
+    expect(journeyLegs.every((leg) => journeyLegProgress(0, leg) === 0)).toBe(
+      true,
     );
   });
   it("provides a finite camera position and heading along the whole route", () => {

@@ -37,6 +37,34 @@ export function journeyScrollState(progress: number) {
   };
 }
 
+/**
+ * The route cut into one leg per stop, so scrolling only repaints the leg being travelled
+ * instead of re-dashing the whole route every frame.
+ */
+export const journeyLegs = route.stops.map((to, i) => {
+  const from = i > 0 ? route.stops[i - 1] : 0;
+  const start = pointOnJourney(from);
+  const end = pointOnJourney(to);
+  const inside = route.points.filter((_, j) => {
+    const at = route.lengths[j] / route.totalLength;
+    return at > from && at < to;
+  });
+  const points = [[start.x, start.y], ...inside, [end.x, end.y]];
+  return {
+    from,
+    to,
+    path: points
+      .map(([x, y], j) => `${j ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`)
+      .join(""),
+  };
+});
+
+/** How much of a leg (0..1) is drawn once the traveller has covered `distance` of the route. */
+export const journeyLegProgress = (
+  distance: number,
+  leg: { from: number; to: number },
+) => clampJourney((distance - leg.from) / (leg.to - leg.from));
+
 export function pointOnJourney(distance: number) {
   const target = clampJourney(distance) * route.totalLength;
   let low = 0;
