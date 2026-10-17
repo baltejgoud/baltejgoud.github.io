@@ -1,13 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif, JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import {
+  Bricolage_Grotesque,
+  DM_Sans,
+  Instrument_Serif,
+  JetBrains_Mono,
+} from "next/font/google";
 import "lenis/dist/lenis.css";
 import "./globals.css";
-import { Cursor } from "@/components/layout/Cursor";
 import { Providers } from "@/components/layout/Providers";
 import { RevealObserver } from "@/components/layout/RevealObserver";
 import { profile } from "@/content/profile";
 
-const sans = Plus_Jakarta_Sans({
+const sans = DM_Sans({
   variable: "--font-jakarta",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
@@ -18,6 +22,11 @@ const serif = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
   style: ["normal", "italic"],
+  display: "swap",
+});
+const display = Bricolage_Grotesque({
+  variable: "--font-bricolage",
+  subsets: ["latin"],
   display: "swap",
 });
 const mono = JetBrains_Mono({
@@ -52,10 +61,18 @@ export const metadata: Metadata = {
       },
     ],
   },
-  twitter: { card: "summary_large_image", title, description, images: ["/assets/social-cover.jpg"] },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: ["/assets/social-cover.jpg"],
+  },
 };
 
-export const viewport: Viewport = { themeColor: "#f6f4ee", colorScheme: "light" };
+export const viewport: Viewport = {
+  themeColor: "#fff9ed",
+  colorScheme: "light dark",
+};
 
 /** Runs before first paint: enables motion styles, honours reduced motion, and reveals everything if the app never boots. */
 const gate = `(function(d,w){var c=d.documentElement.classList;c.add("js");if(w.matchMedia("(prefers-reduced-motion: reduce)").matches)c.add("reduced");w.setTimeout(function(){if(!c.contains("app-ready"))c.add("reveal-all")},3000)})(document,window);`;
@@ -69,17 +86,28 @@ const person = {
   url: `${SITE}/`,
   image: `${SITE}/profile.jpg`,
   email: `mailto:${profile.email}`,
-  address: { "@type": "PostalAddress", addressLocality: "Hyderabad", addressCountry: "IN" },
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Hyderabad",
+    addressCountry: "IN",
+  },
   worksFor: { "@type": "Organization", name: "Sanket" },
   sameAs: [profile.links.linkedin, profile.links.github],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${sans.variable} ${serif.variable} ${mono.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${sans.variable} ${display.variable} ${serif.variable} ${mono.variable}`}
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: gate }} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(person) }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(person) }}
+        />
       </head>
       <body>
         <a
@@ -90,7 +118,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <Providers>{children}</Providers>
         <RevealObserver />
-        <Cursor />
       </body>
     </html>
   );

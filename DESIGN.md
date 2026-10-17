@@ -1,72 +1,42 @@
-# Editorial — Baltej Goud
+# Baltej Goud — an illustrated portfolio
 
-The homepage of baltejgoud.github.io, rebuilt on 2026-10-16 as a warm, light, editorial portfolio. The full design is in `docs/superpowers/specs/2026-10-16-editorial-portfolio-design.md`; this file is the working reference. The case studies (`public/work/`) and the résumé (`public/resume.html`) keep the earlier “Signal” styling until they are restyled.
+Redesigned on 2026-10-17 using James Chugh’s portfolio as the user-selected visual reference. The implementation uses Baltej’s own experience, projects, imagery, interests and contact details. The reference’s personal photographs, testimonials, visitor counts and affiliations are not reused.
 
-## Principles
+## Visual language
 
-- Every fact comes from Baltej’s own résumé and site. No invented metrics, dates, certifications, coding-profile stats, quotes or repository links. Synthetic data inside project widgets is labelled “Illustrative”.
-- Motion is rich but never required: everything reads without JavaScript and with reduced motion.
-- Content lives in `src/content/`. Components only render it.
+Warm paper, navy ink, buttery yellow and restrained terracotta accents. Bricolage Grotesque headings, DM Sans body text, and Instrument Serif handwritten-style annotations. Torn-paper transitions, tactile project cards, a miniature career map, pinned notes and oversized contact keys. Dark mode has its own semantic colours.
 
-## Palette
+The current homepage is `src/components/portfolio/Portfolio.tsx` with scoped styling in `portfolio.css`. Older components are retained for reusable project widgets and existing tests; `src/app/page.tsx` renders the new portfolio.
 
-| Token | Value | Use |
-| --- | --- | --- |
-| `cream` | `#F6F4EE` | Page background |
-| `ink` | `#181818` | Text, active pills, inverted rows |
-| `stone` | `#7A756D` | Secondary text, metadata |
-| `line` | `#E5E0D8` | Hairlines and borders |
-| `paper` | `#FFFFFF` | Cards |
-| `watermark` | `rgb(122 117 109 / 0.10)` | Giant background words and years |
-| `live` | `#22C55E` | Availability dot |
-| `alert` | `#B4483A` | Broken chain, blocked listing |
+## Sections and behaviour
 
-Skill categories: Languages `#D08A3C`, Frontend `#4A7FB0`, Backend `#5B8C5A`, Databases `#8B6BB1`, Tools `#B85C45`, Core `#B8962E`.
+1. Illustrated valley: desktop and mobile artwork, scroll parallax, career hotspots and an on-demand music player.
+2. How I got here: biography and movable sticky notes.
+3. Journey: a pinned, scroll-driven city map with seven story stops, a following camera, progressive blue route, official company-logo pins, floating cards, compass, zoom, recenter and drag-to-pan. Phones use a single-screen tap/swipe journey with expandable cards; reduced motion uses manual steps. Haritha is full-time, with the Tectoro internship explicitly overlapping it.
+4. Selected work: six fanned project cards, selection buttons, native modal dialogs, project details and case-study/source links.
+5. Interfaces: horizontally scrollable gallery with working previous/next controls.
+6. Sanket: founder story, responsibilities, supported product facts and case-study links.
+7. Toolkit: gift reveal, all 32 skills, focus/hover/click descriptions, and rewrapping.
+8. Process: six stages from problem framing to learning.
+9. Highlights: nine supported achievements, including college football captaincy and district-level play.
+10. Off the clock: draggable/keyboard-movable portrait, sports, hobbies, Anirudh player and a travel note. No invented travel history.
+11. Notes: device-local drafts with colour choice, sorting, deletion and optional email handoff. There is no shared notes backend.
+12. Contact: email, GitHub, LinkedIn, résumé, copy-email and return-to-top.
 
-## Typography
+## Content and dates
 
-- **Plus Jakarta Sans** (400–800) for headings and body.
-- **Instrument Serif italic** for one accent word or phrase in every section title.
-- **JetBrains Mono** for index numbers, labels and tags: uppercase, 0.72rem, 0.14em tracking.
-- Section titles: `clamp(2.4rem, 5.5vw, 4.75rem)`, weight 800, −0.035em tracking.
+Existing content remains in `src/content/`. Dates supplied in this chat: tutoring Jan–Jun 2023; freelance Jun 2023–Feb 2024; Haritha Mar 2024–present; Tectoro internship Oct–Dec 2025. Sanket’s founding date has not been supplied, so it is shown as “Now”. The linked résumé has the same dates and internship distinction.
 
-## Sections
+Certifications render only when entries exist. Compatibility anchors preserve old links to `#about`, `#skills`, `#experience`, `#achievements` and `#contact`.
 
-Hero · 01 About · 02 Skills · 03 Selected work · (Certifications, hidden while empty) · Journey · Achievements · Contact. Numbers come from `src/lib/sections.ts`, so adding certifications renumbers the sections after it.
+## Assets
 
-## Interactions
+All generated art uses the built-in Image Generation tool, is saved locally under `public/assets/`, and is encoded as WebP with Sharp. Portrait and project interfaces reuse existing project assets. Prompts and provenance are in `docs/portfolio-artwork.md`.
 
-| Area | Behaviour |
-| --- | --- |
-| Navbar | Ink pill slides to the section in view; glass background after 24px; full-screen menu below 900px. |
-| Hero | “BALTEJ” spans the full width; the cutout and watermark drift with a fine pointer; entrance on load. |
-| Lanyard | Verlet strap and spring-twisted card (`src/lib/physics/rope.ts`). Drag, fling or use the arrow keys. Sleeps at rest and off screen. |
-| Skills | Filter pills highlight a category; hover or focus updates the preview; arrow keys move across the grid. |
-| Work | Horizontal accordion of spines at ≥1280px, vertical accordion below. Each project has a live widget, loaded when opened. |
-| Journey | A dot travels a dashed S-curve with scroll progress. |
-| Achievements | Snap carousel with mouse drag, buttons and a progress bar. |
-| Contact | Copy-email pill with a toast; live Hyderabad time. |
+## Accessibility and rendering
 
-## Motion rules
-
-- An inline script in `<head>` adds `js` (and `reduced` under reduced motion) before first paint. Scroll reveals hide content only under `html.js:not(.reduced):not(.reveal-all)`. If the app has not booted after 3s, `reveal-all` shows everything.
-- Scroll reveals are CSS (`[data-reveal]`, `[data-reveal="mask"]`) driven by one IntersectionObserver. Motion (`motion/react`) is used for interactive pieces only, and never for content that must be visible before hydration.
-- Under reduced motion: no Lenis, parallax, entrance, physics, magnetism or cursor follower. Every feature still works.
-- Lenis yields to inner panels marked `data-scroll-area` when they can scroll.
-
-## Imagery
-
-- `public/images/portrait-cutout.webp`: background removed from `public/assets/portrait.webp` with rembg (`u2net_human_seg`, alpha matting), then trimmed and encoded by `scripts/prepare-images.cjs`.
-- `public/images/id-photo.webp`: a square head-and-shoulders crop of the same portrait.
-- Brand logos: simple-icons. Playwright has no entry and shows its symbol.
-- Case-study imagery provenance: `public/assets/work/README.md`.
-
-## Adding content
-
-- **Certification:** add `{ title, issuer, year?, href? }` to `src/content/certifications.ts`. Section 04 appears and later sections renumber.
-- **Talking-avatar video:** set `hero.video = { src, poster }` in `src/content/profile.ts`, with the files in `public/`. The sound toggle appears.
-- **Skill, project, journey milestone or achievement:** edit the matching file in `src/content/`. `npm test` checks its shape.
+Native buttons/links, one h1, skip link, focus rings, labelled controls, modal focus containment/Escape dismissal, reduced-motion support, keyboard pinboard movement and live status messages. Smooth scrolling stops while a modal is open. Core content is statically exported for GitHub Pages; local storage and the Spotify player are client enhancements.
 
 ## Verification
 
-`npm run lint`, `npm test`, `npm run build` and `npm run check` must pass. Check the page in a browser at 1440×900 and 375×812.
+Run `npm run lint`, `npm test`, `npm run build`, and `npm run check`. Check desktop (1440 × 900), phone (390 × 844), and narrow-phone layouts. Verify project selection/dialogs, journey chronology, toolkit descriptions, theme switching, pinboard controls, notes and music. The résumé and case-study directories must also be inspected using a static server pointing to `out/`.

@@ -214,3 +214,12 @@ h2, .section-heading h2, .range-grid h2, .about-copy h2 { font-size: clamp(36px,
   .showcase-card, .capture-window img { transition: none; }
   .showcase-card:first-child, .showcase-card:last-child { transform: none; }
 }
+
+/* Carry the illustrated portfolio's paper palette into the existing project stories. */
+:root { --bg:#fff9ed; --surface:#fff1d7; --cream:#fff1d7; --text:#142336; --muted:#657078; --ink:#142336; --ink-muted:#657078; --orange:#b35e42; --line:#e3dac8; --light-line:#e3dac8; }
+.site-header { background:#fff9edf2; }
+.case-story.light-section, .case-detail-section.light-section, .next-project { background:#fff1d7; }
+.decision-grid article { background:#f4e3c3; }
+.case-secondary a { background:#f4e3c3; }
+.contact-panel { background:#f4e3c3; }
+.site-footer { background:#fff9ed; }

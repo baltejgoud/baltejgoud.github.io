@@ -1,6 +1,6 @@
 import type { Milestone } from "./types";
 
-/** Chronological, top to bottom. Jobs carry no dates because none are on record. */
+/** Dates supplied by Baltej. Tectoro was an internship alongside Haritha. */
 export const journey: Milestone[] = [
   {
     kind: "education",
@@ -13,6 +13,7 @@ export const journey: Milestone[] = [
   },
   {
     kind: "experience",
+    dates: "Jan – Jun 2023",
     role: "Lead Computer Science Tutor",
     org: "B V Raju Institute of Technology",
     bullets: [
@@ -24,16 +25,15 @@ export const journey: Milestone[] = [
   },
   {
     kind: "experience",
-    role: "AI/ML Engineer",
-    org: "Tectoro Consulting Private Limited",
-    bullets: [
-      "Developed and deployed AI/ML solutions",
-      "Real-world machine-learning pipelines and intelligent application development",
-    ],
-    tags: ["Machine learning", "Python", "Pipelines"],
+    dates: "Jun 2023 – Feb 2024",
+    role: "Freelance Developer",
+    org: "Independent",
+    bullets: ["Independent development work after completing my B.Tech"],
+    tags: ["Freelance", "Development"],
   },
   {
     kind: "experience",
+    dates: "Mar 2024 – Present",
     role: "Data Analyst",
     org: "Haritha Industries",
     bullets: [
@@ -41,6 +41,17 @@ export const journey: Milestone[] = [
       "Business insights from operational data",
     ],
     tags: ["Data cleaning", "EDA", "Reporting"],
+  },
+  {
+    kind: "experience",
+    dates: "Oct – Dec 2025",
+    role: "AI/ML Engineering Intern",
+    org: "Tectoro Consulting Private Limited",
+    bullets: [
+      "Three-month internship alongside my full-time role at Haritha Industries",
+      "Developed AI/ML solutions and machine-learning pipelines",
+    ],
+    tags: ["Internship", "Machine learning", "Python"],
   },
   {
     kind: "experience",

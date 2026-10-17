@@ -19,7 +19,9 @@ describe("skills", () => {
 
   it("fills every category", () => {
     for (const c of categoryOrder) {
-      expect(skills.filter((s) => s.category === c).length).toBeGreaterThanOrEqual(5);
+      expect(
+        skills.filter((s) => s.category === c).length,
+      ).toBeGreaterThanOrEqual(5);
     }
   });
 
@@ -30,7 +32,14 @@ describe("skills", () => {
 
 describe("projects", () => {
   it("has six projects with sequential indexes and unique widgets", () => {
-    expect(projects.map((p) => p.index)).toEqual(["01", "02", "03", "04", "05", "06"]);
+    expect(projects.map((p) => p.index)).toEqual([
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+    ]);
     expect(new Set(projects.map((p) => p.widget)).size).toBe(6);
   });
 
@@ -45,8 +54,10 @@ describe("projects", () => {
 
   it("only links to Baltej's GitHub and local case studies", () => {
     for (const p of projects) {
-      if (p.links.github) expect(p.links.github).toMatch(/^https:\/\/github\.com\/baltejgoud\//);
-      if (p.links.caseStudy) expect(p.links.caseStudy).toMatch(/^\/work\/[a-z]+\/$/);
+      if (p.links.github)
+        expect(p.links.github).toMatch(/^https:\/\/github\.com\/baltejgoud\//);
+      if (p.links.caseStudy)
+        expect(p.links.caseStudy).toMatch(/^\/work\/[a-z]+\/$/);
     }
   });
 });
@@ -66,8 +77,8 @@ describe("journey", () => {
 });
 
 describe("achievements", () => {
-  it("has eight cards, each with a metric", () => {
-    expect(achievements).toHaveLength(8);
+  it("has nine cards, each with a metric", () => {
+    expect(achievements).toHaveLength(9);
     for (const a of achievements) expect(a.metric).toBeTruthy();
   });
 });

@@ -1,24 +1,24 @@
 /* Match the portfolio on screen while preserving the existing print stylesheet. */
 @media screen {
   :root {
-    --bg: #fafbf9;
-    --surface: #f0f3f4;
-    --line: #dce2e5;
+    --bg: #fff9ed;
+    --surface: #fff1d7;
+    --line: #e3dac8;
     --line-strong: #bbc8d2;
-    --text: #202429;
+    --text: #142336;
     --text-2: #52606c;
     --text-3: #59646d;
-    --signal: #2563c7;
+    --signal: #b35e42;
   }
   html { scrollbar-color: #b6c5d1 var(--bg); }
   .back, .print { border-radius: 100px; min-height: 44px; padding-inline: 20px; }
   .print { background: var(--text); color: #fff; }
   .print:hover { background: #36444d; }
-  .head { background: #e8f0fb; border: 0; border-radius: 24px; padding: clamp(24px, 4vw, 36px); }
+  .head { background: #f4e3c3; border: 0; border-radius: 24px; padding: clamp(24px, 4vw, 36px); }
   .head .role { color: var(--text-2); }
   .head .contact a:hover { color: var(--signal); }
   .entry h3 a { text-decoration: underline; text-decoration-color: #b9c9d8; text-underline-offset: 4px; }
   .entry h3 a:hover { color: var(--signal); }
   .contact { overflow-wrap: anywhere; }
-  .ach li { background: #eef3f7; }
+  .ach li { background: #fff1d7; }
 }
