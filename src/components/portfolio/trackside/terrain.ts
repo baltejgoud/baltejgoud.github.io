@@ -207,14 +207,24 @@ export async function createGround(
   geometry.setAttribute("uv", new T.BufferAttribute(uvs, 2));
   geometry.setIndex(new T.BufferAttribute(indices, 1));
   geometry.computeVertexNormals();
-  const mesh = new T.Mesh(
-    geometry,
-    new T.MeshStandardMaterial({
-      vertexColors: true,
-      map: grassTexture(),
-      roughness: 1,
-    }),
-  );
+  const turf = new T.MeshStandardMaterial({
+    vertexColors: true,
+    map: grassTexture(),
+    roughness: 1,
+  });
+  // Blend the turf at two scales: blades up close, and a wider pattern that
+  // hides the repeat from further away.
+  turf.onBeforeCompile = (shader) => {
+    shader.fragmentShader = shader.fragmentShader.replace(
+      "#include <map_fragment>",
+      `#ifdef USE_MAP
+        vec4 blades = texture2D( map, vMapUv * 2.8 );
+        vec4 patches = texture2D( map, vMapUv * 0.29 + vec2( 0.37, 0.11 ) );
+        diffuseColor *= mix( blades, patches, 0.45 );
+      #endif`,
+    );
+  };
+  const mesh = new T.Mesh(geometry, turf);
   mesh.receiveShadow = true;
   mesh.matrixAutoUpdate = false;
 

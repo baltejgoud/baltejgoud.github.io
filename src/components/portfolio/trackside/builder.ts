@@ -180,6 +180,8 @@ export interface RibbonSpec {
   stretchAcross?: boolean;
   keep?: (i: number) => boolean;
   color?: (i: number, lateral: number, out: T.Color) => void;
+  /** Per-vertex opacity alongside `color`; the material needs vertexColors and transparency. */
+  alpha?: (i: number, lateral: number) => number;
   /** Vertical ribbon: left/right become heights above the road and this gives the lateral offset. */
   wall?: (i: number) => number;
 }
@@ -219,6 +221,7 @@ export function ribbon(spec: RibbonSpec) {
       if (spec.color) {
         spec.color(i, value, color);
         colors.push(color.r, color.g, color.b);
+        if (spec.alpha) colors.push(spec.alpha(i, value));
       }
     }
     if (k < count - 1) {
@@ -235,7 +238,58 @@ export function ribbon(spec: RibbonSpec) {
   geometry.setAttribute("position", new T.Float32BufferAttribute(positions, 3));
   geometry.setAttribute("uv", new T.Float32BufferAttribute(uvs, 2));
   if (spec.color)
-    geometry.setAttribute("color", new T.Float32BufferAttribute(colors, 3));
+    geometry.setAttribute(
+      "color",
+      new T.Float32BufferAttribute(colors, spec.alpha ? 4 : 3),
+    );
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+// ── Cross-sections swept along the track ───────────────────────────────────
+export interface SweepSpec {
+  start?: number;
+  count?: number;
+  /** Lateral position of the section's origin, + is the driver's right. */
+  lateral: (i: number) => number;
+  /** Section points as [offset towards the track, height above the road]. */
+  profile: [number, number][];
+  keep?: (i: number) => boolean;
+  /** World metres per texture repeat along the lap. */
+  repeat?: number;
+}
+export function sweep(spec: SweepSpec) {
+  const { x, z, y, tx, tz, samples, step } = trackModel;
+  const start = spec.start ?? 0,
+    count = spec.count ?? samples + 1,
+    repeat = spec.repeat ?? 4,
+    m = spec.profile.length;
+  const positions: number[] = [],
+    uvs: number[] = [],
+    indices: number[] = [];
+  for (let k = 0; k < count; k++) {
+    const i = (start + k) % samples;
+    const origin = spec.lateral(i),
+      inward = origin > 0 ? -1 : 1;
+    spec.profile.forEach(([offset, height], j) => {
+      const lateral = origin + inward * offset;
+      positions.push(x[i] - tz[i] * lateral, y[i] + height, z[i] + tx[i] * lateral);
+      uvs.push(((start + k) * step) / repeat, j / (m - 1));
+    });
+    if (k < count - 1) {
+      const next = (start + k + 1) % samples;
+      if (spec.keep && !(spec.keep(i) && spec.keep(next))) continue;
+      for (let j = 0; j < m - 1; j++) {
+        const p = k * m + j,
+          q = p + m;
+        indices.push(p, p + 1, q, p + 1, q + 1, q);
+      }
+    }
+  }
+  const geometry = new T.BufferGeometry();
+  geometry.setAttribute("position", new T.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("uv", new T.Float32BufferAttribute(uvs, 2));
   geometry.setIndex(indices);
   geometry.computeVertexNormals();
   return geometry;

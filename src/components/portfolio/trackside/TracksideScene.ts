@@ -34,6 +34,7 @@ const LIGHTING = {
     turbidity: 3.2,
     rayleigh: 1.1,
     clouds: 0.38,
+    envGround: 0x5c6450,
   },
   dusk: {
     sun: new T.Vector3(-0.88, 0.16, 0.45).normalize(),
@@ -47,6 +48,7 @@ const LIGHTING = {
     turbidity: 6,
     rayleigh: 2.4,
     clouds: 0.5,
+    envGround: 0x3a3631,
   },
 };
 
@@ -89,6 +91,7 @@ export async function createTracksideScene(
   const sun = new T.DirectionalLight(0xffffff, 3);
   sun.castShadow = true;
   sun.shadow.mapSize.setScalar(fine ? 2048 : 1024);
+  sun.shadow.radius = 2.2;
   sun.shadow.camera.near = 10;
   sun.shadow.camera.far = 9000;
   scene.add(sun, sun.target);
@@ -163,6 +166,14 @@ export async function createTracksideScene(
   const envSky = new Sky();
   envSky.scale.setScalar(50);
   envScene.add(envSky);
+  // Ground below the horizon, so lower bodywork reflects the verges, not more sky.
+  const envGround = new T.MeshBasicMaterial({ color: 0x5c6450 });
+  envScene.add(
+    new T.Mesh(
+      new T.CircleGeometry(160, 32).rotateX(-Math.PI / 2).translate(0, -1.5, 0),
+      envGround,
+    ),
+  );
   const environments = new Map<string, T.WebGLRenderTarget>();
   const applyTheme = (dark: boolean) => {
     const key = dark ? "dusk" : "day";
@@ -178,6 +189,7 @@ export async function createTracksideScene(
       u.cloudElevation.value = 0.55;
     }
     envSky.material.uniforms.showSunDisc.value = 0;
+    envGround.color.setHex(look.envGround);
     if (!environments.has(key))
       environments.set(key, pmrem.fromScene(envScene, 0.04, 0.1, 200));
     scene.environment = environments.get(key)!.texture;

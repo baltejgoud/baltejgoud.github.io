@@ -9,13 +9,22 @@ import {
   smoothstep,
   trackModel,
 } from "@/lib/trackside";
-import { Batch, Placer, clearOfOtherTrack, ribbon, yawAlong } from "./builder";
 import {
-  armcoTexture,
-  asphaltTexture,
+  Batch,
+  Placer,
+  clearOfOtherTrack,
+  ribbon,
+  sweep,
+  yawAlong,
+} from "./builder";
+import { fbm } from "./terrain";
+import {
+  asphaltMaps,
   fenceTexture,
-  gravelTexture,
-  kerbTexture,
+  gravelMaps,
+  kerbMaps,
+  markerTexture,
+  skidTexture,
   tyreWallTexture,
 } from "./textures";
 
@@ -59,6 +68,29 @@ const onPitStraight = (i: number, pad = 0) => {
   return s > PIT_STRAIGHT[0] - pad && s < PIT_STRAIGHT[1] + pad;
 };
 
+/** The same texture mirrored across u, for the other side of the track. */
+const mirrored = (texture: T.Texture) => {
+  const copy = texture.clone();
+  copy.repeat.x = -1;
+  copy.offset.x = 1;
+  copy.needsUpdate = true;
+  return copy;
+};
+
+/** Galvanised W-beam: [offset towards the track, height], about 31 cm tall. */
+const W_BEAM: [number, number][] = [
+  [0, -0.155],
+  [0.03, -0.15],
+  [0.075, -0.105],
+  [0.082, -0.07],
+  [0.036, -0.026],
+  [0.036, 0.026],
+  [0.082, 0.07],
+  [0.075, 0.105],
+  [0.03, 0.15],
+  [0, 0.155],
+];
+
 /** Road, kerbs, run-off, barriers and pit lane — everything that follows the lap. */
 export function createSurface(scene: T.Object3D) {
   const meshes: T.Mesh[] = [];
@@ -84,12 +116,14 @@ export function createSurface(scene: T.Object3D) {
       ahead = Math.max(ahead, Math.abs(bend[(i + j) % N]));
     braking[i] = smoothstep(0.006, 0.03, ahead - Math.abs(bend[i]));
   }
+  const road = asphaltMaps();
   const asphalt = new T.MeshStandardMaterial({
-    map: asphaltTexture(),
+    ...road,
     vertexColors: true,
-    color: 0x4f5154,
-    roughness: 0.94,
-    envMapIntensity: 0.45,
+    color: 0x7b7e83,
+    roughness: 1,
+    normalScale: new T.Vector2(0.6, 0.6),
+    envMapIntensity: 0.5,
   });
   const base = new T.Color(0xffffff);
   add(
@@ -98,15 +132,40 @@ export function createSurface(scene: T.Object3D) {
       right: (i) => HW[i] + 0.15,
       lift: 0,
       across: 16,
-      repeat: [6, 6],
+      repeat: [4, 4],
       color: (i, lateral, out) => {
         const line = Math.exp(-(((lateral - racing[i]) / 1.7) ** 2));
-        const wear = 0.08 + 0.1 * line + 0.22 * line * braking[i];
-        const dust = smoothstep(HW[i] - 2.2, HW[i], Math.abs(lateral)) * 0.08;
-        out.copy(base).multiplyScalar(1 - wear + dust);
+        const wear = 0.06 + 0.12 * line + 0.24 * line * braking[i];
+        const dust = smoothstep(HW[i] - 2.2, HW[i], Math.abs(lateral)) * 0.1;
+        // Resurfaced stretches and patch repairs.
+        const patch = (fbm((i * step) / 90 + 3.1, lateral / 9 + 0.7) - 0.5) * 0.2;
+        out.copy(base).multiplyScalar(1 - wear + dust + patch);
       },
     }),
     asphalt,
+  );
+  // Rubber streaks laid down under braking, two tyre tracks wide.
+  add(
+    ribbon({
+      left: (i) => racing[i] - 1.3,
+      right: (i) => racing[i] + 1.3,
+      lift: 0.006,
+      stretchAcross: true,
+      repeat: [1, 38],
+      keep: (i) => braking[i] > 0.12 && !onPitStraight(i, 60),
+      color: (_, __, out) => out.setRGB(1, 1, 1),
+      alpha: (i) => smoothstep(0.12, 0.7, braking[i]),
+    }),
+    new T.MeshStandardMaterial({
+      map: skidTexture(),
+      vertexColors: true,
+      transparent: true,
+      depthWrite: false,
+      roughness: 0.75,
+      polygonOffset: true,
+      polygonOffsetFactor: -2,
+      polygonOffsetUnits: -2,
+    }),
   );
   // Road edge skirt hides the seam where the verge drops away.
   const skirt = new T.MeshStandardMaterial({ color: 0x3c3f42, roughness: 1 });
@@ -134,40 +193,70 @@ export function createSurface(scene: T.Object3D) {
     );
 
   // ── Kerbs: inside of corners and outside on exit ────────────────────────
-  const kerbMaterial = new T.MeshStandardMaterial({
-    map: kerbTexture(),
-    roughness: 0.6,
-  });
+  // Flush with the road on the track side, a 5 cm ridged crown, rounded off outside.
+  const kerbs = kerbMaps();
   for (const side of [0, 1]) {
     const sign = side ? 1 : -1;
+    const keep = (i: number) => kerb[side][i] === 1 && !onPitStraight(i, 40);
     add(
       ribbon({
         left: (i) => (sign < 0 ? -HW[i] - 1.4 : HW[i] - 0.05),
         right: (i) => (sign < 0 ? -HW[i] + 0.05 : HW[i] + 1.4),
-        lift: (i, lateral) => 0.03 + 0.07 * smoothstep(HW[i], HW[i] + 1.4, Math.abs(lateral)),
-        across: 2,
+        lift: (i, lateral) => {
+          const d = Math.abs(lateral);
+          return (
+            0.012 +
+            0.05 * smoothstep(HW[i] - 0.05, HW[i] + 0.45, d) -
+            0.035 * smoothstep(HW[i] + 1.1, HW[i] + 1.4, d)
+          );
+        },
+        across: 7,
         stretchAcross: true,
         repeat: [1, 3],
-        keep: (i) => kerb[side][i] === 1 && !onPitStraight(i, 40),
+        keep,
       }),
-      kerbMaterial,
+      new T.MeshStandardMaterial({
+        map: side ? mirrored(kerbs.map) : kerbs.map,
+        normalMap: side ? mirrored(kerbs.normalMap) : kerbs.normalMap,
+        roughness: 0.55,
+        envMapIntensity: 0.6,
+      }),
+    );
+    add(
+      ribbon({
+        left: () => -0.3,
+        right: () => 0.028,
+        lift: 0,
+        wall: (i) => sign * (HW[i] + 1.4),
+        keep,
+      }),
+      skirt,
     );
   }
 
   // ── Run-off: tarmac or gravel on the outside of corners ─────────────────
   const tarmacRunoff = new T.MeshStandardMaterial({
-    map: asphaltTexture(),
-    color: 0x6b6d70,
-    roughness: 0.95,
+    ...road,
+    color: 0x8c8f94,
+    roughness: 1,
+    normalScale: new T.Vector2(0.6, 0.6),
     envMapIntensity: 0.5,
   });
   const gravelMaterial = new T.MeshStandardMaterial({
-    map: gravelTexture(),
-    color: 0xd9c49d,
+    ...gravelMaps(),
+    color: 0xe6ddcc,
     roughness: 1,
   });
   // Spa paints its tarmac run-off with a band of colour beyond the kerbs.
-  const band = decal(0x2f6d9a);
+  const band = new T.MeshStandardMaterial({
+    ...road,
+    color: 0x5f8fbf,
+    roughness: 1,
+    normalScale: new T.Vector2(0.5, 0.5),
+    polygonOffset: true,
+    polygonOffsetFactor: -4,
+    polygonOffsetUnits: -4,
+  });
   for (const side of [0, 1]) {
     const sign = side ? 1 : -1;
     const from = (i: number) => HW[i] + (kerb[side][i] ? 1.4 : 0.15);
@@ -184,7 +273,7 @@ export function createSurface(scene: T.Object3D) {
           ...span(from, to),
           lift: surface ? -0.04 : -0.015,
           across: 2,
-          repeat: [5, 5],
+          repeat: surface ? [2.5, 2.5] : [4, 4],
           keep: (i) => wide(i) && gravel[side][i] === surface,
         }),
         surface ? gravelMaterial : tarmacRunoff,
@@ -204,17 +293,18 @@ export function createSurface(scene: T.Object3D) {
 
   // ── Barriers: Armco, debris fence, tyre walls ───────────────────────────
   const armco = new T.MeshStandardMaterial({
-    map: armcoTexture(),
-    metalness: 0.55,
-    roughness: 0.45,
+    color: 0xb3bac1,
+    metalness: 0.7,
+    roughness: 0.34,
     side: T.DoubleSide,
   });
+  // Coverage follows the mesh's alpha, so at a distance it fades to a haze.
   const fence = new T.MeshStandardMaterial({
     map: fenceTexture(),
-    color: 0xd0d4d8,
+    color: 0x9ea4aa,
     metalness: 0.3,
     roughness: 0.6,
-    alphaTest: 0.45,
+    alphaToCoverage: true,
     side: T.DoubleSide,
   });
   const tyres = new T.MeshStandardMaterial({
@@ -234,12 +324,18 @@ export function createSurface(scene: T.Object3D) {
     const open = clearance(wall, 1.5);
     const keep = (i: number) =>
       !(side === 1 && onPitStraight(i)) && open[i] === 1;
+    for (const centre of [0.43, 0.79])
+      add(
+        sweep({
+          lateral: wall,
+          keep,
+          profile: W_BEAM.map(([offset, h]) => [offset, centre + h]),
+        }),
+        armco,
+        true,
+      );
     add(
-      ribbon({ left: () => -0.3, right: () => 0.85, lift: 0, wall, keep, repeat: [1, 4] }),
-      armco,
-    );
-    add(
-      ribbon({ left: () => 0.85, right: () => 3.9, lift: 0, wall, keep, repeat: [1, 3] }),
+      ribbon({ left: () => 0.95, right: () => 3.9, lift: 0, wall, keep, repeat: [1, 1] }),
       fence,
     );
     // Belted tyre walls where a tight corner's outside is close.
@@ -256,13 +352,52 @@ export function createSurface(scene: T.Object3D) {
     );
     for (let i = 0; i < N; i += 2) {
       if (!keep(i)) continue;
-      const lateral = wall(i) + sign * 0.15;
+      const lateral = wall(i) + sign * 0.12;
       const p = new T.Vector3(X[i] - TZ[i] * lateral, trackModel.y[i], Z[i] + TX[i] * lateral);
       const placer = new Placer(posts, p, yawAlong(TX[i], TZ[i]));
-      placer.box(steel, 0.12, 4.3, 0.12, 0, 1.8, 0);
+      placer.add(steel, new T.CylinderGeometry(0.055, 0.055, 4.3, 8), 0, 1.8, 0);
+      // Spacer block between the post and the rails.
+      placer.box(steel, 0.1, 0.62, 0.12, 0, 0.61, -sign * 0.06);
     }
   }
   posts.build(scene, true, false);
+
+  // ── Braking markers: 150, 100 and 50 m boards before the big stops ──────
+  const markers = new Batch();
+  const boards = [150, 100, 50].map(
+    (m) => new T.MeshStandardMaterial({ map: markerTexture(m), roughness: 0.6 }),
+  );
+  const backing = new T.MeshStandardMaterial({ color: 0x2a2e33, roughness: 0.7 });
+  let lastStop = -Infinity;
+  for (let i = 1; i < N; i++) {
+    if (!(braking[i] > 0.5 && braking[i - 1] <= 0.5) || onPitStraight(i, 120)) continue;
+    let peak = 0;
+    for (let j = 0; j < 70; j++) peak = Math.max(peak, Math.abs(bend[(i + j) % N]));
+    if (peak < 0.025 || i * step - lastStop < 450) continue;
+    lastStop = i * step;
+    // Outside of the coming corner, just short of the barrier.
+    let ahead = 0;
+    for (let j = 0; j < 70; j++) ahead += bend[(i + j) % N];
+    const sign = ahead > 0 ? -1 : 1,
+      side = sign > 0 ? 1 : 0;
+    boards.forEach((material, b) => {
+      const k = (i - Math.round((50 * (2 - b)) / step) + N) % N;
+      const lateral = HW[k] + 3.2;
+      if (barrier[side][k] < lateral + 1.5) return;
+      if (!clearOfOtherTrack(X[k] - TZ[k] * sign * lateral, Z[k] + TX[k] * sign * lateral, k, 4))
+        return;
+      const placer = new Placer(
+        markers,
+        new T.Vector3(X[k] - TZ[k] * sign * lateral, trackModel.y[k], Z[k] + TX[k] * sign * lateral),
+        yawAlong(TX[k], TZ[k]),
+      );
+      placer.add(material, new T.PlaneGeometry(1.4, 1.05), -0.035, 1.55, 0, 0, -Math.PI / 2, 0);
+      placer.box(backing, 0.06, 1.13, 1.48, 0, 1.55, 0);
+      for (const z of [-0.5, 0.5])
+        placer.add(steel, new T.CylinderGeometry(0.04, 0.04, 1.1, 6), 0.05, 0.55, z);
+    });
+  }
+  markers.build(scene, true, true);
 
   // ── Pit lane and pit wall (inside of the start straight) ────────────────
   const pitStart = Math.round(((PIT_STRAIGHT[0] - 40 + LAP) % LAP) / step);
@@ -275,9 +410,10 @@ export function createSurface(scene: T.Object3D) {
     );
   };
   const pitAsphalt = new T.MeshStandardMaterial({
-    map: asphaltTexture(),
-    color: 0x48494c,
-    roughness: 0.92,
+    ...road,
+    color: 0x6c6f73,
+    roughness: 1,
+    normalScale: new T.Vector2(0.5, 0.5),
     envMapIntensity: 0.45,
   });
   add(
@@ -287,7 +423,7 @@ export function createSurface(scene: T.Object3D) {
       left: (i) => HW[i] + 1.9,
       right: (i) => HW[i] + 1.9 + 13.5 * lane(i),
       lift: 0.01,
-      repeat: [6, 6],
+      repeat: [4, 4],
     }),
     pitAsphalt,
   );

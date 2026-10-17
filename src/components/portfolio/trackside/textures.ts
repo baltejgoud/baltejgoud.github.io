@@ -19,117 +19,384 @@ export function canvasTexture(
   return texture;
 }
 
-const speckle = (
+// ── Tileable fields ────────────────────────────────────────────────────────
+const lattice = (x: number, y: number, period: number, seed: number) => {
+  const ix = ((x % period) + period) % period,
+    iy = ((y % period) + period) % period;
+  let h =
+    Math.imul(ix, 374761393) +
+    Math.imul(iy, 668265263) +
+    Math.imul(seed, 1442695041);
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+};
+/** Value noise that repeats every `period` lattice cells. */
+function tileNoise(x: number, y: number, period: number, seed: number) {
+  const ix = Math.floor(x),
+    iy = Math.floor(y),
+    fx = x - ix,
+    fy = y - iy;
+  const u = fx * fx * (3 - 2 * fx),
+    v = fy * fy * (3 - 2 * fy);
+  const a = lattice(ix, iy, period, seed),
+    b = lattice(ix + 1, iy, period, seed),
+    c = lattice(ix, iy + 1, period, seed),
+    d = lattice(ix + 1, iy + 1, period, seed);
+  return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
+}
+/** Fractal noise across a tile `size` pixels wide, `cells` lattice cells at the coarsest octave. */
+function tileFbm(
+  x: number,
+  y: number,
+  size: number,
+  cells: number,
+  octaves: number,
+  seed: number,
+) {
+  let total = 0,
+    amplitude = 0.5,
+    norm = 0,
+    period = cells;
+  for (let o = 0; o < octaves; o++) {
+    total +=
+      tileNoise((x / size) * period, (y / size) * period, period, seed + o) *
+      amplitude;
+    norm += amplitude;
+    amplitude *= 0.5;
+    period *= 2;
+  }
+  return total / norm;
+}
+
+/** A greyscale map the size of a texture. Writes wrap round the edges so it tiles. */
+class Field {
+  readonly data: Float32Array;
+  constructor(
+    readonly w: number,
+    readonly h: number,
+    fill = 0,
+  ) {
+    this.data = new Float32Array(w * h).fill(fill);
+  }
+  index(x: number, y: number) {
+    const { w, h } = this;
+    return (((Math.round(y) % h) + h) % h) * w + (((Math.round(x) % w) + w) % w);
+  }
+  at(x: number, y: number) {
+    return this.data[this.index(x, y)];
+  }
+  /** Visits the pixels of an ellipse; `d` runs from 0 at its centre to 1 at the rim. */
+  ellipse(
+    cx: number,
+    cy: number,
+    rx: number,
+    ry: number,
+    angle: number,
+    visit: (i: number, d: number) => void,
+  ) {
+    const r = Math.max(rx, ry),
+      cos = Math.cos(angle),
+      sin = Math.sin(angle);
+    for (let y = Math.floor(cy - r); y <= Math.ceil(cy + r); y++)
+      for (let x = Math.floor(cx - r); x <= Math.ceil(cx + r); x++) {
+        const dx = x - cx,
+          dy = y - cy;
+        const u = (dx * cos + dy * sin) / rx,
+          v = (dy * cos - dx * sin) / ry;
+        const d = u * u + v * v;
+        if (d <= 1) visit(this.index(x, y), Math.sqrt(d));
+      }
+  }
+}
+
+/** Fills a canvas pixel by pixel from `rgb(i)`, colour values 0–1. */
+function pixels(
   ctx: CanvasRenderingContext2D,
   w: number,
   h: number,
-  seed: number,
-  base: number,
-  spread: number,
-  tint: [number, number, number] = [1, 1, 1],
-) => {
-  const random = mulberry32(seed);
+  rgb: (i: number) => [number, number, number],
+) {
   const image = ctx.createImageData(w, h);
-  for (let i = 0; i < image.data.length; i += 4) {
-    let v = base + (random() - 0.5) * spread;
-    if (random() < 0.03) v += spread * 0.9;
-    image.data[i] = v * tint[0];
-    image.data[i + 1] = v * tint[1];
-    image.data[i + 2] = v * tint[2];
-    image.data[i + 3] = 255;
+  for (let i = 0; i < w * h; i++) {
+    const [r, g, b] = rgb(i);
+    image.data.set([r * 255, g * 255, b * 255, 255], i * 4);
   }
   ctx.putImageData(image, 0, 0);
-};
+}
+const grey =
+  (field: Field) =>
+  (i: number): [number, number, number] => {
+    const v = field.data[i];
+    return [v, v, v];
+  };
+const colours =
+  (rgb: Float32Array) =>
+  (i: number): [number, number, number] => [
+    rgb[i * 3],
+    rgb[i * 3 + 1],
+    rgb[i * 3 + 2],
+  ];
 
-/** Fine aggregate. Vertex colours carry the darker rubbered line. */
-export const asphaltTexture = () =>
-  canvasTexture(512, 512, (ctx, w, h) => {
-    speckle(ctx, w, h, 11, 196, 70);
-    const random = mulberry32(12);
-    ctx.globalAlpha = 0.05;
-    for (let i = 0; i < 70; i++) {
-      ctx.fillStyle = random() < 0.5 ? "#000" : "#fff";
-      ctx.beginPath();
-      ctx.ellipse(
-        random() * w,
-        random() * h,
-        8 + random() * 40,
-        4 + random() * 18,
-        random() * 3,
-        0,
-        Math.PI * 2,
-      );
-      ctx.fill();
+/** Tangent-space normals from a height field (canvas y runs down the texture's v). */
+function normalTexture(height: Field, strength: number) {
+  return canvasTexture(
+    height.w,
+    height.h,
+    (ctx, w, h) => {
+      const image = ctx.createImageData(w, h);
+      for (let y = 0; y < h; y++)
+        for (let x = 0; x < w; x++) {
+          const nx = (height.at(x - 1, y) - height.at(x + 1, y)) * strength,
+            ny = (height.at(x, y + 1) - height.at(x, y - 1)) * strength;
+          const length = Math.hypot(nx, ny, 1);
+          image.data.set(
+            [
+              (nx / length) * 127.5 + 127.5,
+              (ny / length) * 127.5 + 127.5,
+              (1 / length) * 127.5 + 127.5,
+              255,
+            ],
+            (y * w + x) * 4,
+          );
+        }
+      ctx.putImageData(image, 0, 0);
+    },
+    { color: false },
+  );
+}
+
+/** Runs `draw` at (x, y) and at the copies a mark `reach` px wide needs to wrap round the tile. */
+function tiled(
+  x: number,
+  y: number,
+  reach: number,
+  w: number,
+  h: number,
+  draw: (x: number, y: number) => void,
+) {
+  for (const ox of [0, -w, w])
+    for (const oy of [0, -h, h]) {
+      if (ox && (x + ox < -reach || x + ox > w + reach)) continue;
+      if (oy && (y + oy < -reach || y + oy > h + reach)) continue;
+      draw(x + ox, y + oy);
     }
-  });
+}
 
+// ── Track surfaces ─────────────────────────────────────────────────────────
+/** Aggregate in binder with relief and roughness. Vertex colours carry the rubbered line. */
+export function asphaltMaps() {
+  const size = 512,
+    random = mulberry32(11);
+  const tone = new Field(size, size),
+    height = new Field(size, size),
+    rough = new Field(size, size, 0.92);
+  for (let y = 0; y < size; y++)
+    for (let x = 0; x < size; x++) {
+      const i = y * size + x;
+      tone.data[i] =
+        0.55 +
+        (tileFbm(x, y, size, 5, 4, 3) - 0.5) * 0.26 +
+        (random() - 0.5) * 0.12;
+      height.data[i] = random() * 0.35;
+    }
+  for (let n = 0; n < 12000; n++) {
+    const r = 0.7 + random() ** 2.2 * 2.8;
+    const pick = random();
+    const shade =
+      pick < 0.1
+        ? 0.86 + random() * 0.14
+        : pick < 0.34
+          ? 0.28 + random() * 0.12
+          : 0.48 + random() * 0.24;
+    tone.ellipse(
+      random() * size,
+      random() * size,
+      r,
+      r * (0.6 + random() * 0.4),
+      random() * 3,
+      (i, d) => {
+        tone.data[i] = shade * (1 - 0.3 * d * d);
+        height.data[i] = Math.max(height.data[i], (1 - d * d) * (0.5 + r * 0.45));
+        rough.data[i] = 0.72 + d * 0.12;
+      },
+    );
+  }
+  return {
+    map: canvasTexture(size, size, (ctx, w, h) => pixels(ctx, w, h, grey(tone))),
+    normalMap: normalTexture(height, 0.85),
+    roughnessMap: canvasTexture(
+      size,
+      size,
+      (ctx, w, h) => pixels(ctx, w, h, grey(rough)),
+      { color: false },
+    ),
+  };
+}
+
+/** Mown turf: blades over soft mottling. Mixed at two scales in the terrain shader. */
 export const grassTexture = () =>
-  canvasTexture(256, 256, (ctx, w, h) => {
-    speckle(ctx, w, h, 21, 200, 80, [0.92, 1, 0.82]);
-    const random = mulberry32(22);
-    ctx.globalAlpha = 0.25;
-    for (let i = 0; i < 900; i++) {
-      ctx.strokeStyle = random() < 0.5 ? "#e8f5c8" : "#55663d";
-      ctx.beginPath();
+  canvasTexture(512, 512, (ctx, w, h) => {
+    const random = mulberry32(21);
+    pixels(ctx, w, h, (i) => {
+      const x = i % w,
+        y = Math.floor(i / w);
+      const v =
+        0.8 +
+        (tileFbm(x, y, w, 4, 4, 22) - 0.5) * 0.34 +
+        (random() - 0.5) * 0.1;
+      return [v * 0.9, v, v * 0.76];
+    });
+    const blades = ["#f3fadc", "#dbeab4", "#b4cc86", "#8ea862", "#6f8a4c", "#c8d49a"];
+    ctx.lineCap = "round";
+    for (let n = 0; n < 16000; n++) {
       const x = random() * w,
-        y = random() * h;
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + (random() - 0.5) * 3, y - 3 - random() * 4);
-      ctx.stroke();
+        y = random() * h,
+        length = 2 + random() * 5,
+        lean = (random() - 0.5) * 2.4;
+      ctx.globalAlpha = 0.22 + random() * 0.35;
+      ctx.strokeStyle = blades[Math.floor(random() * blades.length)];
+      ctx.lineWidth = 0.6 + random() * 0.9;
+      tiled(x, y, 8, w, h, (px, py) => {
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(px + lean, py - length);
+        ctx.stroke();
+      });
     }
   });
 
-export const gravelTexture = () =>
-  canvasTexture(256, 256, (ctx, w, h) => {
-    speckle(ctx, w, h, 31, 200, 110, [1, 0.93, 0.8]);
-  });
+/** Rounded river gravel with relief. */
+export function gravelMaps() {
+  const size = 256,
+    random = mulberry32(31);
+  const height = new Field(size, size);
+  const rgb = new Float32Array(size * size * 3);
+  for (let i = 0; i < size * size; i++) {
+    const v = 0.36 + random() * 0.08;
+    rgb.set([v * 1.05, v, v * 0.88], i * 3);
+  }
+  const stones = [
+    [0.86, 0.81, 0.72],
+    [0.78, 0.72, 0.61],
+    [0.91, 0.88, 0.82],
+    [0.64, 0.6, 0.52],
+    [0.55, 0.53, 0.5],
+    [0.74, 0.7, 0.64],
+  ];
+  for (let n = 0; n < 3600; n++) {
+    const r = 1.6 + random() * 3.2;
+    const [cr, cg, cb] = stones[Math.floor(random() * stones.length)];
+    const lift = 0.85 + random() * 0.25;
+    height.ellipse(
+      random() * size,
+      random() * size,
+      r,
+      r * (0.65 + random() * 0.35),
+      random() * 3,
+      (i, d) => {
+        const dome = Math.sqrt(1 - d * d) * r * 0.5;
+        if (dome < height.data[i]) return;
+        height.data[i] = dome;
+        const shade = lift * (1 - 0.35 * d * d);
+        rgb.set([cr * shade, cg * shade, cb * shade], i * 3);
+      },
+    );
+  }
+  return {
+    map: canvasTexture(size, size, (ctx, w, h) => pixels(ctx, w, h, colours(rgb))),
+    normalMap: normalTexture(height, 0.7),
+  };
+}
 
-/** One red and one white block along the kerb, 1.5 m each. */
-export const kerbTexture = () =>
-  canvasTexture(64, 128, (ctx) => {
-    ctx.fillStyle = "#d42a2f";
-    ctx.fillRect(0, 0, 64, 64);
-    ctx.fillStyle = "#f4f1ea";
-    ctx.fillRect(0, 64, 64, 64);
-    ctx.fillStyle = "#00000022";
-    ctx.fillRect(0, 0, 64, 3);
-    ctx.fillRect(0, 64, 64, 3);
-    ctx.fillRect(56, 0, 8, 128);
-  });
-
-/** Two galvanised Armco rails. */
-export const armcoTexture = () =>
-  canvasTexture(64, 64, (ctx) => {
-    ctx.fillStyle = "#56606a";
-    ctx.fillRect(0, 0, 64, 64);
-    for (const y of [6, 36]) {
-      const g = ctx.createLinearGradient(0, y, 0, y + 22);
-      g.addColorStop(0, "#d9dee2");
-      g.addColorStop(0.5, "#9aa3ab");
-      g.addColorStop(1, "#c3c9ce");
-      ctx.fillStyle = g;
-      ctx.fillRect(0, y, 64, 22);
+/**
+ * One red and one white kerb block, 1.5 m each. u = 0 is the outer edge and
+ * u = 1 the track side, where tyres leave rubber; ridges run across the outer half.
+ */
+export function kerbMaps() {
+  const w = 128,
+    h = 256,
+    random = mulberry32(51);
+  const height = new Field(w, h);
+  const rgb = new Float32Array(w * h * 3);
+  const red = [0.78, 0.13, 0.15],
+    white = [0.93, 0.92, 0.89];
+  for (let y = 0; y < h; y++)
+    for (let x = 0; x < w; x++) {
+      const i = y * w + x,
+        seam = y % 128 < 2;
+      const ridge = Math.sin(((y % 12.8) / 12.8) * Math.PI) ** 0.7;
+      const outer = 1 - Math.min(1, Math.max(0, (x / w - 0.45) / 0.12));
+      height.data[i] = ridge * outer * 1.6 + (seam ? -1 : 0);
+      const base = y < h / 2 ? red : white;
+      const grime =
+        1 - 0.18 * tileFbm(x, y, w, 4, 3, 52) - 0.08 * random() - (seam ? 0.25 : 0);
+      rgb.set([base[0] * grime, base[1] * grime, base[2] * grime], i * 3);
     }
-    ctx.fillStyle = "#3c444c";
-    ctx.fillRect(60, 0, 4, 64);
+  // Rubber laid down by the inside wheels.
+  for (let n = 0; n < 90; n++) {
+    const x = w * (0.62 + random() * 0.38),
+      y = random() * h,
+      length = 20 + random() * 120,
+      weight = (0.15 + random() * 0.35) * 0.35,
+      width = 1.5 + random() * 2;
+    for (let k = 0; k < length; k++)
+      height.ellipse(x + Math.sin(k / 30) * 2, y + k, width, 1, 0, (i) => {
+        for (let c = 0; c < 3; c++) rgb[i * 3 + c] *= 1 - weight;
+      });
+  }
+  return {
+    map: canvasTexture(w, h, (ctx) => pixels(ctx, w, h, colours(rgb))),
+    normalMap: normalTexture(height, 1.2),
+  };
+}
+
+/** Tyre streaks for braking zones: two tracks across a 2.6 m strip, black with alpha. */
+export const skidTexture = () =>
+  canvasTexture(128, 512, (ctx, w, h) => {
+    const random = mulberry32(61);
+    ctx.clearRect(0, 0, w, h);
+    ctx.lineCap = "round";
+    for (let n = 0; n < 70; n++) {
+      const lane = n % 2 ? 0.19 : 0.81;
+      const x = (lane + (random() - 0.5) * 0.12) * w,
+        length = h * (0.15 + random() * 0.55),
+        wobble = (random() - 0.5) * 8;
+      ctx.strokeStyle = `rgba(6, 6, 7, ${0.06 + random() * 0.2})`;
+      ctx.lineWidth = 1.5 + random() * 5;
+      tiled(x, random() * h, length, w, h, (px, py) => {
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.bezierCurveTo(
+          px + wobble * 0.3,
+          py + length / 3,
+          px + wobble * 0.7,
+          py + (2 * length) / 3,
+          px + wobble,
+          py + length,
+        );
+        ctx.stroke();
+      });
+    }
   });
 
-/** Debris fence mesh. Transparent between the wires. */
+/** Catch fence: fine diamond mesh and tensioning cables. u runs 1 m along, v up the full height. */
 export const fenceTexture = () =>
-  canvasTexture(64, 64, (ctx) => {
-    ctx.clearRect(0, 0, 64, 64);
-    ctx.strokeStyle = "#c8ccd0";
-    ctx.lineWidth = 2;
-    for (let i = -64; i < 128; i += 16) {
-      ctx.beginPath();
+  canvasTexture(256, 1024, (ctx, w, h) => {
+    ctx.clearRect(0, 0, w, h);
+    ctx.strokeStyle = "rgba(150, 157, 164, 0.9)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let i = -h; i < w + h; i += 16) {
       ctx.moveTo(i, 0);
-      ctx.lineTo(i + 64, 64);
-      ctx.moveTo(i + 64, 0);
-      ctx.lineTo(i, 64);
-      ctx.stroke();
+      ctx.lineTo(i + h, h);
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i - h, h);
     }
-    ctx.fillStyle = "#c8ccd0";
-    ctx.fillRect(0, 0, 64, 3);
+    ctx.stroke();
+    ctx.fillStyle = "#8f979f";
+    for (const y of [0.31, 0.62, 0.93]) ctx.fillRect(0, y * h, w, 3);
+    ctx.fillStyle = "#9aa2aa";
+    ctx.fillRect(0, 0, w, 8);
   });
 
 /** Conveyor-belt cover over a tyre wall. */
@@ -142,7 +409,98 @@ export const tyreWallTexture = () =>
     ctx.fillStyle = "#1a1b1e";
     ctx.fillRect(0, 0, 128, 8);
     ctx.fillRect(0, 58, 128, 6);
+    ctx.fillStyle = "#00000026";
+    for (let x = 4; x < 128; x += 16) ctx.fillRect(x, 12, 3, 42);
   });
+
+// ── Foliage ────────────────────────────────────────────────────────────────
+/** One tier of spruce boughs: the apex at the top, ragged drooping tips along the rim. */
+export const spruceTexture = () =>
+  canvasTexture(256, 256, (ctx, w, h) => {
+    const random = mulberry32(71);
+    ctx.clearRect(0, 0, w, h);
+    const core = ctx.createLinearGradient(0, 0, 0, h);
+    core.addColorStop(0, "#22392a");
+    core.addColorStop(0.5, "#29452f");
+    core.addColorStop(0.7, "rgba(41, 69, 47, 0)");
+    ctx.fillStyle = core;
+    ctx.fillRect(0, 0, w, h);
+    const greens = ["#2b4a31", "#335a38", "#3d6741", "#4a7546", "#5a854f", "#739a5c"];
+    ctx.lineCap = "round";
+    const boughs = 22;
+    for (let b = 0; b < boughs; b++) {
+      let x = (b / boughs) * w + random() * 5,
+        y = random() * h * 0.25;
+      const drift = (random() - 0.5) * 0.6,
+        end = h * (0.8 + random() * 0.19);
+      while (y < end) {
+        const t = y / h,
+          spread = 2.5 + t * 8;
+        for (let k = 0; k < 4; k++) {
+          const side = k % 2 ? 1 : -1,
+            reach = spread * (0.5 + random() * 0.6),
+            drop = reach * (0.5 + random() * 0.7);
+          ctx.strokeStyle = greens[Math.min(5, Math.floor(random() * 2.5 + t * 3.5))];
+          ctx.lineWidth = 1 + random() * 0.8;
+          tiled(x, y, 14, w, h, (px, py) => {
+            ctx.beginPath();
+            ctx.moveTo(px, py);
+            ctx.lineTo(px + side * reach, py + drop);
+            ctx.stroke();
+          });
+        }
+        x += drift;
+        y += 2;
+      }
+    }
+  });
+
+/** Clusters of beech leaves with gaps between them. */
+export const leafTexture = () =>
+  canvasTexture(256, 256, (ctx, w, h) => {
+    const random = mulberry32(81);
+    ctx.clearRect(0, 0, w, h);
+    const greens = ["#36602a", "#437032", "#517f39", "#5f8e41", "#73a24e", "#2f5525"];
+    for (let c = 0; c < 150; c++) {
+      const cx = random() * w,
+        cy = random() * h,
+        r = 7 + random() * 13;
+      for (let n = 0; n < 26; n++) {
+        const a = random() * Math.PI * 2,
+          d = Math.sqrt(random()) * r;
+        const rx = 2.4 + random() * 2.2,
+          ry = 1.4 + random() * 1.2,
+          turn = random() * Math.PI;
+        ctx.fillStyle = greens[Math.floor(random() * greens.length)];
+        tiled(cx + Math.cos(a) * d, cy + Math.sin(a) * d, 6, w, h, (px, py) => {
+          ctx.beginPath();
+          ctx.ellipse(px, py, rx, ry, turn, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+    }
+  });
+
+// ── Signage ────────────────────────────────────────────────────────────────
+/** Braking marker board: black distance on white. */
+export const markerTexture = (metres: number) =>
+  canvasTexture(
+    256,
+    192,
+    (ctx, w, h) => {
+      ctx.fillStyle = "#f4f4f1";
+      ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = "#16181b";
+      ctx.lineWidth = 10;
+      ctx.strokeRect(5, 5, w - 10, h - 10);
+      ctx.fillStyle = "#16181b";
+      ctx.font = "800 118px Arial, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(String(metres), w / 2, h / 2 + 6, w - 30);
+    },
+    { repeat: false },
+  );
 
 /** Rows of spectators. Orange is common at Spa; the rest are team colours. */
 export const crowdTexture = (seed: number) =>

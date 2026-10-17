@@ -68,3 +68,21 @@ The journey was rebuilt at true scale with a race start from the grid, a full ve
 
 - Checked only in the desktop app's browser pane with emulated viewports. No physical phone or touchscreen, and GPU frame time was not measured.
 - Elevation is an approximation from published figures. Grandstand, gravel and marshal-post positions are illustrative. Pole on the inside for La Source is a convention, not a sourced detail.
+
+## Realism pass — 17 October 2026
+
+Car, track and scenery were rebuilt for a more photographic look; the drive, camera and story timing are unchanged.
+
+- Car: airfoil-section wings, curved endplates, letterbox sidepod inlets, matte floor and diffuser, exhaust, lettered tyres, wheel covers and nuts, brake drums, wheel-wake deflectors, mirror glass and a contact shadow. Satin paint and carbon reflect a sky-and-ground environment, so lower bodywork no longer mirrors the sky.
+- Track: textured, relief-mapped asphalt with patches and braking streaks; ridged, rubbered kerbs with a raised profile; textured gravel and painted run-off; W-beam Armco; a fine catch fence; braking boards.
+- Scenery: textured spruce and beech in place of low-poly cones and spheres, two-scale turf and softer shadows.
+
+### Checks
+
+- `npm run lint`, `npm test` (83 tests), `npm run build` and `npm run check` passed.
+- Development build at 800×450 in the desktop app's browser pane: aerial overview, grid start with lights, Kemmel chase, La Source, Eau Rouge and Stavelot stops, and sunset mode all render with no console errors.
+- Frame submit time stayed at about 4–6 ms at that size, roughly what it was before; instanced tree triangles rose from about 2.6 M to 2.9 M before culling.
+
+### Limits
+
+Not checked on a phone, a large high-DPI display or a low-end GPU. Alpha-to-coverage foliage costs more fill rate on big screens than the old opaque trees.
