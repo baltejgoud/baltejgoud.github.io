@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { achievements } from "@/content/achievements";
-import { certifications } from "@/content/certifications";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+import { heroArt, heroPins } from "@/content/hero";
+import { lifePhotos } from "@/content/life";
+import { wallNotes } from "@/content/notes";
+import { workMedia } from "@/content/workMedia";
 import { journey } from "@/content/journey";
 import { projects } from "@/content/projects";
 import { skills } from "@/content/skills";
@@ -76,18 +80,61 @@ describe("journey", () => {
   });
 });
 
-describe("achievements", () => {
-  it("has nine cards, each with a metric", () => {
-    expect(achievements).toHaveLength(9);
-    for (const a of achievements) expect(a.metric).toBeTruthy();
+const publicFile = (src: string) => existsSync(join(process.cwd(), "public", src));
+
+describe("hero", () => {
+  it("places every pin inside the painting and links it to a journey stop", () => {
+    for (const pin of heroPins) {
+      for (const point of [pin.at, pin.atMobile]) {
+        if (!point) continue;
+        for (const v of point) {
+          expect(v).toBeGreaterThan(0);
+          expect(v).toBeLessThan(1);
+        }
+      }
+      expect(journey[pin.stop]).toBeDefined();
+      expect(publicFile(pin.logo)).toBe(true);
+    }
+  });
+
+  it("ships every layer and the portrait", () => {
+    for (const layer of heroArt.layers) {
+      expect(publicFile(layer.src)).toBe(true);
+      expect(publicFile(layer.mobileSrc)).toBe(true);
+    }
+    expect(publicFile(heroArt.cutout.src)).toBe(true);
   });
 });
 
-describe("certifications", () => {
-  it("has a title and issuer for every entry", () => {
-    for (const c of certifications) {
-      expect(c.title).toBeTruthy();
-      expect(c.issuer).toBeTruthy();
+describe("work media", () => {
+  it("has a cover and existing screenshots for every project", () => {
+    for (const p of projects) {
+      const media = workMedia[p.id];
+      expect(media).toBeDefined();
+      for (const shot of [media.cover, ...media.shots]) {
+        expect(publicFile(shot.src)).toBe(true);
+        expect(shot.caption.length).toBeGreaterThan(5);
+      }
+    }
+  });
+});
+
+describe("notes and photos", () => {
+  it("only lists complete notes", () => {
+    for (const n of wallNotes) {
+      expect(n.name.trim()).toBeTruthy();
+      expect(n.message.trim()).toBeTruthy();
+    }
+  });
+
+  it("pins photos that exist, inside the board", () => {
+    for (const photo of lifePhotos) {
+      expect(publicFile(photo.src)).toBe(true);
+      expect(photo.alt.trim()).toBeTruthy();
+      expect(photo.left).toBeGreaterThanOrEqual(0);
+      expect(photo.left).toBeLessThan(100);
+      expect(photo.top).toBeGreaterThanOrEqual(0);
+      expect(photo.top).toBeLessThan(100);
     }
   });
 });

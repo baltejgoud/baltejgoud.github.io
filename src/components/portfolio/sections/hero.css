@@ -248,7 +248,8 @@ html.js:not(.reduced) .h-motes span {
 }
 
 /* Night */
-.p-site[data-theme="dark"] .h-world {
+.p-site[data-theme="dark"] .h-canvas img,
+.p-site[data-theme="dark"] .h-placeholder {
   filter: brightness(0.56) saturate(0.78) hue-rotate(-10deg);
 }
 .p-site[data-theme="dark"] .h-hero {

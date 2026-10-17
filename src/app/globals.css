@@ -58,15 +58,6 @@
 }
 
 @layer components {
-  .container-page {
-    width: 100%;
-    max-width: 1320px;
-    margin-inline: auto;
-    padding-inline: var(--gutter);
-  }
-  .section {
-    padding-block: clamp(88px, 12vw, 160px);
-  }
   .label {
     font-family: var(--font-mono);
     font-size: 0.72rem;
@@ -74,92 +65,18 @@
     text-transform: uppercase;
     color: var(--color-stone);
   }
-  .section-title {
-    font-size: clamp(2.4rem, 5.5vw, 4.75rem);
-    line-height: 1.02;
-    letter-spacing: -0.035em;
-    font-weight: 800;
-  }
-  .accent {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-  }
-  .mask {
-    display: inline-block;
-    overflow: hidden;
-    vertical-align: bottom;
-    padding-bottom: 0.12em;
-    margin-bottom: -0.12em;
-  }
-  .mask > span {
-    display: inline-block;
-  }
-  .no-scrollbar {
-    scrollbar-width: none;
-  }
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .live-dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    margin-right: 0.5rem;
-    border-radius: 9999px;
-    background: var(--color-live);
-    vertical-align: 0.05em;
-  }
-  .parallax {
-    translate: calc(var(--px, 0) * var(--depth, 0) * 1px) calc(var(--py, 0) * var(--depth, 0) * 1px);
-    transition: translate 0.9s var(--ease-out-expo);
-  }
 }
 
 /* Scroll reveals: hidden only while JS runs, motion is allowed and the 3s safety net has not fired. */
-html.js:not(.reduced):not(.reveal-all) [data-reveal]:not([data-reveal="mask"]):not(.is-in) {
+html.js:not(.reduced):not(.reveal-all) [data-reveal]:not(.is-in) {
   opacity: 0;
   transform: translateY(24px);
-}
-html.js:not(.reduced):not(.reveal-all) [data-reveal="mask"]:not(.is-in) .mask > span {
-  transform: translateY(105%);
 }
 [data-reveal] {
   transition:
     opacity 0.8s var(--ease-out-expo),
     transform 0.8s var(--ease-out-expo);
   transition-delay: var(--delay, 0ms);
-}
-[data-reveal="mask"] .mask > span {
-  transition: transform 0.9s var(--ease-out-expo);
-  transition-delay: var(--delay, 0ms);
-}
-[data-reveal="mask"] .mask + .mask > span {
-  transition-delay: calc(var(--delay, 0ms) + 90ms);
-}
-
-/* Hero entrance */
-html.js:not(.reduced) .hero-rise {
-  animation: rise 1.1s var(--ease-out-expo) both;
-  animation-delay: var(--delay, 0ms);
-}
-html.js:not(.reduced) .hero-fade {
-  animation: fade-up 1s var(--ease-out-expo) both;
-  animation-delay: var(--delay, 0ms);
-}
-html.js:not(.reduced) .live-dot {
-  animation: live-pulse 2s ease-out infinite;
-}
-.js .lanyard-static {
-  display: none;
-}
-
-/* Sound pill equaliser */
-.eq-bar {
-  height: 100%;
-  animation: eq 0.9s ease-in-out infinite;
-  animation-delay: var(--delay, 0ms);
 }
 
 /* Axon atlas widget */
@@ -195,44 +112,6 @@ html.js:not(.reduced) .atlas-tile {
   opacity: 1;
 }
 
-@keyframes rise {
-  from {
-    transform: translateY(105%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes live-pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgb(34 197 94 / 0.55);
-  }
-  70% {
-    box-shadow: 0 0 0 8px rgb(34 197 94 / 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgb(34 197 94 / 0);
-  }
-}
-@keyframes eq {
-  0%,
-  100% {
-    transform: scaleY(0.3);
-  }
-  50% {
-    transform: scaleY(1);
-  }
-}
 @keyframes flicker {
   0%,
   100% {

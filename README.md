@@ -1,6 +1,6 @@
 # Baltej Goud — Portfolio
 
-Illustrated, interactive portfolio for Baltej Goud: data analyst, AI engineer and co-founder & CEO of Sanket. Features a career map, project deck, founder story, toolkit reveal, personal pinboard, Anirudh player and contact keys. Built with Next.js (static export), Tailwind CSS v4, Motion and Lenis, and deployed to GitHub Pages by GitHub Actions.
+Illustrated, interactive portfolio for Baltej Goud: data analyst, AI engineer and co-founder & CEO of Sanket. Features a painted valley you fly into, live project models, a career map, a forecast-chart process, a periodic-table toolkit, a personal corkboard and a note composer. Built with Next.js (static export), Tailwind CSS v4, Motion and Lenis, and deployed to GitHub Pages by GitHub Actions.
 
 ## Develop
 
@@ -36,18 +36,25 @@ That serves `out/` at http://localhost:8000.
 
 | File | Content |
 | --- | --- |
-| `src/content/profile.ts` | Name, title, bio, quick facts, ID card, contact copy, hero image or video |
-| `src/content/skills.ts` | The 32 toolkit skills and their usage descriptions |
+| `src/content/profile.ts` | Name, email and links |
+| `src/content/hero.ts` | Hero layers, the standing portrait and the place pins |
 | `src/content/projects.ts` | Selected work, features, technology and project links |
-| `src/content/certifications.ts` | Certifications; hidden while empty |
+| `src/content/workMedia.ts` | Card covers and screenshots for each project |
+| `src/content/skills.ts` | The 32 toolkit elements and where each is used |
 | `src/content/journey.ts` | Education and experience timeline |
 | `src/content/journey-stories.ts` | Journey narratives, companies, logos and galleries |
 | `src/content/journey-route.json` | City-map route geometry and milestone positions |
-| `src/content/achievements.ts` | Achievement cards |
+| `src/content/life.ts` | Personal photos pinned to the board |
+| `src/content/notes.ts` | Notes people sent that you chose to show |
 
-`DESIGN.md` documents the design system, interactions and motion rules.
+After changing hero art, run `node scripts/lqip.cjs` to refresh the blurred placeholders.
+`DESIGN.md` documents the design and motion rules; `docs/signal-valley-art.md` has the prompts for
+the remaining artwork and where each file goes.
 
-The current homepage lives in `src/components/portfolio/Portfolio.tsx` with its scoped `portfolio.css`. The notes wall stores visitor drafts only in that visitor’s browser; “Send by email” opens their email client. It does not publish shared notes. Music uses Spotify’s embedded Anirudh artist player and depends on Spotify availability. Artwork prompts and provenance are in `docs/portfolio-artwork.md`.
+Each homepage section is one component and one stylesheet in `src/components/portfolio/sections/`,
+sharing `base.css` and the motion primitives in `src/components/portfolio/motion/`. Notes are
+composed on the page and sent from the visitor's own mail app; nothing is stored. Music uses
+Spotify's embedded Anirudh artist player.
 
 ## Deploy
 

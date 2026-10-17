@@ -38,13 +38,6 @@ export interface Project {
   widget: WidgetKind;
 }
 
-export interface Certification {
-  title: string;
-  issuer: string;
-  year?: string;
-  href?: string;
-}
-
 export interface Milestone {
   kind: "education" | "experience" | "next";
   dates?: string;
@@ -54,35 +47,4 @@ export interface Milestone {
   tags: string[];
   /** Giant background year shown beside this milestone */
   watermark?: string;
-}
-
-export type AchievementIcon =
-  | "trophy"
-  | "award"
-  | "graduation"
-  | "layers"
-  | "bot"
-  | "plug"
-  | "apple"
-  | "chart";
-
-export interface Achievement {
-  icon: AchievementIcon;
-  title: string;
-  description: string;
-  metric: string;
-  size?: "wide";
-}
-
-export interface Fact {
-  label: string;
-  value: string;
-  /** Shows the pulsing availability dot */
-  live?: boolean;
-}
-
-export interface HeroMediaContent {
-  image: { src: string; alt: string };
-  /** Optional talking-avatar clip; the sound toggle appears only when set */
-  video?: { src: string; poster: string };
 }

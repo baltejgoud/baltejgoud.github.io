@@ -114,8 +114,8 @@ export function Contact() {
           </div>
         )}
 
-        <div className="c-grid">
-          <form className={`c-composer c-note-${color}`} onSubmit={transmit} data-reveal>
+        <div className="c-grid" data-reveal>
+          <form className={`c-composer c-note-${color}`} onSubmit={transmit}>
             <span className="p-tape" />
             <p className="c-composer-title">Leave me a note</p>
             <label className="sr-only" htmlFor="c-message">
@@ -166,7 +166,7 @@ export function Contact() {
             <small className="c-composer-note">Transmit opens your email app with the note filled in, so you can check it before it’s sent.</small>
           </form>
 
-          <div className="c-channels" data-reveal>
+          <div className="c-channels">
             {channels.map(({ key, label, line, href, icon: Icon, external }, i) => (
               <a
                 key={key}
