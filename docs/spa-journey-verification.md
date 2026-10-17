@@ -122,3 +122,16 @@ Following the user's three RB22 reference photographs (front, top, three-quarter
 ### Limits
 
 Not checked on a physical phone or touchscreen, a high-DPI display or a low-end GPU. The 4096 px livery canvases are used only in the viewer; the circuit uses 2048 px. Sponsor marks are typeset names, not the brands' artwork.
+
+### Front-view rework
+
+The user flagged that the front view didn't match the front-on photograph, so the front end was rebuilt against an overlay. A temporary page rendered the car through a camera solved from the photo's tyre positions (about 3.8 m ahead of the front axle, 1.16 m high, pitched down 10.7°), with the photo laid over the render and compared half and half; both the page and the photo copy were deleted afterwards.
+
+- Front wing: narrower, with its endplates at ±0.63 m, inboard of the tyre centrelines. Footplates flare outboard and down, and the wing sits further back. The main plane and first flap run under the nose, with the red Red Bull lettering on the first flap. The two upper flaps start at the nose sides and rise steeply to the endplates, carrying VISA.
+- Nose and chassis: the front bulkhead rises to about 0.6 m, and the yellow nose is a taller, wider shield on a rounded carbon chin above the wing. The cockpit rim, halo, airbox and T-camera moved up 4 cm to suit.
+- Sidepods and mirrors: tall letterbox inlets reaching about 0.7 m, with the mirrors on top.
+- Front suspension: the upper wishbones now run level with the top of the rim, as in the photograph, with push rods and track rods below.
+- Viewer: the car is shown without a driver, like the launch car, so the yellow headrest is visible; the circuit car keeps its driver. The Front preset uses the photograph's viewpoint.
+
+Checks: `npm test` (87), TypeScript, `npm run build` and lint on the changed files passed. The final overlay lined up the stack, roundel, upper wishbones, halo, rear wing, inlets, wing span and wing height with the photograph. The viewer's Front preset shows the whole car at 800×450. Not matched: the photo's spotlit floor art, and the exact curl of the real wing's elements.
+

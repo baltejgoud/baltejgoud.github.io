@@ -116,11 +116,11 @@ interface Section {
 }
 const PROFILE = 9;
 /**
- * A cambered airfoil swept across the car from −span to +span. `lead` gives
+ * A cambered airfoil swept across the car over `range` (x metres). `lead` gives
  * the leading edge [z, y] at each station; the camber is inverted for downforce.
  */
 function foil(
-  span: number,
+  range: [number, number],
   stations: number,
   lead: (x: number) => [number, number],
   { chord, pitch, thickness = 0.09, camber = 0.045 }: Section,
@@ -131,7 +131,7 @@ function foil(
   const ring = PROFILE * 2,
     stride = ring + 1;
   for (let s = 0; s <= stations; s++) {
-    const x = -span + (2 * span * s) / stations;
+    const x = range[0] + ((range[1] - range[0]) * s) / stations;
     const [zl, yl] = lead(x),
       c = chord(x),
       a = pitch(x);
@@ -193,10 +193,8 @@ function foil(
   geometry.computeVertexNormals();
   return geometry;
 }
-/** Slotted elements: each leading edge tucks under the previous trailing edge. */
-function cascade(
-  span: number,
-  stations: number,
+/** Leading edges of slotted elements: each tucks under the previous trailing edge. */
+function slots(
   lead: (x: number) => [number, number],
   sections: Section[],
   [overlap, gap]: [number, number],
@@ -210,9 +208,20 @@ function cascade(
         a = section.pitch(x);
       return [z - c * Math.cos(a) + overlap, y + c * Math.sin(a) + gap];
     };
-    return foil(span, stations, current, section);
+    return current;
   });
 }
+/** Slotted elements spanning the whole of `range`. */
+const cascade = (
+  range: [number, number],
+  stations: number,
+  lead: (x: number) => [number, number],
+  sections: Section[],
+  gaps: [number, number],
+) =>
+  slots(lead, sections, gaps).map((edge, k) =>
+    foil(range, stations, edge, sections[k]),
+  );
 
 /** A flat plate in the car's z/y plane (endplates, fins), `thickness` across x. */
 function plate(
@@ -308,9 +317,14 @@ function contactTexture() {
 export interface FormulaCarOptions {
   /** Livery canvas width in pixels; the close-up viewer uses more. */
   resolution?: number;
+  /** Seat a driver. The viewer shows the empty car, as in the launch photos. */
+  driver?: boolean;
 }
 
-export function createFormulaCar({ resolution = 2048 }: FormulaCarOptions = {}) {
+export function createFormulaCar({
+  resolution = 2048,
+  driver = true,
+}: FormulaCarOptions = {}) {
   const car = new T.Group();
   car.rotation.order = "YXZ";
   const body = new T.Group();
@@ -371,95 +385,104 @@ export function createFormulaCar({ resolution = 2048 }: FormulaCarOptions = {}) 
   });
 
   // ── Survival cell and nose ──────────────────────────────────────────────
-  // A slim, low nose that rests on the front wing, rising to the cockpit rim.
+  // A tall, wide-faced nose sitting on a carbon chin above the wing, rising
+  // steeply to a high front bulkhead and the cockpit rim.
   batch.add(
     paint,
     loft(
       [
-        [2.97, 0, 0.028, 0.115, 0.16, 2.2],
-        [2.88, 0, 0.058, 0.1, 0.2, 2.4],
-        [2.65, 0, 0.085, 0.105, 0.265, 2.6],
-        [2.35, 0, 0.112, 0.12, 0.335, 2.8],
-        [2.05, 0, 0.142, 0.145, 0.405, 3],
-        [1.7, 0, 0.175, 0.16, 0.47, 3.2],
-        [1.35, 0, 0.21, 0.14, 0.53, 3.4],
-        [1.0, 0, 0.245, 0.1, 0.572, 3.6],
-        [0.62, 0, 0.285, 0.07, 0.6, 3.8],
-        [0.2, 0, 0.318, 0.065, 0.588, 4],
-        [-0.22, 0, 0.33, 0.065, 0.6, 4],
-        [-0.55, 0, 0.29, 0.07, 0.56, 3.6],
-        [-0.9, 0, 0.23, 0.08, 0.44, 3],
+        [2.78, 0, 0.09, 0.21, 0.29, 2.6],
+        [2.72, 0, 0.105, 0.2, 0.325, 2.9],
+        [2.54, 0, 0.12, 0.195, 0.385, 3.1],
+        [2.32, 0, 0.13, 0.2, 0.45, 3.2],
+        [2.06, 0, 0.152, 0.21, 0.53, 3.3],
+        [1.76, 0, 0.175, 0.22, 0.605, 3.4],
+        [1.4, 0, 0.205, 0.17, 0.645, 3.6],
+        [1.0, 0, 0.245, 0.1, 0.66, 3.8],
+        [0.62, 0, 0.285, 0.07, 0.655, 4],
+        [0.2, 0, 0.318, 0.065, 0.632, 4],
+        [-0.22, 0, 0.33, 0.065, 0.64, 4],
+        [-0.55, 0, 0.29, 0.07, 0.6, 3.6],
+        [-0.9, 0, 0.23, 0.08, 0.46, 3],
       ],
       40,
     ),
   );
   // Cockpit opening, padded rim, headrest and steering wheel.
   const opening = new T.SphereGeometry(1, 28, 12);
-  opening.scale(0.235, 0.05, 0.43).translate(0, 0.592, 0.2);
+  opening.scale(0.235, 0.05, 0.43).translate(0, 0.636, 0.2);
   batch.add(black, opening);
   const rim = new T.TorusGeometry(1, 0.035, 8, 40);
-  rim.rotateX(Math.PI / 2).scale(0.24, 1, 0.44).translate(0, 0.598, 0.2);
+  rim.rotateX(Math.PI / 2).scale(0.24, 1, 0.44).translate(0, 0.642, 0.2);
   batch.add(carbon, rim);
-  const pads = new T.MeshStandardMaterial({ color: 0x131a2c, roughness: 0.9 });
+  // Yellow headrest wrapping the back and sides of the cockpit.
   for (const side of [-1, 1]) {
     const pad = new T.SphereGeometry(1, 16, 10);
-    pad.scale(0.07, 0.07, 0.17).translate(side * 0.19, 0.63, -0.06);
-    batch.add(pads, pad);
+    pad.scale(0.075, 0.085, 0.19).translate(side * 0.18, 0.68, -0.04);
+    batch.add(yellow, pad);
   }
+  const headrest = new T.SphereGeometry(1, 20, 10);
+  headrest.scale(0.2, 0.09, 0.07).translate(0, 0.68, -0.17);
+  batch.add(yellow, headrest);
   batch.add(
     black,
-    new T.BoxGeometry(0.26, 0.11, 0.04).rotateX(-0.5).translate(0, 0.62, 0.5),
+    new T.BoxGeometry(0.26, 0.11, 0.04).rotateX(-0.5).translate(0, 0.665, 0.5),
   );
   // Driver: dark helmet with a yellow crown stripe and a mirrored visor.
-  const helmet = new T.MeshPhysicalMaterial({
-    color: 0x101a3a,
-    roughness: 0.2,
-    clearcoat: 1,
-  });
-  batch.add(helmet, new T.SphereGeometry(0.128, 28, 18).translate(0, 0.705, 0.02));
-  batch.add(
-    yellow,
-    new T.TorusGeometry(0.12, 0.016, 8, 28)
-      .rotateY(Math.PI / 2)
-      .translate(0, 0.715, 0.02),
-  );
-  batch.add(
-    glass,
-    new T.SphereGeometry(
-      0.131,
-      24,
-      8,
-      Math.PI * 0.1,
-      Math.PI * 0.8,
-      Math.PI * 0.36,
-      Math.PI * 0.17,
-    ).translate(0, 0.705, 0.02),
-  );
+  if (driver) {
+    const helmet = new T.MeshPhysicalMaterial({
+      color: 0x101a3a,
+      roughness: 0.2,
+      clearcoat: 1,
+    });
+    batch.add(
+      helmet,
+      new T.SphereGeometry(0.128, 28, 18).translate(0, 0.745, 0.02),
+    );
+    batch.add(
+      yellow,
+      new T.TorusGeometry(0.12, 0.016, 8, 28)
+        .rotateY(Math.PI / 2)
+        .translate(0, 0.755, 0.02),
+    );
+    batch.add(
+      glass,
+      new T.SphereGeometry(
+        0.131,
+        24,
+        8,
+        Math.PI * 0.1,
+        Math.PI * 0.8,
+        Math.PI * 0.36,
+        Math.PI * 0.17,
+      ).translate(0, 0.745, 0.02),
+    );
+  }
   // Halo: a faired titanium hoop with its single forward pillar.
   const halo = new T.CatmullRomCurve3(
     [
-      [0.285, 0.6, -0.2],
-      [0.275, 0.73, -0.1],
-      [0.255, 0.785, 0.1],
-      [0.18, 0.8, 0.33],
-      [0, 0.806, 0.44],
-      [-0.18, 0.8, 0.33],
-      [-0.255, 0.785, 0.1],
-      [-0.275, 0.73, -0.1],
-      [-0.285, 0.6, -0.2],
+      [0.285, 0.64, -0.2],
+      [0.275, 0.77, -0.1],
+      [0.255, 0.825, 0.1],
+      [0.18, 0.84, 0.33],
+      [0, 0.846, 0.44],
+      [-0.18, 0.84, 0.33],
+      [-0.255, 0.825, 0.1],
+      [-0.275, 0.77, -0.1],
+      [-0.285, 0.64, -0.2],
     ].map((p) => new T.Vector3(...p)),
   );
   batch.add(carbon, new T.TubeGeometry(halo, 56, 0.034, 12, false));
-  batch.add(carbon, strut([0, 0.598, 0.68], [0, 0.8, 0.45], 0.034, 0.6));
+  batch.add(carbon, strut([0, 0.65, 0.68], [0, 0.84, 0.45], 0.034, 0.6));
 
   // ── Roll-hoop airbox, engine cover and fin ──────────────────────────────
   batch.add(
     paint,
     loft(
       [
-        [-0.13, 0, 0.12, 0.66, 0.9, 2.3],
-        [-0.26, 0, 0.19, 0.55, 0.925, 2.5],
-        [-0.55, 0, 0.27, 0.4, 0.87, 2.9],
+        [-0.13, 0, 0.125, 0.7, 0.935, 2.3],
+        [-0.26, 0, 0.2, 0.58, 0.96, 2.5],
+        [-0.55, 0, 0.27, 0.41, 0.89, 2.9],
         [-0.9, 0, 0.28, 0.32, 0.76, 3],
         [-1.25, 0, 0.22, 0.29, 0.64, 2.9],
         [-1.6, 0, 0.15, 0.28, 0.53, 2.6],
@@ -472,26 +495,26 @@ export function createFormulaCar({ resolution = 2048 }: FormulaCarOptions = {}) 
   // Oval intake above the driver's head, the T-camera and the marshalling light.
   batch.add(
     black,
-    roundedRect(0.17, 0.13, 0.065, 0.02).translate(0, 0.79, -0.13),
+    roundedRect(0.18, 0.14, 0.07, 0.02).translate(0, 0.825, -0.13),
   );
   batch.add(
     black,
-    new T.BoxGeometry(0.2, 0.03, 0.06).translate(0, 0.955, -0.23),
+    new T.BoxGeometry(0.2, 0.03, 0.06).translate(0, 0.99, -0.23),
   );
-  batch.add(black, new T.BoxGeometry(0.02, 0.03, 0.03).translate(0, 0.932, -0.23));
+  batch.add(black, new T.BoxGeometry(0.02, 0.03, 0.03).translate(0, 0.967, -0.23));
   batch.add(
     new T.MeshStandardMaterial({
       color: 0x0c3d14,
       emissive: 0x33ff55,
       emissiveIntensity: 2.2,
     }),
-    new T.BoxGeometry(0.03, 0.012, 0.02).translate(0, 0.93, -0.165),
+    new T.BoxGeometry(0.03, 0.012, 0.02).translate(0, 0.965, -0.165),
   );
   batch.add(
     paint,
     plate(
       [
-        [-0.42, 0.9],
+        [-0.42, 0.93],
         [-1.95, 0.7],
         [-2.06, 0.5],
         [-1.6, 0.52],
@@ -508,10 +531,10 @@ export function createFormulaCar({ resolution = 2048 }: FormulaCarOptions = {}) 
       paint,
       loft(
         [
-          [0.63, side * 0.5, 0.16, 0.37, 0.585, 3.2, 0.2],
-          [0.46, side * 0.54, 0.21, 0.25, 0.6, 3.6, 0.45],
-          [0.15, side * 0.555, 0.23, 0.17, 0.585, 3.6, 0.55],
-          [-0.25, side * 0.53, 0.23, 0.12, 0.54, 3.4, 0.6],
+          [0.63, side * 0.5, 0.165, 0.37, 0.71, 3.4, 0.2],
+          [0.46, side * 0.54, 0.21, 0.25, 0.71, 3.6, 0.45],
+          [0.15, side * 0.555, 0.23, 0.17, 0.66, 3.6, 0.55],
+          [-0.25, side * 0.53, 0.23, 0.12, 0.58, 3.4, 0.6],
           [-0.7, side * 0.46, 0.2, 0.1, 0.44, 3, 0.6],
           [-1.1, side * 0.37, 0.15, 0.1, 0.34, 2.6, 0.5],
           [-1.45, side * 0.29, 0.1, 0.1, 0.27, 2.4, 0.4],
@@ -522,31 +545,31 @@ export function createFormulaCar({ resolution = 2048 }: FormulaCarOptions = {}) 
     );
     batch.add(
       black,
-      roundedRect(0.24, 0.13, 0.05, 0.02).translate(side * 0.5, 0.5, 0.628),
+      roundedRect(0.27, 0.25, 0.07, 0.02).translate(side * 0.5, 0.55, 0.628),
     );
     // Lower lip jutting forward under the inlet.
     batch.add(
       paint,
-      roundedRect(0.27, 0.026, 0.012, 0.12).translate(side * 0.5, 0.418, 0.56),
+      roundedRect(0.28, 0.026, 0.012, 0.12).translate(side * 0.5, 0.41, 0.56),
     );
     // Mirrors on twin stalks.
     const housing = new T.SphereGeometry(1, 18, 10);
-    housing.scale(0.085, 0.038, 0.034).translate(side * 0.47, 0.695, 0.66);
+    housing.scale(0.085, 0.038, 0.034).translate(side * 0.46, 0.79, 0.62);
     batch.add(carbon, housing);
     batch.add(
       glass,
       new T.CircleGeometry(1, 20)
         .scale(0.074, 0.03, 1)
         .rotateY(Math.PI)
-        .translate(side * 0.47, 0.695, 0.624),
+        .translate(side * 0.46, 0.79, 0.584),
     );
     batch.add(
       carbon,
-      strut([side * 0.28, 0.6, 0.68], [side * 0.42, 0.69, 0.665], 0.01, 0.5),
+      strut([side * 0.29, 0.655, 0.6], [side * 0.41, 0.785, 0.625], 0.01, 0.5),
     );
     batch.add(
       carbon,
-      strut([side * 0.51, 0.595, 0.62], [side * 0.49, 0.682, 0.655], 0.009),
+      strut([side * 0.5, 0.7, 0.6], [side * 0.48, 0.775, 0.615], 0.009),
     );
     // Floor fences behind the front wheels, curling outboard.
     for (const [k, x] of [0.19, 0.26, 0.33, 0.4].entries()) {
@@ -636,79 +659,112 @@ export function createFormulaCar({ resolution = 2048 }: FormulaCarOptions = {}) 
       ),
     );
 
-  // ── Front wing: four slotted elements sweeping up into tall endplates ───
-  const span = 0.86;
-  const out = (x: number) => smoothstep(0.2, span, Math.abs(x));
+  // ── Front wing: narrow, with the upper flaps rising steeply to the endplates ──
+  // The endplates sit inboard of the front tyres' centrelines. The main plane
+  // and first flap run under the nose; the two upper flaps start at its sides.
+  const span = 0.63,
+    inner = 0.13;
+  const out = (x: number) => smoothstep(0.08, span, Math.abs(x));
+  const frontSections: Section[] = [
+    {
+      chord: (x) => 0.24 - 0.05 * out(x),
+      pitch: (x) => 0.05 + 0.2 * out(x),
+      thickness: 0.09,
+      camber: 0.05,
+    },
+    { chord: (x) => 0.13 - 0.01 * out(x), pitch: (x) => 0.3 + 0.45 * out(x) },
+    { chord: (x) => 0.12 - 0.01 * out(x), pitch: (x) => 0.55 + 0.42 * out(x) },
+    { chord: (x) => 0.1 - 0.01 * out(x), pitch: (x) => 0.8 + 0.38 * out(x) },
+  ];
+  // Text scale across a piece: (sheet px per metre of span) ÷ (px per metre of chord).
+  const stretch = (width: number, chord: number) => 1024 / width / (128 / chord);
   const frontSkins = [
+    wingSkin([]),
     wingSkin([
       {
         text: "Red Bull",
         colour: COLOURS.red,
-        at: [0.24, 0.76],
-        size: 0.36,
+        at: [0.26, 0.74],
+        size: 0.46,
         italic: true,
-        stretch: 1.26,
+        stretch: stretch(2 * span, 0.125),
+        width: 0.4,
       },
     ]),
     wingSkin([
       {
         text: "VISA",
         colour: COLOURS.white,
-        at: [0.22, 0.78],
-        size: 0.42,
-        stretch: 0.72,
+        at: [0.52],
+        size: 0.4,
+        stretch: stretch(span - inner, 0.115),
+        width: 0.8,
       },
     ]),
     wingSkin([]),
-    wingSkin([]),
   ];
-  cascade(
-    span,
-    34,
-    // Low and flat under the nose, the outboard flaps stacking up steeply.
-    (x) => [2.96 - 0.1 * out(x) ** 2, 0.05 + 0.09 * out(x) ** 1.4],
-    [
-      {
-        chord: (x) => 0.28 - 0.07 * out(x),
-        pitch: (x) => 0.04 + 0.22 * out(x),
-        thickness: 0.09,
-        camber: 0.05,
-      },
-      { chord: (x) => 0.15 - 0.02 * out(x), pitch: (x) => 0.28 + 0.3 * out(x) },
-      { chord: (x) => 0.13 - 0.02 * out(x), pitch: (x) => 0.5 + 0.34 * out(x) },
-      { chord: (x) => 0.11 - 0.02 * out(x), pitch: (x) => 0.72 + 0.36 * out(x) },
-    ],
-    [0.03, 0.011],
-  ).forEach((g, k) => {
+  slots(
+    (x) => [2.84 - 0.09 * out(x) ** 2, 0.1 + 0.03 * out(x)],
+    frontSections,
+    [0.028, 0.01],
+  ).forEach((edge, k) => {
     const wing = carbon.clone();
     wing.map = frontSkins[k];
     wing.color.setHex(0xffffff);
     wing.roughness = 0.42;
-    batch.add(wing, g);
+    const pieces: [number, number][] =
+      k < 2
+        ? [[-span, span]]
+        : [
+            [-span, -inner],
+            [inner, span],
+          ];
+    for (const range of pieces)
+      batch.add(
+        wing,
+        foil(range, k < 2 ? 36 : 18, edge, frontSections[k]),
+      );
   });
+  // Carbon chin between the nose tip and the wing's centre section.
+  batch.add(
+    carbon,
+    loft([
+      [2.79, 0, 0.05, 0.1, 0.235, 2.4],
+      [2.7, 0, 0.065, 0.1, 0.24, 2.6],
+      [2.5, 0, 0.07, 0.11, 0.24, 2.6],
+    ]),
+  );
   const frontPlate = outline(
-    [2.99, 0.035],
+    [2.86, 0.07],
     [
-      [2.33, 0.035],
-      [2.26, 0.035, 2.27, 0.2],
-      [2.32, 0.36],
-      [2.42, 0.42, 2.56, 0.4],
-      [2.86, 0.28],
-      [3.0, 0.18, 2.99, 0.035],
+      [2.27, 0.07],
+      [2.2, 0.08, 2.21, 0.22],
+      [2.25, 0.37],
+      [2.33, 0.43, 2.46, 0.42],
+      [2.74, 0.33],
+      [2.88, 0.24, 2.86, 0.07],
     ],
   );
   const front = endplateViews(FRONT_PLATE, false);
   for (const side of [-1, 1]) {
     batch.add(
       projectedPaint(side > 0 ? front.leftPlate : front.rightPlate, FRONT_PLATE),
-      plate(frontPlate, 0.016, side * 0.87),
+      plate(frontPlate, 0.016, side * span),
     );
-    // Footplate curling outboard and down from the endplate's foot.
+    // Footplate flaring outboard and down from the endplate's foot.
     batch.add(
-      floorCarbon,
-      new T.BoxGeometry(0.09, 0.007, 0.46)
-        .rotateZ(-side * 0.38)
-        .translate(side * 0.91, 0.045, 2.7),
+      carbon,
+      new T.BoxGeometry(0.15, 0.008, 0.5)
+        .rotateZ(-side * 0.42)
+        .translate(side * (span + 0.068), 0.05, 2.6),
+    );
+    batch.add(
+      carbon,
+      new T.BoxGeometry(0.006, 0.07, 0.48).translate(
+        side * (span + 0.135),
+        0.035,
+        2.6,
+      ),
     );
   }
 
@@ -728,7 +784,7 @@ export function createFormulaCar({ resolution = 2048 }: FormulaCarOptions = {}) 
     ]),
   ];
   cascade(
-    0.5,
+    [-0.5, 0.5],
     26,
     (x) => [-2.0 + 0.02 * tip(x) ** 2, 0.76 - 0.05 * tip(x) ** 5],
     [
@@ -815,28 +871,38 @@ export function createFormulaCar({ resolution = 2048 }: FormulaCarOptions = {}) 
   );
 
   // ── Suspension: faired wishbones, push rods at the front, pull rods behind ──
+  // The front upper wishbones run high, level with the top of the rim, as in
+  // the front-on photograph.
   for (const side of [-1, 1]) {
-    for (const z of [AXLE, -AXLE]) {
-      const front = z > 0;
-      const hub = side * (front ? 0.64 : 0.56),
-        inner = side * (front ? 0.16 : 0.2);
-      batch.add(carbon, strut([inner, 0.47, z + 0.3], [hub, 0.5, z], 0.028, 0.32));
-      batch.add(carbon, strut([inner, 0.45, z - 0.28], [hub, 0.5, z], 0.028, 0.32));
-      batch.add(carbon, strut([inner, 0.2, z + 0.32], [hub, 0.21, z], 0.028, 0.32));
-      batch.add(carbon, strut([inner, 0.2, z - 0.3], [hub, 0.21, z], 0.028, 0.32));
-      batch.add(
-        carbon,
-        strut(
-          [inner, front ? 0.5 : 0.17, z + 0.1],
-          [hub * 0.97, front ? 0.23 : 0.48, z - 0.03],
-          0.015,
-        ),
-      );
-      batch.add(
-        carbon,
-        strut([inner, 0.33, z - 0.06], [hub, 0.33, z - 0.06], 0.012, 0.6),
-      );
-    }
+    const z = AXLE,
+      hub = side * 0.63;
+    batch.add(carbon, strut([side * 0.17, 0.575, z + 0.3], [hub, 0.58, z], 0.026, 0.32));
+    batch.add(carbon, strut([side * 0.19, 0.565, z - 0.28], [hub, 0.58, z], 0.026, 0.32));
+    batch.add(carbon, strut([side * 0.15, 0.24, z + 0.32], [hub, 0.15, z], 0.026, 0.32));
+    batch.add(carbon, strut([side * 0.15, 0.24, z - 0.3], [hub, 0.15, z], 0.026, 0.32));
+    batch.add(
+      carbon,
+      strut([side * 0.15, 0.52, z + 0.1], [side * 0.6, 0.17, z - 0.03], 0.016),
+    );
+    batch.add(
+      carbon,
+      strut([side * 0.16, 0.37, z + 0.1], [hub, 0.37, z + 0.1], 0.012, 0.6),
+    );
+    const r = -AXLE,
+      back = side * 0.56,
+      gearbox = side * 0.2;
+    batch.add(carbon, strut([gearbox, 0.47, r + 0.3], [back, 0.5, r], 0.028, 0.32));
+    batch.add(carbon, strut([gearbox, 0.45, r - 0.28], [back, 0.5, r], 0.028, 0.32));
+    batch.add(carbon, strut([gearbox, 0.2, r + 0.32], [back, 0.21, r], 0.028, 0.32));
+    batch.add(carbon, strut([gearbox, 0.2, r - 0.3], [back, 0.21, r], 0.028, 0.32));
+    batch.add(
+      carbon,
+      strut([gearbox, 0.17, r + 0.1], [back * 0.97, 0.48, r - 0.03], 0.015),
+    );
+    batch.add(
+      carbon,
+      strut([gearbox, 0.33, r - 0.06], [back, 0.33, r - 0.06], 0.012, 0.6),
+    );
   }
   batch.build(body, true, true);
 

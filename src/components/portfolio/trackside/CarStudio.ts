@@ -33,7 +33,7 @@ export async function createCarStudio(
   scene.environment = environment.texture;
   scene.environmentIntensity = 0.32;
   await pause();
-  const car = createFormulaCar({ resolution: 4096 });
+  const car = createFormulaCar({ resolution: 4096, driver: false });
   scene.add(car.group);
   // A dark launch studio: one soft key overhead, cool rims behind, as in the photos.
   const key = new T.SpotLight(0xfff4e6, 140, 0, 0.62, 0.65, 2);
@@ -119,7 +119,7 @@ export async function createCarStudio(
     camera.up.set(0, 1, 0);
     const position = {
       quarter: [portrait ? 9 : 4.4, portrait ? 6 : 2.7, portrait ? 11 : 5.4],
-      front: [0, 1.5, portrait ? 10 : 6.3],
+      front: [0, 1.15, portrait ? 9.5 : 5.3],
       top: [0.01, portrait ? 17 : 12.5, 0],
     }[name];
     camera.position.set(...(position as [number, number, number]));

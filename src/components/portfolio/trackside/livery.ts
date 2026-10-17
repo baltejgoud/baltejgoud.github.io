@@ -397,35 +397,36 @@ function bodySide(ctx: Ctx, w: number, h: number, mirror: boolean) {
     [-2.7, 0],
   ]);
   ctx.fill();
-  // Yellow nose, its edge raked back towards the top.
+  // Yellow nose, its edge raked back towards the top, over a carbon underside.
   ctx.fillStyle = yellow;
   shape(sheet, [
-    [3.0, 0.13],
-    [3.0, 0.6],
-    [2.02, 0.6],
-    [2.1, 0.4],
-    [2.28, 0.13],
+    [3.0, 0.18],
+    [3.0, 0.7],
+    [1.98, 0.7],
+    [2.06, 0.46],
+    [2.3, 0.18],
   ]);
   ctx.fill();
   ctx.fillStyle = carbon;
   shape(sheet, [
     [3.0, 0],
-    [3.0, 0.125],
-    [2.0, 0.155],
-    [1.6, 0.13],
+    [3.0, 0.24],
+    [2.6, 0.225],
+    [2.0, 0.22],
+    [1.6, 0.2],
     [1.6, 0],
   ]);
   ctx.fill();
-  bull(sheet, 2.27, 0.29, 0.5, !mirror, { rotate: tilt(-0.08) });
-  numberPlate(sheet, 1.74, 0.43, 0.15, tilt(-0.12));
-  label(sheet, "CARLYLE", 1.0, 0.495, 0.06, {
+  bull(sheet, 2.2, 0.38, 0.52, !mirror, { rotate: tilt(-0.16) });
+  numberPlate(sheet, 1.66, 0.5, 0.15, tilt(-0.1));
+  label(sheet, "CARLYLE", 1.0, 0.535, 0.06, {
     font: 'Georgia, "Times New Roman", serif',
     weight: 600,
     spacing: 0.16,
     width: 0.56,
   });
-  label(sheet, "❶ 1Password", 1.02, 0.425, 0.042, { weight: 700, width: 0.4 });
-  label(sheet, "Hard Rock", 0.6, 0.428, 0.032, {
+  label(sheet, "❶ 1Password", 1.02, 0.465, 0.042, { weight: 700, width: 0.4 });
+  label(sheet, "Hard Rock", 0.6, 0.465, 0.032, {
     font: 'Georgia, "Times New Roman", serif',
     weight: "italic 700",
     width: 0.16,
@@ -522,7 +523,7 @@ function bodyTop(ctx: Ctx, w: number, h: number) {
   ctx.fill();
   for (const side of [-1, 1])
     bull(sheet, 2.38, side * 0.11, 0.3, true, { rotate: side * 0.12 });
-  oval(sheet, 2.72, 0, 0.1, Math.PI / 2);
+  oval(sheet, 2.64, 0, 0.1, Math.PI / 2);
   // Sponsor stack, reading across the car from the front.
   const stack = [
     "Mobil 1",
