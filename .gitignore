@@ -7,3 +7,15 @@ node_modules/
 # Generated Cursor skill junctions (see scripts/install-cursor-skills.ps1)
 .cursor/skills/*/
 !.cursor/skills/awesome-claude-skills/
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# Intermediate image files (scripts/prepare-images.cjs input)
+.cache/
+
+# Local reconstruction backup patches (not application sources)
+docs/verification/*.diff

@@ -1,4 +1,4 @@
-/* Copy pinned animation libraries into assets/vendor. Run after npm install: npm run vendor */
+/* Copy pinned animation libraries into public/assets/vendor for the legacy pages. Run after npm install: npm run vendor */
 const fs = require("node:fs");
 const path = require("node:path");
 const root = path.resolve(__dirname, "..");
@@ -8,7 +8,7 @@ const files = {
   "SplitText.min.js": "gsap/dist/SplitText.min.js",
   "lenis.min.js": "lenis/dist/lenis.min.js",
 };
-const out = path.join(root, "assets/vendor");
+const out = path.join(root, "public/assets/vendor");
 fs.mkdirSync(out, { recursive: true });
 for (const [name, source] of Object.entries(files)) {
   const code = fs
@@ -16,4 +16,4 @@ for (const [name, source] of Object.entries(files)) {
     .replace(/\n\/\/# sourceMappingURL=.*\s*$/, "\n");
   fs.writeFileSync(path.join(out, name), code);
 }
-console.log(`Copied ${Object.keys(files).length} files to assets/vendor.`);
+console.log(`Copied ${Object.keys(files).length} files to public/assets/vendor.`);

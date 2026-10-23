@@ -1,39 +1,66 @@
-# Baltej Goud — Signal
+# Baltej Goud — Portfolio
 
-Personal portfolio for Baltej Goud: AI engineer and data analyst and Co-founder & CEO of Sanket. Serves AI engineering and data analyst job applications alongside founder collaborations.
+Illustrated, interactive portfolio for Baltej Goud: data analyst, AI engineer and co-founder & CEO of Sanket. Features a painted valley, a six-book project shelf with live models, a Spa career circuit, a scroll-driven data story, a periodic-table toolkit, a personal corkboard and a note composer. Built with Next.js (static export), Tailwind CSS v4, Motion and Lenis, and deployed to GitHub Pages by GitHub Actions.
 
-## Preview
+## Develop
 
-Run `npm run dev`, then open `http://localhost:8000`.
+```bash
+npm install
+npm run dev
+```
 
-Alternatively, run `python -m http.server 8000 --bind 127.0.0.1`.
+`npm run dev` serves the homepage at http://localhost:3000. The résumé and case studies in `public/` are served correctly only from the static export:
 
-The site is static HTML, CSS and JavaScript and runs directly on GitHub Pages. No build step is required.
+```bash
+npm run build
+npm start
+```
 
-Run `npm run check` to validate local page links, assets, anchors and document IDs.
+That serves `out/` at http://localhost:8000.
 
-## Edit
+## Commands
 
-- `index.html`: professional introduction, hiring and collaboration paths, selected projects, experience and contact.
-- `work/index.html`: separate project gallery with filters and grid/list views.
-- `work/<project>/index.html`: static case studies for Sanket, Axon, VIGOR and ExtraTicket.
-- `work/projects.json`: the case-study content and project metadata.
-- `scripts/build-work.cjs`: generates the work pages and homepage cards. Run `npm run build:work` after editing project content.
-- `style.css`: base responsive layout, typography, colors and interaction states.
-- `bevel.css`: light portfolio theme, audience paths and project-card details.
-- `home-profile.css`: portrait-led AI Engineer / Data Analyst hero and the Sanket planning workflow.
-- `resume-screen.css`: matching screen appearance for the printable professional profile.
-- `work.css`: actual project captures, gallery layouts, editorial case studies and motion preferences.
-- `script.js`: navigation, project filters, gallery layout, local clock and clipboard.
-- `motion.css`: every motion-only style (loader, reveals, marquee, dialogs, cursor effects, page transitions).
-- `assets/js/motion/`: the motion layer, one module per behaviour; `index.js` is the entry point. Add `?nomotion` to any URL to see the static version.
-- `assets/vendor/`: committed GSAP and Lenis builds. After changing their versions in `package.json`, run `npm install` then `npm run vendor`.
-- `resume.html`: professional profile with Print / Save as PDF.
-- `assets/`: optimized artwork, portrait, favicon and social preview.
-- `DESIGN.md`: visual direction, source references, generated artwork prompt and verification.
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Next.js dev server |
+| `npm run build` | Static export to `out/` |
+| `npm start` | Serve `out/` on port 8000 |
+| `npm test` | Unit tests (Vitest) |
+| `npm run lint` | ESLint |
+| `npm run check` | Check `out/` for broken local links, anchors, duplicate IDs and h1s |
+| `npm run build:work` | Regenerate `public/work/` from `public/work/projects.json` |
+| `npm run vendor` | Copy GSAP and Lenis into `public/assets/vendor/` for the legacy pages |
+| `npm run images -- <cutout.png>` | Rebuild the hero cutout and the ID-card photo |
 
-Project covers use product illustrations; the asset provenance is recorded in `assets/work/README.md`. Actual development captures remain accessible within the case studies. Sanket uses sandbox records; VIGOR uses synthetic test fixtures; ExtraTicket shows sample listings. See `assets/work/README.md` for imagery and provenance.
+## Edit content
 
-The previous working files are backed up at `C:/Users/admin/.codex/backups/baltej-portfolio-before-redesign-20261008`.
+| File | Content |
+| --- | --- |
+| `src/content/profile.ts` | Name, email and links |
+| `src/content/hero.ts` | Hero layers, the standing portrait and the place pins |
+| `src/content/projects.ts` | Selected work, features, technology and project links |
+| `src/content/projectBooks.ts` | Project book covers, colours and chapter introductions |
+| `src/content/workMedia.ts` | Card covers and screenshots for each project |
+| `src/content/skills.ts` | The 32 toolkit elements and where each is used |
+| `src/content/journey.ts` | Education and experience timeline |
+| `src/content/journey-stories.ts` | Journey narratives, companies, logos and galleries |
+| `src/content/journey-route.json` | Spa circuit geometry and career checkpoint positions |
+| `src/content/life.ts` | Personal photos pinned to the board |
+| `src/content/notes.ts` | Notes people sent that you chose to show |
 
-The first redesigned version is also backed up at `C:/Users/admin/.codex/backups/baltej-portfolio-before-case-studies-20261008`.
+After changing hero art, run `node scripts/lqip.cjs` to refresh the blurred placeholders.
+`DESIGN.md` documents the design and motion rules; `docs/signal-valley-art.md` has the prompts for
+the remaining artwork and where each file goes.
+
+Each homepage section is one component and one stylesheet in `src/components/portfolio/sections/`,
+sharing `base.css` and the motion primitives in `src/components/portfolio/motion/`. Notes are
+composed on the page and sent from the visitor's own mail app; nothing is stored. Music uses
+Spotify's embedded Anirudh artist player.
+
+## Deploy
+
+Pushing to `main` runs `.github/workflows/deploy.yml`: lint, test, build, check, then deploy `out/` to GitHub Pages.
+
+One-time setup: in GitHub, open **Settings → Pages → Build and deployment** and set **Source** to **GitHub Actions**. Do this before the first push of this version to `main`. The previous branch deploy serves the repository root, which no longer has an `index.html`.
+
+The journey is a fixed aerial view of Spa-Francorchamps, implemented in `src/components/portfolio/CareerJourney.tsx`, `CareerCircuit.tsx`, `career-journey.css` and `src/lib/careerScene.ts`. The original geographic circuit is uniformly projected into the illustrated environment; the live road, car and seven career checkpoints share the same geometry. Scroll forward or backward, select a checkpoint, expand its story, restart or skip the circuit. Reduced motion changes the car position at chapter boundaries. Asset provenance is in `public/assets/journey/README.md`; earlier 3D implementation plans remain in `docs/` as historical reference.

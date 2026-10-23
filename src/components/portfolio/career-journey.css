@@ -1,0 +1,232 @@
+/* A 1672 x 941 cinematic artboard. Scroll owns travel; the camera stays still. */
+.cm-section { position: relative; background: #081310; color: #f4f1e8; --cm-ink: #f4f1e8; --cm-muted: #c2c6c2; --cm-accent: #efbd74; --cm-teal: #efbd74; color-scheme: dark; }
+.p-site section#journey { scroll-margin-top: 0; }
+.cm-scroll-track { position: relative; height: calc((var(--career-scroll-screens) + 1) * 100svh); overflow-anchor: none; }
+.cm-sticky { position: sticky; top: 0; height: 100svh; }
+.cm-experience { position: relative; width: 100%; height: 100%; isolation: isolate; overflow: hidden; outline-offset: -5px !important; }
+.cm-map { position: absolute; inset: 0; background: #07110f; }
+.cm-map::before { content: ''; position: absolute; inset: 0; background: url('/assets/journey/ardennes-night.webp') center/cover; filter: brightness(.7) saturate(.7); pointer-events: none; }
+.cm-map-board { position: absolute; left: var(--cm-board-x, 0px); top: var(--cm-board-y, 0px); width: var(--cm-board-w, 100vw); height: var(--cm-board-h, calc(100vw * 941 / 1672)); }
+.cm-terrain { object-fit: fill; filter: brightness(.84) saturate(.72); pointer-events: none; mask-image: linear-gradient(90deg, transparent, #000 72px, #000 calc(100% - 72px), transparent); }
+.cm-map-art { position: absolute; inset: 0; display: block; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.cm-map-art path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.cm-road-shadow { stroke: #08120d; stroke-width: 32; opacity: .12; }
+.cm-road-light { stroke: #ffc583; stroke-width: 25; opacity: .07; filter: blur(4px); }
+.cm-track-border { stroke: #f4e4c3; stroke-width: 24; opacity: .48; }
+.cm-curb-yellow { stroke: #cca850; stroke-width: 23; opacity: .55; }
+.cm-curb-red { stroke: #9c3927; stroke-width: 23; stroke-dasharray: 7 9; opacity: .65; }
+.cm-track { stroke: #303639; stroke-width: 20; opacity: .85; }
+.cm-route { stroke: #35383a; stroke-width: 18.5; opacity: .25; }
+.cm-route-complete { stroke: #edb86b; stroke-width: 1; opacity: .18; }
+.cm-road-center { stroke: #d5c7a5; stroke-width: .55; stroke-dasharray: 7 22; opacity: .28; }
+.cm-map-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, #020e12a6 0%, #020d1045 25%, transparent 47%); box-shadow: inset 0 0 90px #010a0d44; }
+.cm-atmosphere { position: absolute; inset: 0; pointer-events: none; background: url('/assets/journey/spa-cinematic.webp') center/cover; opacity: .025; filter: blur(20px); animation: cm-mist 40s ease-in-out infinite alternate; mix-blend-mode: screen; }
+@keyframes cm-mist { to { transform: translate3d(10px, 3px, 0) scale(1.015); opacity: .045; } }
+.cm-car { --cm-car-width: 19.2px; position: absolute; z-index: 4; width: calc(var(--cm-car-width) * var(--cm-scale, 1)); height: calc(var(--cm-car-width) * 588 / 256 * var(--cm-scale, 1)); transform: translate(-50%, -50%); pointer-events: none; filter: drop-shadow(1px 3px 2px #000d); }
+.cm-car-heading { width: 100%; height: 100%; }
+.cm-car-heading::after { content: ''; position: absolute; left: 42%; bottom: -1px; width: 17%; height: 3px; background: #ff5d23; box-shadow: 0 0 7px 2px #ff7b2b80; }
+.cm-car img { display: block; width: 100%; height: 100%; object-fit: contain; }
+/* Pins stand above a geographic anchor; the fine stem terminates on the road. */
+.cm-pin { --pin-rise: 43px; position: absolute; z-index: 3; display: flex; align-items: center; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; color: #f5f3e9; transform: translate(-50%, calc(-100% - var(--pin-rise))); }
+.cm-pin::after { content: ''; position: absolute; width: 1px; height: var(--pin-rise); left: 22px; top: 43px; background: #f2eee0b0; box-shadow: 0 0 6px #fff6; }
+.cm-pin::before { content: ''; position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #fff6dd; left: 20.5px; top: calc(42px + var(--pin-rise)); box-shadow: 0 0 7px 2px #fff7b766; }
+.cm-pin > span { position: relative; flex-shrink: 0; display: grid; place-items: center; width: 34px; height: 34px; margin-left: 5px; border-radius: 50%; border: 2px solid #faf7e7cf; background: #142024b3; box-shadow: 0 0 5px #fff7c466, 0 0 0 4px #f5f0dd0b; font: 600 13px var(--font-jakarta), sans-serif; transition: border-color .25s, box-shadow .25s; }
+.cm-pin b { position: absolute; left: 42px; top: 4px; padding: 4px 15px 7px 12px; min-width: 120px; text-align: left; border-radius: 0 22px 22px 0; background: linear-gradient(90deg, #0b171be0, #0b171b44); white-space: nowrap; font: 600 14px/1.4 var(--font-jakarta), sans-serif; }
+.cm-pin small { display: block; margin-top: 3px; font: 9px/1.5 var(--font-jetbrains), monospace; letter-spacing: 1.7px; color: #c9cecb; }
+.cm-pin.is-active > span { border-color: #f9d79a; color: #fff1cb; background: #49391ac9; box-shadow: 0 0 8px #ffc76cbb, 0 0 23px #e9b36644; }
+.cm-pin.is-active::after { background: #ffd38b; box-shadow: 0 0 7px #efb35d; }
+.cm-pin:hover > span, .cm-pin:focus-visible > span { box-shadow: 0 0 0 5px #efbd7433, 0 0 18px #efbd74aa; }
+.cm-pin-0 { --pin-rise: 30px; }
+.cm-pin-3 { --pin-rise: 32px; }
+.cm-pin-4 { --pin-rise: 33px; }
+.cm-pin-5 { --pin-rise: 30px; }
+.cm-pin-6 { --pin-rise: 50px; }
+.cm-pin-0 b, .cm-pin-1 b, .cm-pin-3 b, .cm-pin-5 b { left: auto; right: 42px; border-radius: 22px 0 0 22px; text-align: right; background: linear-gradient(270deg, #0b171be0, #0b171b44); }
+.cm-pin-4 { --pin-rise: -75px; }
+.cm-pin-4::after { top: -33px; height: 33px; }
+.cm-pin-4::before { top: -35px; }
+.cm-masthead { position: absolute; z-index: 5; top: 24px; left: 4.3%; display: flex; align-items: center; gap: 22px; color: var(--cm-ink); }
+.cm-masthead > a { font: 700 25px/1.5 var(--font-jakarta), sans-serif; color: inherit; letter-spacing: -.035em; }
+.cm-masthead > i { width: 10px; height: 10px; border-radius: 50%; background: #f4c27d; }
+.cm-masthead > span { border-left: 1px solid #e1e5df80; padding-left: 24px; font: 12px var(--font-jetbrains), monospace; letter-spacing: .19em; }
+/* Extra original driving controls stay keyboard-accessible and appear on hover/focus. */
+.cm-lap-hud { position: absolute; z-index: 8; right: 4.3%; top: 25px; display: flex; align-items: center; gap: 14px; font: 10px var(--font-jetbrains), monospace; opacity: 0; transition: opacity .2s; }
+.cm-lap-hud:hover, .cm-lap-hud:focus-within { opacity: 1; }
+.cm-lap-hud button { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid #e1e2d955; border-radius: 50%; color: var(--cm-ink); background: #101d1ed9; }
+.cm-overview { position: absolute; z-index: 4; left: 4.75%; top: 14.6%; color: var(--cm-ink); }
+.cm-overview > span { font: 12px var(--font-jetbrains), monospace; letter-spacing: .17em; color: #e3e5de; }
+.p-site .cm-overview h3 { font: 400 clamp(62px, 5.56vw, 104px)/.86 var(--font-instrument), serif; margin: 9px 0 0; letter-spacing: -.035em; transform: scaleX(1.1); transform-origin: left center; }
+.p-site .cm-overview p { font: 400 17px/1.65 var(--font-jakarta), sans-serif; margin: 26px 0 0; color: #e1e3df; }
+.cm-connector { position: absolute; inset: 0; z-index: 5; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity .25s; }
+.cm-connector.is-visible { opacity: .65; }
+.cm-connector path { fill: none; stroke: #ebc383; stroke-width: 1; }
+/* Compact reference card; the arrow expands the preserved complete career content. */
+.ts-popup { position: absolute; z-index: 7; left: var(--card-x, 31.64%); top: var(--card-y, 46.33%); width: 380px; min-height: 160px; max-height: calc(100svh - 220px); border: 1px solid #c5b68be6; border-radius: 14px; background: #081315eb; color: var(--cm-ink); backdrop-filter: blur(16px); box-shadow: 0 16px 50px #0008, inset 0 1px 0 #fff1; opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity .25s, transform .3s, visibility .25s; overflow: hidden; }
+.ts-popup.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
+.ts-popup-thumbnail { position: absolute; left: 16px; top: 16px; width: 100px; height: 127px; object-fit: cover; border-radius: 7px; }
+.ts-popup-top { display: flex; align-items: center; justify-content: space-between; min-height: 35px; margin-left: 136px; padding: 12px 18px 0 0; }
+.ts-popup-top > span { font: 9px var(--font-jetbrains), monospace; letter-spacing: .17em; color: #d7d9ce; }
+.ts-popup-top > button { display: none; border: 0; background: transparent; color: #d3d6cf; padding: 0; width: 25px; height: 25px; }
+.ts-popup:hover .ts-popup-top > button, .ts-popup:focus-within .ts-popup-top > button { display: grid; place-items: center; }
+.ts-popup-body { margin-left: 136px; padding: 0 18px 32px 0; max-height: calc(100svh - 255px); overflow-y: auto; scrollbar-width: thin; scrollbar-color: #e0ba7066 transparent; }
+.p-site .ts-popup h3 { font: 600 20px/1.3 var(--font-jakarta), sans-serif; letter-spacing: -.025em; margin: 0 0 5px; }
+.ts-date, .ts-role, .ts-popup h4 { display: none; }
+.ts-story { color: #c3c9c5; font: 13px/1.45 var(--font-jakarta), sans-serif; margin: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.ts-popup-actions { display: flex; align-items: center; }
+.ts-primary-link { display: none; }
+.ts-detail-toggle { position: absolute; bottom: 15px; right: 18px; width: 34px; height: 29px; display: grid; place-items: center; border: 1px solid #d9aa5c; border-radius: 50%; background: transparent; color: #e9c283; }
+.ts-detail-toggle:hover { background: #e3b56820; }
+.ts-detail-toggle::before { content: ''; position: absolute; width: 44px; height: 44px; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+.ts-details { font: 13px/1.7 var(--font-jakarta), sans-serif; color: #d1d6ce; border-top: 1px solid #e3d1a12f; margin-top: 16px; padding-top: 16px; }
+.ts-details[hidden] { display: none; }
+.ts-details ul { padding-left: 18px; margin: 12px 0; }
+.ts-details li { margin-bottom: 7px; }
+.ts-details > a, .ts-next, .ts-primary-link { align-items: center; gap: 9px; color: #e8c58d; font-size: 12px; min-height: 38px; }
+.ts-details > a, .ts-next { display: flex; }
+.ts-next { border: 0; padding: 0; background: none; }
+.ts-popup.is-expanded { width: 440px; }
+.ts-popup.is-expanded .ts-popup-body { margin-left: 16px; padding: 0 20px 44px 0; }
+.ts-popup.is-expanded .ts-popup-body > h3, .ts-popup.is-expanded .ts-story { margin-left: 120px; }
+.ts-popup.is-expanded .ts-story { display: none; }
+.ts-popup.is-expanded { max-height: min(420px, calc(100svh - 220px)); }
+.ts-popup.is-expanded .ts-popup-body { max-height: min(385px, calc(100svh - 255px)); }
+.ts-popup.is-expanded .ts-date, .ts-popup.is-expanded .ts-role, .ts-popup.is-expanded h4 { display: block; font-size: 13px; margin: 10px 0; }
+.ts-popup.is-expanded .ts-date, .ts-popup.is-expanded .ts-role { margin-left: 120px; }
+.ts-popup.is-expanded .ts-primary-link { display: flex; }
+.ts-popup.is-expanded .ts-popup-top > button { display: grid; place-items: center; }
+.ts-popup.is-expanded .ts-detail-toggle { transform: rotate(180deg); }
+.ts-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin: 12px 0; }
+.ts-gallery button { padding: 0; border: 1px solid #eee3bf33; border-radius: 6px; overflow: hidden; background: #142222; color: #e9e9dc; text-align: left; }
+.ts-gallery img { width: 100%; aspect-ratio: 16/10; object-fit: cover; }
+.ts-gallery span { display: block; padding: 7px; font-size: 10px; line-height: 1.4; }
+.cm-reopen { position: absolute; z-index: 7; left: 120px; bottom: 120px; display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 10px 15px; border: 1px solid #e1cca366; border-radius: 8px; background: #081315ed; color: #f5eddb; font-size: 12px; }
+.cm-driving-note { position: absolute; z-index: 5; left: 4.85%; bottom: 5.5%; display: flex; align-items: center; gap: 20px; color: #e0e4df; }
+.cm-driving-note > svg { width: 33px; height: 44px; }
+.cm-driving-note > span { font: 9px/1.65 var(--font-jetbrains), monospace; letter-spacing: .2em; }
+.cm-distance { position: absolute; right: 2.2%; top: 43%; font: 14px/1.6 Georgia, serif; letter-spacing: .25em; color: #d4d9d4; }
+.cm-distance i { display: block; width: 30px; height: 1px; margin-top: 8px; background: #d4d9d488; }
+/* The existing single site dock retains every destination. */
+.p-site[data-active-section="journey"] > .p-header { visibility: hidden; opacity: 0; }
+html:has(.p-site[data-active-section="journey"]) { scrollbar-color: #4f6156 #0b1715; scrollbar-width: none; }
+.p-site[data-active-section="journey"] .p-dock { --p-ink: #f5f0df; --p-muted: #b9c3be; --p-line: #edf0e344; --p-navy: #f7f1df; --p-white: #142024; --p-paper: #142024; background: #0c1c20c9; border: 1px solid #c0c9bf80; box-shadow: 0 8px 40px #0003; backdrop-filter: blur(18px); }
+.p-site[data-active-section="journey"] .p-dock .p-dock-resume { background: #fff9e9; color: #142838; box-shadow: none; }
+.p-site[data-active-section="journey"] .p-dock-pill { background: transparent; box-shadow: none; }
+.p-site[data-active-section="journey"] .p-dock a.is-active { color: #fffaf1; }
+.p-site[data-active-section="journey"] .p-dock a.is-active::after { content: ''; position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #edc286; bottom: 3px; left: calc(50% - 2px); }
+.ts-lightbox { position: fixed; inset: 0; margin: auto; width: min(1100px, calc(100% - 32px)); max-height: calc(100svh - 40px); padding: 15px; border: 1px solid #c7b88d70; border-radius: 14px; background: #101c1c; color: #edf1e3; overflow: auto; }
+.ts-lightbox::backdrop { background: #06121beb; }
+.ts-lightbox > div { position: relative; }
+.ts-lightbox button { position: absolute; top: 10px; right: 10px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid #e1e9da44; background: #102628ed; color: #fff9e9; }
+.ts-lightbox img { width: 100%; height: auto; max-height: calc(100svh - 120px); object-fit: contain; border-radius: 5px; }
+.ts-lightbox p { padding-top: 12px; text-align: center; font-size: 13px; }
+@media (max-height: 800px) and (min-width: 651px) {
+ .p-site .cm-overview p { font-size: 14px; margin-top: 22px; }
+ .cm-overview > span { font-size: 10px; }
+ .cm-masthead > a { font-size: 21px; }
+ .cm-masthead > span { font-size: 10px; }
+ .cm-driving-note { bottom: 3%; }
+}
+@media (min-width: 651px) and (max-width: 1100px) {
+ .cm-masthead { left: 28px; gap: 12px; }
+ .cm-masthead > span { padding-left: 14px; font-size: 9px; }
+ .cm-overview { left: 30px; top: 12%; }
+ .p-site .cm-overview h3 { font-size: clamp(46px, 5.56vw, 62px); }
+ .p-site .cm-overview p { font-size: 12px; }
+ .cm-overview > span { font-size: 8px; }
+ .cm-pin b { font-size: 11px; min-width: 95px; padding-left: 6px; }
+ .cm-pin small { font-size: 7px; letter-spacing: 1px; }
+ .cm-pin > span { width: 27px; height: 27px; margin-left: 8px; font-size: 10px; }
+ .cm-pin-1 b, .cm-pin-5 b { left: 42px; right: auto; text-align: left; }
+ .cm-distance { display: none; }
+ .ts-popup { width: 330px; }
+ .ts-popup.is-expanded { width: 380px; }
+ .cm-driving-note { display: none; }
+ .cm-map { background: #081411 url('/assets/journey/ardennes-night.webp') center/cover; }
+ .cm-terrain { mask-image: linear-gradient(transparent, #000 12%, #000 86%, transparent); }
+}
+@media (max-width: 650px) {
+ .cm-masthead { top: 18px; left: 20px; gap: 12px; }
+ .cm-masthead > a { font-size: 21px; }
+ .cm-masthead > i { width: 7px; height: 7px; }
+ .cm-masthead > span { padding-left: 12px; font-size: 7px; letter-spacing: 1.5px; }
+ .cm-lap-hud { top: 60px; right: 14px; gap: 7px; }
+ .cm-lap-hud > span { display: none; }
+ .cm-map { background: #081411 url('/assets/journey/ardennes-night.webp') center/cover; }
+ .cm-atmosphere { display: none; }
+ .cm-terrain { mask-image: linear-gradient(transparent, #000 12%, #000 86%, transparent); }
+ .cm-map-shade { background: linear-gradient(#041014aa, transparent 60%); }
+ .cm-overview { top: 91px; left: 24px; }
+ .cm-overview > span { font-size: 8px; letter-spacing: 1.5px; }
+ .p-site .cm-overview h3 { font-size: 62px; line-height: .89; margin-top: 14px; }
+ .p-site .cm-overview p { font-size: 11px; line-height: 1.6; margin-top: 16px; }
+ .cm-pin { --pin-rise: 10px; }
+ .cm-pin > span { width: 22px; height: 22px; margin-left: 11px; font-size: 8px; border-width: 1px; }
+ .cm-pin::after { top: 33px; height: calc(var(--pin-rise) + 10px); }
+ .cm-pin::before { top: calc(42px + var(--pin-rise)); }
+ .cm-pin b { left: 30px; top: 8px; min-width: auto; padding: 3px 6px; font-size: 8px; }
+ .cm-pin-0 b, .cm-pin-1 b, .cm-pin-3 b, .cm-pin-5 b { left: auto; right: 32px; }
+ .cm-pin-0 b { left: 30px; right: auto; text-align: left; }
+ .cm-pin small { display: none; }
+ .cm-pin-6 { --pin-rise: -48px; }
+ .cm-pin-6::after { top: -6px; height: 19px; }
+ .cm-pin-6::before { top: -9px; }
+ .cm-car { --cm-car-width: 21.6px; }
+ .cm-connector { display: none; }
+ .ts-popup, .ts-popup.is-expanded { left: 18px; top: var(--mobile-card-top, 65%); width: calc(100% - 36px); min-height: 137px; max-height: calc(100svh - var(--mobile-card-top, 65vh) - 140px); border-radius: 11px; }
+ .ts-popup-thumbnail { width: 76px; height: 104px; left: 13px; top: 13px; }
+ .ts-popup-top { margin-left: 103px; min-height: 32px; padding-top: 9px; }
+ .ts-popup-top > span { font-size: 8px; }
+ .ts-popup-body { margin-left: 103px; padding-right: 13px; max-height: calc(100svh - var(--mobile-card-top, 65vh) - 175px); }
+ .p-site .ts-popup h3 { font-size: 17px; }
+ .ts-story { font-size: 11px; line-height: 1.45; }
+ .ts-detail-toggle { bottom: 10px; right: 13px; width: 30px; height: 25px; }
+ .ts-popup.is-expanded { top: 320px; max-height: calc(100svh - 460px); }
+ .ts-popup.is-expanded .ts-popup-body { max-height: calc(100svh - 495px); }
+ .ts-popup.is-expanded .ts-popup-body > h3, .ts-popup.is-expanded .ts-story, .ts-popup.is-expanded .ts-date, .ts-popup.is-expanded .ts-role { margin-left: 90px; }
+ .cm-driving-note, .cm-distance { display: none; }
+ .cm-reopen { bottom: 150px; left: 20px; right: 20px; justify-content: center; }
+}
+@media (max-width: 650px) and (max-height: 739px) {
+ .cm-overview { top: 75px; }
+ .p-site .cm-overview h3 { font-size: 48px; }
+ .p-site .cm-overview p { margin-top: 12px; font-size: 10px; }
+ .cm-pin { --pin-rise: -10px; }
+ .cm-pin b { display: none; }
+ .cm-pin::after { height: 0; }
+ .cm-pin::before { top: 32px; }
+}
+@media (hover: none) {
+ .cm-lap-hud { opacity: 1; }
+}
+/* Short landscape screens keep the story at left and the complete lap at right. */
+@media (min-width: 651px) and (max-height: 500px) {
+ .cm-masthead { top: 10px; left: 18px; gap: 12px; }
+ .cm-masthead > a { font-size: 19px; }
+ .cm-masthead > span { font-size: 8px; padding-left: 12px; }
+ .cm-overview { top: 50px; left: 18px; }
+ .cm-experience:has(.ts-popup.is-expanded) .cm-overview { visibility: hidden; }
+ .cm-overview > span { font-size: 7px; }
+ .p-site .cm-overview h3 { font-size: 32px; line-height: .95; }
+ .p-site .cm-overview p, .cm-driving-note, .cm-distance, .cm-connector { display: none; }
+ .cm-pin { --pin-rise: 0px; }
+ .cm-pin b { display: none; }
+ .cm-pin::after, .cm-pin::before { display: none; }
+ .cm-pin > span { width: 24px; height: 24px; margin-left: 10px; font-size: 9px; }
+ .cm-lap-hud { top: 9px; right: 16px; gap: 8px; opacity: 1; }
+ .cm-lap-hud > span { display: none; }
+ .cm-lap-hud button { width: 44px; height: 44px; }
+ .ts-popup { width: 280px; min-height: 120px; max-height: calc(100svh - 235px); }
+ .ts-popup-thumbnail { left: 12px; top: 12px; width: 70px; height: 92px; }
+ .ts-popup-top { margin-left: 94px; min-height: 30px; padding-top: 9px; }
+ .ts-popup-body { margin-left: 94px; max-height: calc(100svh - 265px); padding-right: 12px; }
+ .p-site .ts-popup h3 { font-size: 16px; }
+ .ts-story { font-size: 11px; }
+ .ts-popup.is-expanded { top: 58px; width: 300px; max-height: calc(100svh - 145px); }
+ .ts-popup.is-expanded .ts-popup-body { max-height: calc(100svh - 180px); }
+ .ts-popup.is-expanded .ts-popup-body > h3, .ts-popup.is-expanded .ts-date, .ts-popup.is-expanded .ts-role { margin-left: 80px; }
+ .cm-reopen { left: 18px; bottom: 100px; }
+}
+@media (prefers-reduced-motion: reduce) {
+ .cm-atmosphere { animation: none; }
+ .cm-section *, .cm-section *::before, .cm-section *::after { transition: none !important; }
+}

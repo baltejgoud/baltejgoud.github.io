@@ -1,7 +1,7 @@
-/* Regenerate static work pages with: npm run build:work. No browser runtime dependency. */
+/* Regenerate the static work pages in public/work with: npm run build:work. No browser runtime dependency. */
 const fs = require("node:fs");
 const path = require("node:path");
-const root = path.resolve(__dirname, "..");
+const root = path.resolve(__dirname, "..", "public");
 const projects = JSON.parse(
   fs.readFileSync(path.join(root, "work/projects.json"), "utf8"),
 );
@@ -118,11 +118,4 @@ ${p.secondary ? `<section class="case-detail-section light-section"><div class="
   fs.mkdirSync(directory, { recursive: true });
   fs.writeFileSync(path.join(directory, "index.html"), page);
 });
-const homePath = path.join(root, "index.html");
-let home = fs.readFileSync(homePath, "utf8");
-home = home.replace(
-  /<!-- SELECTED_WORK_START -->[\s\S]*?<!-- SELECTED_WORK_END -->/,
-  `<!-- SELECTED_WORK_START -->\n<div class="project-grid">${projects.map((p) => card(p)).join("\n")}</div>\n<div class="all-work-link"><a class="button button-ink" href="work/">Explore all case studies ${arrow}</a></div>\n${dataIsland("")}\n<!-- SELECTED_WORK_END -->`,
-);
-fs.writeFileSync(homePath, home);
-console.log("Generated work gallery, four case studies and homepage cards.");
+console.log("Generated the work gallery and four case studies.");
