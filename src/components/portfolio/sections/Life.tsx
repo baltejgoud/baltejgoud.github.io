@@ -19,7 +19,7 @@ export function Life() {
         <div className="p-intro" data-reveal>
           <p className="p-eyebrow">Off the clock</p>
           <h2>More than the work tabs.</h2>
-          <p className="p-description">Hyderabad is home. Give me a football, a good film, a new place to explore, and Anirudh on repeat.</p>
+          <p className="p-description">Hyderabad is home. Football, Formula 1, a good film, a new place to explore, and Anirudh on repeat.</p>
         </div>
 
         <div className="l-board" ref={board} data-reveal>
@@ -52,6 +52,8 @@ export function Life() {
             <p>Things I’ll always make time for</p>
             <ul>
               <li>Badminton, cricket & football</li>
+              <li>Formula 1. Red Bull on race day.</li>
+              <li>Max Verstappen & Cristiano Ronaldo fan</li>
               <li>A really good movie</li>
               <li>Visiting somewhere I haven’t been</li>
               <li>Anirudh. Preferably turned up.</li>

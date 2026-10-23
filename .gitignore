@@ -16,3 +16,6 @@ next-env.d.ts
 
 # Intermediate image files (scripts/prepare-images.cjs input)
 .cache/
+
+# Local reconstruction backup patches (not application sources)
+docs/verification/*.diff

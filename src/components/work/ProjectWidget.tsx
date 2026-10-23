@@ -4,7 +4,11 @@ import dynamic from "next/dynamic";
 import type { WidgetKind } from "@/content/types";
 
 function WidgetLoading() {
-  return <div className="h-full min-h-[380px] animate-pulse rounded-[20px] border border-line bg-cream" />;
+  return (
+    <div className="flex h-full min-h-[380px] items-center justify-center rounded-[20px] border border-line bg-cream" role="status">
+      <span className="text-sm text-stone">Loading the interactive model…</span>
+    </div>
+  );
 }
 
 const ForecastWidget = dynamic(() => import("./widgets/ForecastWidget").then((m) => m.ForecastWidget), {

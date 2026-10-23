@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { WidgetFrame } from "./WidgetFrame";
 import { cn } from "@/lib/cn";
 import { hasWebCrypto } from "@/lib/hash";
@@ -10,8 +10,10 @@ export function CustodyWidget() {
   const [chain, setChain] = useState<CustodyStep[]>(defaultChain);
   const [signed, setSigned] = useState<string[]>([]);
   const [current, setCurrent] = useState<string[]>([]);
+  const revision = useRef({ value: 0 });
 
   useEffect(() => {
+    const pending = revision.current;
     let alive = true;
     chainHashes(defaultChain).then((hashes) => {
       if (!alive) return;
@@ -20,17 +22,22 @@ export function CustodyWidget() {
     });
     return () => {
       alive = false;
+      pending.value++;
     };
   }, []);
 
   const ok = verify(signed, current);
   const firstBroken = ok.indexOf(false);
   const tamper = (id: string) => {
+    const request = ++revision.current.value;
     const next = chain.map((s) => (s.id === id ? { ...s, payload: tamperedPayloads[id] } : s));
     setChain(next);
-    chainHashes(next).then(setCurrent);
+    chainHashes(next).then((hashes) => {
+      if (request === revision.current.value) setCurrent(hashes);
+    });
   };
   const reset = () => {
+    revision.current.value++;
     setChain(defaultChain);
     setCurrent(signed);
   };

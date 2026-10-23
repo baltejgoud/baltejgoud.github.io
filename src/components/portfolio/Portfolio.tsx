@@ -33,6 +33,7 @@ const dockItems = [
 export function Portfolio() {
   const [dark, setDark] = useState(false);
   const [active, setActive] = useState("top");
+  const [visibleSection, setVisibleSection] = useState("top");
   const [musicOpen, setMusicOpen] = useState(false);
   const [musicLoaded, setMusicLoaded] = useState(false);
   const [notice, setNotice] = useState("");
@@ -52,18 +53,30 @@ export function Portfolio() {
   // The dock follows whichever section owns the middle of the screen. Sections that belong to a
   // dock item without being its anchor say so with data-dock (Sanket counts as Work, and so on).
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          const el = entry.target as HTMLElement;
-          setActive(el.dataset.dock ?? el.id);
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const middle = window.innerHeight * 0.475;
+      for (const section of document.querySelectorAll<HTMLElement>("main > section")) {
+        const bounds = section.getBoundingClientRect();
+        if (bounds.top <= middle && bounds.bottom > middle) {
+          setActive(section.dataset.dock ?? section.id);
+          setVisibleSection(section.id);
+          break;
         }
-      },
-      { rootMargin: "-45% 0px -50% 0px", threshold: 0 },
-    );
-    document.querySelectorAll("main > section").forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
+      }
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    schedule();
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
   }, []);
 
   useEffect(() => {
@@ -109,7 +122,7 @@ export function Portfolio() {
 
   return (
     <SiteContext.Provider value={api}>
-      <div className="p-site" data-theme={dark ? "dark" : "light"}>
+      <div className="p-site" data-theme={dark ? "dark" : "light"} data-active-section={visibleSection}>
         <header className="p-header">
           <a className="p-avatar" href="#top" aria-label="Baltej Goud, back to top">
             <Image src="/images/id-photo.webp" width={48} height={48} alt="Baltej Goud" />

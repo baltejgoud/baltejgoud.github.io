@@ -406,7 +406,7 @@ html.js:not(.reduced) .l-board.is-in .l-item {
 }
 @media (max-width: 760px) {
   .l-board {
-    height: 1740px;
+    height: 1860px;
     border-width: 10px;
     margin-inline: -6px;
   }
@@ -446,7 +446,7 @@ html.js:not(.reduced) .l-board.is-in .l-item {
   }
   .l-captain {
     left: 3%;
-    top: 940px;
+    top: 1060px;
     width: 50%;
     padding: 18px;
   }
@@ -456,7 +456,7 @@ html.js:not(.reduced) .l-board.is-in .l-item {
   .l-pennant {
     left: auto;
     right: 4%;
-    top: 990px;
+    top: 1110px;
     width: 42%;
     height: 104px;
     padding: 18px 0 0 16px;
@@ -470,7 +470,7 @@ html.js:not(.reduced) .l-board.is-in .l-item {
   }
   .l-music {
     left: 4%;
-    top: 1230px;
+    top: 1350px;
     width: 56%;
     padding: 20px;
   }

@@ -635,9 +635,6 @@ html.js:not(.reduced) .p-availability > span {
     padding: 12px 10px;
     font-size: 11px;
   }
-  .p-dock a[href="#top"] {
-    display: none;
-  }
   .p-dock a.is-active > svg {
     display: none;
   }
@@ -649,6 +646,19 @@ html.js:not(.reduced) .p-availability > span {
   }
   .p-dialog h2 {
     font-size: 36px;
+  }
+}
+/* Keep all six destinations and the same compact dock dimensions in every section. */
+@media (max-width: 650px) {
+  .p-dock a {
+    min-width: 0;
+    padding: 10px 7px;
+    font-size: 10px;
+    gap: 3px;
+  }
+  .p-dock .p-dock-resume {
+    padding-inline: 10px;
+    margin-left: 3px;
   }
 }
 @media (max-width: 390px) {

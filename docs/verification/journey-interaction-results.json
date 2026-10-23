@@ -1,0 +1,161 @@
+{
+  "checkpoints": [
+    {
+      "active": "Checkpoint 1: University, La Source",
+      "car": "left: 23.8037%; top: 59.8687%;",
+      "card": {
+        "bottom": 678.7748413085938,
+        "height": 160,
+        "left": 529,
+        "right": 909,
+        "top": 518.7748413085938,
+        "width": 380,
+        "x": 529,
+        "y": 518.7748413085938
+      },
+      "progress": "3%",
+      "rail": "Checkpoint 1: BVRIT",
+      "title": "University"
+    },
+    {
+      "active": "Checkpoint 2: Teaching, Eau Rouge / Raidillon",
+      "car": "left: 38.6093%; top: 33.773%;",
+      "card": {
+        "bottom": 736.2260131835938,
+        "height": 160,
+        "left": 702.2374877929688,
+        "right": 1082.2374877929688,
+        "top": 576.2260131835938,
+        "width": 380,
+        "x": 702.2374877929688,
+        "y": 576.2260131835938
+      },
+      "progress": "14%",
+      "rail": "Checkpoint 2: BVRIT · Tutoring",
+      "title": "Teaching"
+    },
+    {
+      "active": "Checkpoint 3: Freelance, Les Combes",
+      "car": "left: 79.3399%; top: 13.3444%;",
+      "card": {
+        "bottom": 736.759033203125,
+        "height": 160,
+        "left": 702.2374877929688,
+        "right": 1082.2374877929688,
+        "top": 576.759033203125,
+        "width": 380,
+        "x": 702.2374877929688,
+        "y": 576.759033203125
+      },
+      "progress": "32%",
+      "rail": "Checkpoint 3: Freelance",
+      "title": "Freelance"
+    },
+    {
+      "active": "Checkpoint 4: Haritha, Pouhon",
+      "car": "left: 71.7848%; top: 29.4938%;",
+      "card": {
+        "bottom": 736.7714233398438,
+        "height": 160,
+        "left": 702.2374877929688,
+        "right": 1082.2374877929688,
+        "top": 576.7714233398438,
+        "width": 380,
+        "x": 702.2374877929688,
+        "y": 576.7714233398438
+      },
+      "progress": "52%",
+      "rail": "Checkpoint 4: Haritha Industries",
+      "title": "Haritha"
+    },
+    {
+      "active": "Checkpoint 5: Tectoro, Stavelot",
+      "car": "left: 82.7372%; top: 78.0101%;",
+      "card": {
+        "bottom": 736.7863159179688,
+        "height": 160,
+        "left": 702.2374877929688,
+        "right": 1082.2374877929688,
+        "top": 576.7863159179688,
+        "width": 380,
+        "x": 702.2374877929688,
+        "y": 576.7863159179688
+      },
+      "progress": "72%",
+      "rail": "Checkpoint 5: Tectoro",
+      "title": "Tectoro"
+    },
+    {
+      "active": "Checkpoint 6: Sanket, Blanchimont",
+      "car": "left: 54.2335%; top: 47.5013%;",
+      "card": {
+        "bottom": 736.7789916992188,
+        "height": 160,
+        "left": 702.2374877929688,
+        "right": 1082.2374877929688,
+        "top": 576.7789916992188,
+        "width": 380,
+        "x": 702.2374877929688,
+        "y": 576.7789916992188
+      },
+      "progress": "89%",
+      "rail": "Checkpoint 6: Sanket",
+      "title": "Sanket"
+    },
+    {
+      "active": "Checkpoint 7: What’s Next?, Start / Finish",
+      "car": "left: 30.7385%; top: 54.5273%;",
+      "card": {
+        "bottom": 710.2591552734375,
+        "height": 160,
+        "left": 551.9375,
+        "right": 931.9375,
+        "top": 550.2591552734375,
+        "width": 380,
+        "x": 551.9375,
+        "y": 550.2591552734375
+      },
+      "progress": "100%",
+      "rail": "Checkpoint 7: What’s next?",
+      "title": "What’s Next?"
+    }
+  ],
+  "navigation": [
+    {
+      "active": "Home",
+      "navCount": 1,
+      "position": "fixed",
+      "section": "top"
+    },
+    {
+      "active": "Work",
+      "navCount": 1,
+      "position": "fixed",
+      "section": "work"
+    },
+    {
+      "active": "About",
+      "navCount": 1,
+      "position": "fixed",
+      "section": "life"
+    },
+    {
+      "active": "Contact",
+      "navCount": 1,
+      "position": "fixed",
+      "section": "hello"
+    },
+    {
+      "active": "Journey",
+      "navCount": 1,
+      "position": "fixed",
+      "section": "journey"
+    }
+  ],
+  "scroll": {
+    "beforeReverse": "100%",
+    "afterReverse": "85%",
+    "afterForward": "100%"
+  },
+  "consoleErrors": []
+}

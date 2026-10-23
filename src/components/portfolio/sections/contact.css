@@ -220,10 +220,12 @@ html:not(.js) .c-radar i {
   border-color: #22313c;
 }
 .c-composer textarea:focus-visible {
-  outline: none;
+  outline: 2px solid #22313c;
+  outline-offset: 5px;
 }
 .c-composer-foot {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
@@ -231,21 +233,32 @@ html:not(.js) .c-radar i {
 }
 .c-colors {
   display: flex;
-  gap: 7px;
+  gap: 2px;
 }
 .c-colors button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 50%;
+}
+.c-colors button > span {
   width: 24px;
   height: 24px;
   border-radius: 50%;
   border: 2px solid #22313c30;
   transition: transform 0.3s var(--p-spring);
 }
-.c-colors button[aria-pressed="true"] {
+.c-colors button[aria-pressed="true"] > span {
   border-color: #22313c;
   transform: scale(1.18);
 }
 .c-actions {
   display: flex;
+  margin-left: auto;
   align-items: center;
   gap: 16px;
 }
@@ -384,8 +397,9 @@ html:not(.js) .c-radar i {
 .c-email button {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
   border-radius: 50%;
   border: 1px solid #ffffff30;
   background: #ffffff12;
@@ -465,6 +479,7 @@ html:not(.js) .c-radar i {
     align-items: stretch;
   }
   .c-actions {
+    margin-left: 0;
     justify-content: space-between;
   }
   .c-key-cap {

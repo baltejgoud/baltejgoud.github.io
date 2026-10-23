@@ -95,3 +95,14 @@ export const journeyStories = [
     detail: "Hyderabad, India · Let’s talk",
   },
 ] as const;
+
+/** Short map popovers; the complete narrative remains available under chapter details. */
+export const journeyMapSummaries = [
+  "The foundation in programming, statistics and how systems work became the starting point for everything I build today.",
+  "Helping 500+ students understand data analysis, statistics and core computer science by making complex ideas clear.",
+  "Taking on independent development work after graduation, before moving into a full-time data role.",
+  "Turning operational data into business insights through data cleaning, exploratory analysis and visual reporting.",
+  "Building AI/ML solutions and machine-learning pipelines during a three-month internship alongside my full-time role.",
+  "Connecting product direction, engineering and machine learning to build demand forecasting and inventory intelligence.",
+  "Open to data and AI roles where clear analysis meets useful software. The next chapter could be with your team.",
+] as const;

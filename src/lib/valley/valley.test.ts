@@ -2,7 +2,18 @@ import { describe, expect, it } from "vitest";
 import { depths, fadeOut, layerPose } from "./camera";
 import { splitWords } from "./ink";
 import { sketchArrow, sketchLoop, sketchMarker, sketchTrend, sketchWave } from "./sketch";
-import { bandPath, pointAt, processSeries, reachedStep, smoothPath } from "./processChart";
+import {
+  SIGNAL_BARS,
+  SIGNAL_EDGES,
+  SIGNAL_GAPS,
+  SIGNAL_PLOT,
+  SIGNAL_STAGE,
+  signalBandPath,
+  signalDots,
+  signalLoop,
+  signalTrend,
+  signalTrendPath,
+} from "./signalStates";
 import { cleanNote, NOTE_LIMITS, noteMailto, noteText } from "./note";
 
 const numbersIn = (d: string) => (d.match(/-?\d+(\.\d+)?/g) ?? []).map(Number);
@@ -76,44 +87,60 @@ describe("sketches", () => {
   });
 });
 
-describe("process chart", () => {
-  const series = processSeries(6);
+describe("noise to signal", () => {
+  const dots = signalDots();
+  const count = (kind: string) => dots.filter((d) => d.kind === kind).length;
 
-  it("spans the x axis with a rising trend and keeps the actual line inside its band", () => {
-    expect(series[0].x).toBe(0);
-    expect(series[5].x).toBe(1);
-    expect(series[5].y).toBeGreaterThan(series[0].y);
-    expect(series[5].trend).toBeGreaterThan(series[0].trend);
-    for (const p of series) {
-      expect(p.lo).toBeLessThan(p.y);
-      expect(p.hi).toBeGreaterThan(p.y);
-      expect(p.lo).toBeGreaterThanOrEqual(0);
-      expect(p.hi).toBeLessThanOrEqual(1);
+  it("is the same illustrative dataset on every render", () => {
+    expect(signalDots()).toEqual(dots);
+  });
+
+  it("has one dashboard slot per regular dot, plus the gaps and outliers it names", () => {
+    expect(dots).toHaveLength(SIGNAL_BARS.reduce((a, b) => a + b, 0) + SIGNAL_EDGES);
+    expect(count("edge")).toBe(SIGNAL_EDGES);
+    expect(count("gap")).toBe(SIGNAL_GAPS);
+  });
+
+  it("keeps every dot on the stage at every step", () => {
+    for (const dot of dots) {
+      expect(dot.at).toHaveLength(6);
+      for (const p of dot.at) {
+        expect(p.x).toBeGreaterThan(0);
+        expect(p.x).toBeLessThan(SIGNAL_STAGE.width);
+        expect(p.y).toBeGreaterThan(0);
+        expect(p.y).toBeLessThan(SIGNAL_STAGE.height);
+      }
     }
   });
 
-  it("widens uncertainty towards the horizon", () => {
-    const width = (i: number) => series[i].hi - series[i].lo;
-    expect(width(5)).toBeGreaterThan(width(0));
-  });
-
-  it("draws paths and places points inside the chart", () => {
-    expect(smoothPath(series, "y", 1000, 400).startsWith("M")).toBe(true);
-    expect(bandPath(series, 1000, 400).endsWith("Z")).toBe(true);
-    for (const p of series) {
-      const { x, y } = pointAt(p, 1000, 400);
-      expect(x).toBeGreaterThanOrEqual(0);
-      expect(x).toBeLessThanOrEqual(1000);
-      expect(y).toBeGreaterThanOrEqual(0);
-      expect(y).toBeLessThanOrEqual(400);
+  it("never stacks two dots on the same spot in the table or the dashboard", () => {
+    for (const step of [1, 3]) {
+      const spots = new Set(dots.filter((d) => d.kind !== "edge").map((d) => `${d.at[step].x},${d.at[step].y}`));
+      expect(spots.size).toBe(dots.length - SIGNAL_EDGES);
     }
   });
 
-  it("reports the step the traced line has reached", () => {
-    expect(reachedStep(0, 6)).toBe(-1);
-    expect(reachedStep(0.01, 6)).toBe(0);
-    expect(reachedStep(0.2, 6)).toBe(1);
-    expect(reachedStep(1, 6)).toBe(5);
+  it("fits the baseline without the outliers, then shows them further out than any regular point", () => {
+    const plot = SIGNAL_PLOT;
+    for (const edge of dots.filter((d) => d.kind === "edge"))
+      expect(edge.at[2].x).toBeGreaterThan(plot.right);
+    const off = (d: (typeof dots)[number]) => {
+      const p = d.at[4];
+      const x = (p.x - plot.left) / (plot.right - plot.left);
+      const y = (plot.bottom - p.y) / (plot.bottom - plot.top);
+      return Math.abs(y - signalTrend(x));
+    };
+    const regular = Math.max(...dots.filter((d) => d.kind !== "edge").map(off));
+    const edges = Math.min(...dots.filter((d) => d.kind === "edge").map(off));
+    expect(edges).toBeGreaterThan(regular);
+  });
+
+  it("draws the trend, band and loop as closed, valid paths", () => {
+    expect(signalTrendPath()).toMatch(/^M[\d.]+ [\d.]+L/);
+    expect(signalBandPath().endsWith("Z")).toBe(true);
+    const loop = signalLoop();
+    expect(loop.arc).toMatch(/^M.+A150 150 0 1 1 /);
+    expect(loop.arrow.endsWith("Z")).toBe(true);
   });
 });
 

@@ -10,710 +10,552 @@ import {
   type CSSProperties,
 } from "react";
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import {
-  ArrowDown,
-  ArrowLeft,
   ArrowRight,
   ArrowUpRight,
-  CarFront,
-  Flag,
-  Map,
+  Mouse,
+  ChevronsRight,
   RotateCcw,
   X,
 } from "lucide-react";
 import { journey } from "@/content/journey";
-import { journeyStories } from "@/content/journey-stories";
+import { journeyStories, journeyMapSummaries } from "@/content/journey-stories";
 import route from "@/content/journey-route.json";
+import { placeCareerPopup } from "@/lib/careerMapLayout";
+import { CAREER_SCENE, circuitLabels, pointOnCareerScene, scenePercent, sceneRoad, sceneStops } from "@/lib/careerScene";
 import {
-  JOURNEY_ARRIVED,
-  JOURNEY_SCROLL_SCREENS,
-  journeyScrollState,
-  journeyStopProgress,
-  pointOnJourney,
-} from "@/lib/careerJourney";
-import type { DriveFrame } from "@/lib/trackside";
-import { useMediaQuery, usePrefersReducedMotion } from "@/hooks/useMediaQuery";
+  CAREER_MAP_SCROLL_SCREENS,
+  careerMapState,
+  careerMapStopProgress,
+} from "@/lib/careerMapProgress";
+import { usePrefersReducedMotion } from "@/hooks/useMediaQuery";
 import { useSmoothScroll } from "@/components/layout/SmoothScroll";
-import { useSite } from "./SiteContext";
 import { profile } from "@/content/profile";
-import type { TracksideRenderer } from "./trackside/TracksideScene";
+import { CareerCircuit } from "./CareerCircuit";
 import "./career-journey.css";
-
-const CarDetail = dynamic(() => import("./CarDetail"), { ssr: false });
 
 export interface CareerJourneyHandle {
   goTo: (index: number) => void;
 }
 type Photo = { src: string; caption: string };
-const chapters = [
-  "The foundation",
-  "Pass it on",
-  "Go independent",
-  "Find the signal",
-  "Build intelligence",
-  "Take the lead",
-  "The next chapter",
-];
 
 export const CareerJourney = forwardRef<CareerJourneyHandle>(
   function CareerJourney(_, ref) {
     const track = useRef<HTMLDivElement>(null);
-    const scene = useRef<HTMLDivElement>(null);
-    const host = useRef<HTMLDivElement>(null);
+    const sticky = useRef<HTMLDivElement>(null);
+    const car = useRef<HTMLDivElement>(null);
+    const board = useRef<HTMLDivElement>(null);
     const popup = useRef<HTMLElement>(null);
-    const storyBody = useRef<HTMLDivElement>(null);
-    const wire = useRef<SVGPathElement>(null);
-    const miniCar = useRef<SVGCircleElement>(null);
-    const miniProgress = useRef<SVGPathElement>(null);
+    const connector = useRef<SVGPathElement>(null);
+    const progressPath = useRef<SVGPathElement>(null);
     const percentage = useRef<HTMLSpanElement>(null);
-    const lapProgress = useRef<HTMLDivElement>(null);
+    const storyBody = useRef<HTMLDivElement>(null);
     const lightbox = useRef<HTMLDialogElement>(null);
-    const renderer = useRef<TracksideRenderer | null>(null);
-    const frame = useRef(0);
-    const viewport = useRef({
-      width: 0,
-      height: 0,
-      progress: 0,
-      pinned: false,
-    });
-    const compact = useMediaQuery("(max-width: 760px) and (min-height: 541px)");
     const reduced = usePrefersReducedMotion();
-    const { dark } = useSite();
-    const [selected, setSelected] = useState(0);
-    const [overview, setOverview] = useState(true);
-    const [arrived, setArrived] = useState(false);
+    const [view, setView] = useState({
+      index: 0,
+      overview: true,
+      arrived: false,
+    });
+    const rendered = useRef(view);
     const [expanded, setExpanded] = useState(false);
     const [dismissed, setDismissed] = useState(false);
     const [photo, setPhoto] = useState<Photo | null>(null);
-    const [carOpen, setCarOpen] = useState(false);
-    const [mapOpen, setMapOpen] = useState(false);
-    const [webgl, setWebgl] = useState(false);
-    const state = useRef<DriveFrame & { reduced: boolean }>({
-      distance: 0,
-      approach: 0,
-      overview: true,
-      index: 0,
-      arrival: 0,
-      compact: false,
-      dark: false,
-      reduced: false,
-    });
-    const rendered = useRef({ index: 0, overview: true, arrived: false });
-    const modal = useRef(false);
     const {
       scrollTo,
       stop: stopScroll,
       start: startScroll,
     } = useSmoothScroll();
+    const { index: selected, overview, arrived } = view;
 
-    const paint = useCallback(() => {
-      if (!track.current || !scene.current) return;
-      const current = state.current;
-      if (!current.reduced) {
-        const range = Math.max(
-          1,
-          track.current.offsetHeight - scene.current.offsetHeight,
-        );
-        const rect = track.current.getBoundingClientRect();
-        const width = scene.current.clientWidth,
-          height = scene.current.offsetHeight;
-        const previous = viewport.current;
-        const resized =
-          previous.width > 0 &&
-          (width !== previous.width || height !== previous.height);
-        let progress = -rect.top / range;
-        if (resized && previous.pinned) {
-          // Rotation and browser-panel resizing change the entire scroll track's
-          // height. Keep the same place in the lap instead of jumping sections.
-          progress = previous.progress;
-          scrollTo(window.scrollY + rect.top + progress * range, {
-            immediate: true,
-          });
-        }
-        viewport.current = {
-          width,
-          height,
-          progress,
-          pinned: progress >= 0 && progress <= 1,
-        };
-        const next = journeyScrollState(progress);
-        current.index = next.index;
-        current.overview = next.overview;
-        current.distance = next.distance;
-        current.approach = next.overview ? 0 : next.firstApproach;
-        current.arrival = next.arrival;
+    const paint = useCallback((at: number) => {
+      const point = pointOnCareerScene(at);
+      const percent = scenePercent(point);
+      if (car.current) {
+        car.current.dataset.distance = String(at);
+        car.current.style.left = `${percent.x}%`;
+        car.current.style.top = `${percent.y}%`;
+        const heading = car.current.firstElementChild as HTMLElement | null;
+        if (heading) heading.style.transform = `rotate(${point.angle}deg)`;
       }
-      const visible = !current.overview && current.arrival > 0.7;
-      if (rendered.current.index !== current.index) {
-        rendered.current.index = current.index;
-        setSelected(current.index);
-        setExpanded(false);
-        setDismissed(false);
-        if (storyBody.current) storyBody.current.scrollTop = 0;
-      }
-      if (rendered.current.overview !== current.overview) {
-        rendered.current.overview = current.overview;
-        setOverview(current.overview);
-      }
-      if (rendered.current.arrived !== visible) {
-        rendered.current.arrived = visible;
-        setArrived(visible);
-      }
-      const p = pointOnJourney(current.distance);
-      miniCar.current?.setAttribute("cx", String(p.x));
-      miniCar.current?.setAttribute("cy", String(p.y));
-      miniProgress.current?.style.setProperty(
+      progressPath.current?.style.setProperty(
         "stroke-dashoffset",
-        String(1 - current.distance),
+        String(1 - at),
       );
       if (percentage.current)
-        percentage.current.textContent = `${Math.round(current.distance * 100)
-          .toString()
-          .padStart(2, "0")}%`;
-      if (lapProgress.current)
-        lapProgress.current.style.transform = `scaleX(${current.distance})`;
-      const anchor = renderer.current?.draw(current);
-      if (anchor && popup.current && Number.isFinite(anchor.x + anchor.y)) {
-        const width = scene.current.clientWidth,
-          height = scene.current.clientHeight;
-        // The card stays put while the world moves. Read its bounds before
-        // writing the connector, avoiding a read/write layout loop on scroll.
-        const box = popup.current.getBoundingClientRect();
-        const viewport = scene.current.getBoundingClientRect();
-        const x = box.left - viewport.left,
-          y = box.top - viewport.top;
-        const panelWidth = box.width,
-          panelHeight = box.height;
-        const ax = Math.max(20, Math.min(width - 20, anchor.x)),
-          ay = Math.max(120, Math.min(height - 170, anchor.y));
-        // Attach to the nearest card edge so the connector never runs through
-        // the text or stretches across the car to the far corner of the panel.
-        let endX = Math.max(x + 20, Math.min(x + panelWidth - 20, ax));
-        let endY = Math.max(y + 20, Math.min(y + panelHeight - 20, ay));
-        if (ax < x) endX = x;
-        else if (ax > x + panelWidth) endX = x + panelWidth;
-        else if (ay < y) endY = y;
-        else endY = y + panelHeight;
-        wire.current?.setAttribute("d", `M${ax} ${ay}L${endX} ${endY}`);
-      }
-    }, [scrollTo]);
+        percentage.current.textContent = `${Math.round(at * 100)}%`;
+    }, []);
+
+    const scrollBounds = useCallback(() => {
+      if (!track.current || !sticky.current) return null;
+      const inset =
+        Number.parseFloat(getComputedStyle(sticky.current).top) || 0;
+      return {
+        start:
+          window.scrollY + track.current.getBoundingClientRect().top - inset,
+        range: Math.max(
+          1,
+          track.current.offsetHeight - sticky.current.offsetHeight,
+        ),
+      };
+    }, []);
 
     useEffect(() => {
-      state.current.compact = compact;
-      state.current.dark = dark;
-      state.current.reduced = reduced;
-      let near = false,
-        disposed = false,
-        loading = false;
-      const schedule = () => {
-        if (!near || frame.current || document.hidden) return;
-        frame.current = requestAnimationFrame(() => {
-          frame.current = 0;
-          paint();
-        });
-      };
-      const load = async () => {
-        if (loading || renderer.current || !host.current) return;
-        loading = true;
-        try {
-          const sceneFactory = await import("./trackside/TracksideScene");
-          if (disposed || !host.current) return;
-          const created = await sceneFactory.createTracksideScene(
-            host.current,
-            () => {
-              setWebgl(false);
-              renderer.current?.dispose();
-              renderer.current = null;
-            },
-            () => disposed,
-          );
-          if (!created) return;
-          if (disposed) {
-            created.dispose();
-            return;
-          }
-          renderer.current = created;
-          paint();
-          setWebgl(true);
-        } catch {
-          if (!disposed) setWebgl(false);
+      let frame = 0;
+      const update = () => {
+        frame = 0;
+        const bounds = scrollBounds();
+        if (!bounds) return;
+        const next = careerMapState(
+          (window.scrollY - bounds.start) / bounds.range,
+        );
+        // Reduced motion keeps the story readable and changes position only at chapter boundaries.
+        paint(
+          reduced && !next.overview ? route.stops[next.index] : next.distance,
+        );
+        const previous = rendered.current;
+        const current = {
+          index: next.index,
+          overview: next.overview,
+          arrived: reduced ? !next.overview : next.arrived,
+        };
+        if (
+          previous.index !== current.index ||
+          previous.overview !== current.overview
+        ) {
+          setExpanded(false);
+          setDismissed(false);
+          if (storyBody.current) storyBody.current.scrollTop = 0;
+        }
+        if (
+          previous.index !== current.index ||
+          previous.overview !== current.overview ||
+          previous.arrived !== current.arrived
+        ) {
+          rendered.current = current;
+          setView(current);
         }
       };
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          near = entry.isIntersecting;
-          if (near) {
-            void load();
-            schedule();
-          }
-        },
-        { rootMargin: "100% 0px" },
-      );
-      if (track.current) observer.observe(track.current);
-      // When a forward scroll comes to rest while the camera is swinging round
-      // to a checkpoint, glide the rest of the way so the drive never parks
-      // halfway through the move. Scrolling back is left alone.
-      let lastY = window.scrollY,
-        forward = true,
-        idle = 0;
-      const settle = () => {
-        const view = viewport.current;
-        if (
-          state.current.reduced ||
-          modal.current ||
-          !forward ||
-          !view.pinned ||
-          !track.current ||
-          !scene.current
-        )
-          return;
-        const { index, fraction, overview } = journeyScrollState(view.progress);
-        if (overview || fraction < 0.34 || fraction >= JOURNEY_ARRIVED - 0.005)
-          return;
-        const top = window.scrollY + track.current.getBoundingClientRect().top;
-        scrollTo(
-          top +
-            journeyStopProgress(index) *
-              (track.current.offsetHeight - scene.current.offsetHeight),
-        );
-      };
-      const onScroll = () => {
-        const y = window.scrollY;
-        if (y !== lastY) forward = y > lastY;
-        lastY = y;
-        window.clearTimeout(idle);
-        if (near) idle = window.setTimeout(settle, 260);
-        schedule();
+      const schedule = () => {
+        if (!frame) frame = requestAnimationFrame(update);
       };
       const resize = new ResizeObserver(schedule);
-      if (scene.current) resize.observe(scene.current);
-      if (popup.current) resize.observe(popup.current);
-      window.addEventListener("scroll", onScroll, { passive: true });
+      if (track.current) resize.observe(track.current);
+      if (sticky.current) resize.observe(sticky.current);
+      window.addEventListener("scroll", schedule, { passive: true });
       window.addEventListener("resize", schedule, { passive: true });
-      document.addEventListener("visibilitychange", schedule);
-      paint();
+      schedule();
       return () => {
-        disposed = true;
-        observer.disconnect();
+        cancelAnimationFrame(frame);
         resize.disconnect();
-        window.removeEventListener("scroll", onScroll);
-        window.clearTimeout(idle);
+        window.removeEventListener("scroll", schedule);
         window.removeEventListener("resize", schedule);
-        document.removeEventListener("visibilitychange", schedule);
-        cancelAnimationFrame(frame.current);
-        frame.current = 0;
       };
-    }, [compact, dark, reduced, paint, scrollTo]);
-    useEffect(
-      () => () => {
-        renderer.current?.dispose();
-        renderer.current = null;
-      },
-      [],
-    );
-    useEffect(() => {
-      const id = requestAnimationFrame(paint);
-      return () => cancelAnimationFrame(id);
-    }, [selected, overview, arrived, expanded, dismissed, paint]);
+    }, [paint, reduced, scrollBounds]);
 
-    const goTo = useCallback(
+    const select = useCallback(
       (index: number) => {
-        const target = Math.max(0, Math.min(journey.length - 1, index));
+        const bounds = scrollBounds();
+        if (!bounds) return;
         setExpanded(false);
         setDismissed(false);
-        if (!state.current.reduced && track.current && scene.current) {
-          const top =
-            window.scrollY + track.current.getBoundingClientRect().top;
-          scrollTo(
-            top +
-              journeyStopProgress(target) *
-                (track.current.offsetHeight - scene.current.offsetHeight),
-          );
-          return;
-        }
-        state.current = {
-          ...state.current,
-          index: target,
-          overview: false,
-          distance: route.stops[target],
-          approach: 1,
-          arrival: 1,
-        };
-        paint();
-        const box = scene.current?.getBoundingClientRect();
-        if (box && (box.bottom < 100 || box.top > window.innerHeight - 100))
-          scrollTo("#journey");
+        scrollTo(bounds.start + careerMapStopProgress(index) * bounds.range, {
+          immediate: reduced,
+        });
       },
-      [paint, scrollTo],
+      [reduced, scrollBounds, scrollTo],
     );
-    useImperativeHandle(ref, () => ({ goTo }), [goTo]);
-    const restart = () => {
-      setExpanded(false);
-      setDismissed(false);
-      if (state.current.reduced) {
-        state.current = {
-          ...state.current,
-          overview: true,
-          index: 0,
-          distance: 0,
-          approach: 0,
-          arrival: 0,
-        };
-        paint();
-      }
-      scrollTo("#journey");
-    };
-    const next = () =>
-      overview
-        ? goTo(0)
-        : selected < 6
-          ? goTo(selected + 1)
-          : scrollTo("#hello");
-    const previous = () => (selected === 0 ? restart() : goTo(selected - 1));
+    useImperativeHandle(ref, () => ({ goTo: select }), [select]);
+
+    useEffect(() => {
+      if (!dismissed) return;
+      // Removing focus from a dismissed popover can trigger browser scroll anchoring.
+      // Keep this checkpoint parked; subsequent wheel input still drives normally.
+      const bounds = scrollBounds();
+      if (bounds)
+        scrollTo(
+          bounds.start + careerMapStopProgress(selected) * bounds.range,
+          {
+            immediate: true,
+          },
+        );
+    }, [dismissed, selected, scrollBounds, scrollTo]);
+
     useEffect(() => {
       const dialog = lightbox.current;
       if (photo && dialog) {
         if (!dialog.open) dialog.showModal();
+        stopScroll();
       } else {
         dialog?.close();
+        startScroll();
       }
-      modal.current = Boolean(photo || carOpen);
-      if (photo || carOpen) stopScroll();
-      else startScroll();
       return () => startScroll();
-    }, [photo, carOpen, stopScroll, startScroll]);
+    }, [photo, stopScroll, startScroll]);
+
+    const restart = () => {
+      const bounds = scrollBounds();
+      if (bounds) scrollTo(bounds.start, { immediate: reduced });
+    };
+    const next = () =>
+      selected === journey.length - 1 && !overview
+        ? scrollTo("#hello")
+        : select(overview ? 0 : selected + 1);
+    const positionPopup = useCallback(() => {
+      if (!board.current || !popup.current || !sticky.current) return;
+      const frame = sticky.current.getBoundingClientRect();
+      const map = board.current.getBoundingClientRect();
+      const percent = scenePercent(sceneStops[selected]);
+      const anchor = {
+        x: map.left - frame.left + (percent.x / 100) * map.width,
+        y: map.top - frame.top + (percent.y / 100) * map.height,
+      };
+      if (frame.width > 650 && frame.height <= 500) {
+        popup.current.style.setProperty("--card-x", "18px");
+        popup.current.style.setProperty("--card-y", "150px");
+        return;
+      }
+      if (frame.width <= 650) {
+        const top = Math.max(320, frame.height - 295);
+        popup.current.style.setProperty("--mobile-card-top", `${top}px`);
+        popup.current.style.removeProperty("--card-x");
+        popup.current.style.removeProperty("--card-y");
+        return;
+      }
+      const size = popup.current.getBoundingClientRect();
+      const road = sceneRoad
+        .filter((_, i) => i % 8 === 0)
+        .map((point) => {
+          const p = scenePercent(point);
+          return {
+            x: map.left - frame.left + (p.x / 100) * map.width,
+            y: map.top - frame.top + (p.y / 100) * map.height,
+          };
+        });
+      const protectedAreas = [...sticky.current.querySelectorAll(".cm-overview, .cm-masthead")].map((element) => {
+        const rect = element.getBoundingClientRect();
+        return { left: rect.left - frame.left, right: rect.right - frame.left, top: rect.top - frame.top, bottom: rect.bottom - frame.top };
+      });
+      const at = selected === 0 && frame.width > 1100 && size.height < 250
+        ? { x: Math.min(frame.width - size.width - 28, frame.width * 529 / 1672), y: Math.min(frame.height - size.height - 110, frame.height * 517 / 941) }
+        : placeCareerPopup(anchor, size, frame, road, protectedAreas);
+      popup.current.style.setProperty("--card-x", `${at.x}px`);
+      popup.current.style.setProperty("--card-y", `${at.y}px`);
+      const end = {
+        x: Math.max(at.x, Math.min(at.x + size.width, anchor.x)),
+        y: Math.max(at.y, Math.min(at.y + size.height, anchor.y)),
+      };
+      connector.current?.setAttribute(
+        "d",
+        `M${anchor.x} ${anchor.y}L${end.x} ${end.y}`,
+      );
+    }, [selected]);
+
+    // A single, uniformly scaled artboard keeps the environment, road, car and pins registered.
+    // It is deliberately independent of scroll: the camera never chases or zooms into the car.
+    useEffect(() => {
+      const frame = sticky.current;
+      const map = board.current;
+      if (!frame || !map) return;
+      const fit = () => {
+        const rect = frame.getBoundingClientRect();
+        const mobile = rect.width <= 650;
+        const compact = mobile && rect.height < 740;
+        const landscape = !mobile && rect.height <= 500;
+        const scale = landscape
+          ? Math.min((rect.width - 360) / 1280, (rect.height - 160) / 800)
+          : mobile
+          ? ((rect.width - 28) / 1280) * (compact ? 0.6 : 1)
+          : Math.min(rect.width / CAREER_SCENE.width, rect.height / CAREER_SCENE.height);
+        const width = CAREER_SCENE.width * scale;
+        const height = CAREER_SCENE.height * scale;
+        map.style.setProperty("--cm-board-w", `${width}px`);
+        map.style.setProperty("--cm-board-h", `${height}px`);
+        map.style.setProperty("--cm-board-x", `${landscape ? 340 + (rect.width - 360 - 1165 * scale) / 2 - 390 * scale : mobile ? compact ? (rect.width - 1165 * scale) / 2 - 390 * scale : -340 * scale + 14 : (rect.width - width) / 2}px`);
+        map.style.setProperty("--cm-board-y", `${landscape ? 70 - 125 * scale : mobile ? compact ? 245 : 295 : (rect.height - height) / 2}px`);
+        map.style.setProperty("--cm-scale", String(scale));
+      };
+      const observer = new ResizeObserver(fit);
+      observer.observe(frame);
+      fit();
+      return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
+      const observer = new ResizeObserver(positionPopup);
+      if (sticky.current) observer.observe(sticky.current);
+      if (board.current) observer.observe(board.current);
+      if (popup.current) observer.observe(popup.current);
+      const frame = requestAnimationFrame(positionPopup);
+      return () => {
+        observer.disconnect();
+        cancelAnimationFrame(frame);
+      };
+    }, [positionPopup, expanded]);
 
     const story = journeyStories[selected],
       milestone = journey[selected];
     const gallery: readonly Photo[] = "gallery" in story ? story.gallery : [];
-    const showing = arrived && !overview && !dismissed;
+    const showing = (overview || arrived) && !dismissed;
+    const chapterNames = [
+      "The foundation",
+      "Pass it on",
+      "Go independent",
+      "Find the signal",
+      "Build intelligence",
+      "Building now",
+      "The next chapter",
+    ];
+
     return (
       <section
         id="journey"
-        className="ts-section"
+        className="cm-section"
         data-dock="journey"
         data-reduced={reduced}
-        aria-label="The Spa trackside journey"
+        aria-labelledby="career-map-title"
       >
         <span id="experience" className="p-anchor-alias" aria-hidden />
+        <h2 id="career-map-title" className="sr-only">
+          The career circuit
+        </h2>
         <div
           ref={track}
-          className="ts-scroll-track"
+          className="cm-scroll-track"
           style={
-            { "--journey-screens": JOURNEY_SCROLL_SCREENS } as CSSProperties
+            {
+              "--career-scroll-screens": CAREER_MAP_SCROLL_SCREENS,
+            } as CSSProperties
           }
         >
-          <div
-            ref={scene}
-            className={`ts-scene ${overview ? "is-overview" : "is-driving"} ${showing ? "has-story" : ""} ${webgl ? "is-webgl" : "is-fallback"}`}
-            tabIndex={0}
-            role="group"
-            aria-label="Trackside journey. Scroll to drive. Use left and right arrows to select chapters."
-            onKeyDown={(event) => {
-              if (
-                (event.target as Element).closest(
-                  "button, a, input, textarea, dialog, [data-scroll-area]",
+          <div ref={sticky} className="cm-sticky">
+            <div
+              className={`cm-experience ${overview ? "is-overview" : ""} ${showing ? "has-story" : ""}`}
+              role="group"
+              tabIndex={0}
+              aria-label="Career circuit. Scroll down to drive forward, up to retrace. Left and right arrow keys select checkpoints."
+              onKeyDown={(event) => {
+                if (
+                  (event.target as Element).closest(
+                    "button, a, dialog, [data-scroll-area]",
+                  )
                 )
-              )
-                return;
-              if (event.key === "ArrowRight") {
-                event.preventDefault();
-                next();
-              }
-              if (event.key === "ArrowLeft") {
-                event.preventDefault();
-                previous();
-              }
-              if (event.key === "Home") {
-                event.preventDefault();
-                restart();
-              }
-              if (event.key === "End") {
-                event.preventDefault();
-                goTo(6);
-              }
-            }}
-          >
-            <div ref={host} className="ts-world" aria-hidden />
-            <div className="ts-fallback" aria-hidden>
-              <svg viewBox="0 0 1500 1000">
-                <path d={route.path} className="ts-fallback-grass" />
-                <path d={route.path} className="ts-fallback-road" />
-                {route.positions.map(([x, y], i) => (
-                  <g key={i} transform={`translate(${x} ${y})`}>
-                    <circle r="26" />
-                    <text textAnchor="middle" dy="6">
-                      {i + 1}
-                    </text>
-                  </g>
-                ))}
-              </svg>
-            </div>
-            <div className="ts-vignette" aria-hidden />
-            <header className="ts-hud">
-              <div>
-                <span className="ts-beacon" />
-                <strong>THE CAREER GRAND PRIX</strong>
-                <span className="ts-hud-location">SPA-FRANCORCHAMPS</span>
-              </div>
-              <div>
-                <span className="ts-lap">LAP 01 / 01</span>
-                <strong ref={percentage}>00%</strong>
-                <button
-                  onClick={() => setCarOpen(true)}
-                  aria-label="Inspect the car"
-                >
-                  <CarFront size={18} />
-                </button>
-                <button
-                  onClick={() => setMapOpen(!mapOpen)}
-                  aria-label="Toggle circuit map"
-                  aria-pressed={mapOpen}
-                >
-                  <Map size={17} />
-                </button>
-                <button onClick={restart} aria-label="Restart the journey">
-                  <RotateCcw size={17} />
-                </button>
-              </div>
-              <div className="ts-lap-progress" aria-hidden>
-                <div ref={lapProgress} />
-              </div>
-            </header>
-            <button className="ts-exit" onClick={() => scrollTo("#process")}>
-              Skip the drive <ArrowDown size={14} />
-            </button>
-            {overview && (
-              <div className="ts-intro">
-                <p>MY JOURNEY. AT TRACK LEVEL.</p>
-                <h2>
-                  One lap.
-                  <br />
-                  Every <em>chapter.</em>
-                </h2>
-                <p>
-                  From a classroom to a company.
-                  <br />
-                  Seven stops on the road that brought me here.
-                </p>
-                <button onClick={() => goTo(0)}>
-                  Drive the journey <ArrowRight size={18} />
-                </button>
-                <span>
-                  <ArrowDown size={14} />
-                  {reduced
-                    ? "Choose a chapter to explore"
-                    : "Scroll to take the wheel"}
-                </span>
-              </div>
-            )}
-            <svg
-              className={`ts-leader ${showing ? "is-visible" : ""}`}
-              aria-hidden
+                  return;
+                if (event.key === "ArrowRight") {
+                  event.preventDefault();
+                  select(
+                    overview ? 0 : Math.min(journey.length - 1, selected + 1),
+                  );
+                }
+                if (event.key === "ArrowLeft") {
+                  event.preventDefault();
+                  select(Math.max(0, selected - 1));
+                }
+                if (event.key === "Home") {
+                  event.preventDefault();
+                  restart();
+                }
+                if (event.key === "End") {
+                  event.preventDefault();
+                  select(journey.length - 1);
+                }
+              }}
             >
-              <path ref={wire} />
-            </svg>
-            <article
-              ref={popup}
-              className={`ts-popup ${showing ? "is-visible" : ""}`}
-              aria-hidden={!showing}
-              inert={!showing}
-              style={{ "--stop-color": story.color } as CSSProperties}
-            >
-              <div className="ts-popup-stripe" />
-              <div className="ts-popup-top">
-                <span>
-                  CAREER CHECKPOINT / {String(selected + 1).padStart(2, "0")}
-                </span>
+              <CareerCircuit
+                ref={car}
+                boardRef={board}
+                progressRef={progressPath}
+                selected={selected}
+                overview={overview}
+                onSelect={select}
+              />
+              <header className="cm-masthead">
+                <a href="#top">Baltej Goud</a>
+                <i aria-hidden="true" />
+                <span>THE CAREER CIRCUIT</span>
+              </header>
+              <div className="cm-lap-hud">
+                <span ref={percentage}>0%</span>
+                <span className="cm-lap-label">LAP 01 / 01</span>
                 <button
-                  onClick={() => setDismissed(true)}
-                  aria-label="Hide chapter"
+                  onClick={restart}
+                  aria-label="Restart the journey"
+                  title="Back to the grid"
                 >
-                  <X size={16} />
+                  <RotateCcw size={21} />
+                </button>
+                <button
+                  onClick={() => scrollTo("#process")}
+                  aria-label="Skip career circuit"
+                  title="Continue to how I work"
+                >
+                  <ChevronsRight size={23} />
                 </button>
               </div>
-              <div
-                ref={storyBody}
-                className="ts-popup-body"
-                data-scroll-area
-                tabIndex={showing ? 0 : -1}
-                aria-label={`${story.name} experience details`}
+              <div className="cm-overview">
+                  <span>2019 — NOW / SEVEN CHAPTERS</span>
+                  <h3>
+                    Every turn
+                    <br />
+                    has a story.
+                  </h3>
+                  <p>
+                    From computer science to building a company.
+                    <br />
+                    Scroll to follow the road that brought me here.
+                  </p>
+                </div>
+              <svg
+                className={`cm-connector ${showing ? "is-visible" : ""}`}
+                aria-hidden="true"
               >
-                <div className="ts-company">
-                  <span className="ts-logo">
-                    {story.logo ? (
-                      <Image
-                        src={`/assets/logos/${story.logo}-mark.webp`}
-                        alt={`${story.name} logo`}
-                        width={42}
-                        height={42}
-                      />
-                    ) : (
-                      <Flag size={25} />
-                    )}
+                <path ref={connector} />
+              </svg>
+              <article
+                ref={popup}
+                className={`ts-popup ${showing ? "is-visible" : ""} ${expanded ? "is-expanded" : ""}`}
+                aria-hidden={!showing}
+                inert={!showing}
+                aria-label={`${story.name} career checkpoint`}
+              >
+                <Image
+                  className="ts-popup-thumbnail"
+                  src={selected < 2 ? "/assets/journey/university-reference.webp" : selected === 5 ? "/assets/work/sanket-dashboard.webp" : story.logo ? `/assets/logos/${story.logo}.webp` : "/assets/portrait.webp"}
+                  alt={selected < 2 ? "University architecture, reference illustration" : story.name}
+                  width={100} height={128} sizes="100px"
+                />
+                <div className="ts-popup-top">
+                  <span>
+                    {String(selected + 1).padStart(2, "0")} / 07
                   </span>
-                  <div>
-                    <p>{milestone.dates || "The next chapter"}</p>
-                    <h3>{story.name}</h3>
+                  <button
+                    onClick={() => setDismissed(true)}
+                    aria-label="Hide chapter"
+                  >
+                    <X size={21} />
+                  </button>
+                </div>
+                <div
+                  ref={storyBody}
+                  className="ts-popup-body"
+                  data-scroll-area
+                  tabIndex={showing ? 0 : -1}
+                  aria-label={`${story.name} experience details`}
+                >
+                  <p className="ts-date">
+                    {selected === 5
+                      ? "BUILDING NOW"
+                      : milestone.dates || "THE NEXT CHAPTER"}
+                  </p>
+                  <h3>{circuitLabels[selected]}</h3>
+                  <p className="ts-role">{milestone.role}</p>
+                  <h4>{selected === 5 ? <>From building products to<br />building a company.</> : story.title}</h4>
+                  <p className="ts-story">{journeyMapSummaries[selected]}</p>
+                  <div className="ts-popup-actions">
+                    {selected === 5 && (
+                      <a className="ts-primary-link" href="/work/sanket/">
+                        Inside Sanket <ArrowRight size={17} />
+                      </a>
+                    )}
+                    {selected === 6 && (
+                      <a
+                        className="ts-primary-link"
+                        href={`mailto:${profile.email}`}
+                      >
+                        Let’s talk <ArrowUpRight size={17} />
+                      </a>
+                    )}
+                    <button
+                      className="ts-detail-toggle"
+                      aria-expanded={expanded}
+                      aria-controls="ts-details"
+                      aria-label={
+                        expanded
+                          ? "Hide chapter details"
+                          : "Show chapter details"
+                      }
+                      onClick={() => setExpanded(!expanded)}
+                    >
+                      <ArrowRight size={18} aria-hidden="true" />
+                    </button>
+                  </div>
+                  <div
+                    id="ts-details"
+                    className="ts-details"
+                    hidden={!expanded}
+                  >
+                    <p>{story.story}</p>
+                    {milestone.bullets.length > 0 && (
+                      <ul>
+                        {milestone.bullets.map((b) => (
+                          <li key={b}>{b}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {gallery.length > 0 && (
+                      <div className="ts-gallery">
+                        {gallery.map((item) => (
+                          <button
+                            key={item.src}
+                            onClick={() => setPhoto(item)}
+                            aria-label={`Open photo: ${item.caption}`}
+                          >
+                            <Image
+                              src={item.src}
+                              alt=""
+                              width={300}
+                              height={170}
+                              sizes="160px"
+                            />
+                            <span>{item.caption}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    {story.website && (
+                      <a href={story.website} target="_blank" rel="noreferrer">
+                        Visit {story.name.split(" · ")[0]}{" "}
+                        <ArrowUpRight size={15} />
+                      </a>
+                    )}
+                    <button className="ts-next" onClick={next}>
+                      {selected === 6 ? "Go to contact" : "Next checkpoint"}{" "}
+                      <ArrowRight size={15} />
+                    </button>
                   </div>
                 </div>
-                <h4>{story.title}</h4>
-                <span className="ts-role">{milestone.role}</span>
-                <p className="ts-story">{story.story}</p>
-                <div className="ts-takeaway">
-                  <strong>{story.takeaway}</strong>
-                  <span>{story.detail}</span>
-                </div>
-                <button
-                  className="ts-detail-toggle"
-                  aria-expanded={expanded}
-                  aria-controls="ts-details"
-                  onClick={() => setExpanded(!expanded)}
-                >
-                  {expanded ? "Less detail" : "More from this chapter"}
-                  <span>{expanded ? "−" : "+"}</span>
+              </article>
+              {dismissed && !overview && arrived && (
+                <button className="cm-reopen" onClick={() => select(selected)}>
+                  Show {story.name} story <ArrowUpRight size={15} />
                 </button>
-                <div id="ts-details" className="ts-details" hidden={!expanded}>
-                  {milestone.bullets.length > 0 && (
-                    <ul>
-                      {milestone.bullets.map((b) => (
-                        <li key={b}>{b}</li>
-                      ))}
-                    </ul>
-                  )}
-                  {gallery.length > 0 && (
-                    <div className="ts-gallery">
-                      {gallery.map((item) => (
-                        <button
-                          key={item.src}
-                          onClick={() => setPhoto(item)}
-                          aria-label={`Open photo: ${item.caption}`}
-                        >
-                          <Image
-                            src={item.src}
-                            alt=""
-                            width={300}
-                            height={170}
-                            sizes="160px"
-                          />
-                          <span>{item.caption}</span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                  {story.website && (
-                    <a href={story.website} target="_blank" rel="noreferrer">
-                      Visit {story.name.split(" · ")[0]}{" "}
-                      <ArrowUpRight size={15} />
-                    </a>
-                  )}
-                  {selected === 5 && (
-                    <a href="/work/sanket/">
-                      Inside Sanket <ArrowUpRight size={15} />
-                    </a>
-                  )}
-                  {selected === 6 && (
-                    <a href={`mailto:${profile.email}`}>
-                      Let’s talk <ArrowUpRight size={15} />
-                    </a>
-                  )}
-                </div>
-              </div>
-              <footer>
-                <span className="ts-at-stop">
-                  <i />
-                  AT {route.corners[selected].toUpperCase()}
+              )}
+              <div className="cm-driving-note">
+                <Mouse size={29} strokeWidth={1.3} />
+                <span>
+                  SCROLL TO EXPLORE<br />THE JOURNEY
                 </span>
-                <button onClick={next}>
-                  {selected === 6 ? "Let’s talk" : "Next checkpoint"}
-                  <ArrowRight size={14} />
-                </button>
-              </footer>
-            </article>
-            {!overview && !showing && (
-              <div className="ts-road-caption">
-                <span>{arrived ? "CHECKPOINT REACHED" : "ON THE WAY TO"}</span>
-                <strong>{story.name}</strong>
-                {dismissed && (
-                  <button onClick={() => setDismissed(false)}>
-                    Show this chapter <ArrowUpRight size={14} />
-                  </button>
-                )}
               </div>
-            )}
-            <div
-              className={`ts-minimap ${mapOpen ? "is-open" : ""}`}
-              aria-label="Circuit progress"
-            >
-              <span>SPA / 7.004 KM</span>
-              <svg viewBox="0 0 1500 1000" aria-hidden>
-                <path d={route.path} className="ts-mini-road" />
-                <path
-                  ref={miniProgress}
-                  d={route.path}
-                  className="ts-mini-complete"
-                  pathLength={1}
-                  strokeDasharray="1"
-                  strokeDashoffset="1"
-                />
-                <circle
-                  ref={miniCar}
-                  cx={route.points[0][0]}
-                  cy={route.points[0][1]}
-                  r="26"
-                />
-              </svg>
-              <p>RED BULL LIVERY · THE CAREER LAP</p>
+              <p className="cm-status sr-only" role="status">
+                {overview
+                  ? "Scroll down to take the first turn."
+                  : arrived
+                    ? `Checkpoint ${selected + 1}: ${story.name}. ${chapterNames[selected]}.`
+                    : `On the way to ${story.name}`}
+              </p>
+              <span className="cm-distance">SPA<br />FRANCORCHAMPS<i /></span>
             </div>
-            <nav className="ts-chapters" aria-label="Career chapters">
-              <button
-                onClick={previous}
-                disabled={overview}
-                aria-label="Previous chapter"
-              >
-                <ArrowLeft size={16} />
-              </button>
-              {journeyStories.map((item, i) => (
-                <button
-                  key={item.name}
-                  onClick={() => goTo(i)}
-                  className={!overview && selected === i ? "is-active" : ""}
-                  aria-label={`Chapter ${i + 1}: ${item.name}`}
-                  aria-current={
-                    !overview && selected === i ? "step" : undefined
-                  }
-                >
-                  <span>{String(i + 1).padStart(2, "0")}</span>
-                  <span className="ts-chapter-name">
-                    {item.name.split(" · ")[0]}
-                    {i === 1 ? " · Tutor" : ""}
-                  </span>
-                </button>
-              ))}
-              <button
-                onClick={next}
-                aria-label={selected === 6 ? "Go to contact" : "Next chapter"}
-              >
-                <ArrowRight size={16} />
-              </button>
-            </nav>
-            <div className="ts-driving-note" aria-live="polite">
-              {overview
-                ? "Seven chapters. One circuit."
-                : `${String(selected + 1).padStart(2, "0")} / 07 · ${chapters[selected]}`}
-            </div>
-            <noscript>
-              <ol>
-                {journey.map((item) => (
-                  <li key={item.role}>
-                    {item.dates} · {item.role} · {item.org}
-                  </li>
-                ))}
-              </ol>
-            </noscript>
           </div>
         </div>
+        <noscript>
+          <ol>
+            {journey.map((item) => (
+              <li key={item.role}>
+                {item.dates} · {item.role} · {item.org}
+              </li>
+            ))}
+          </ol>
+        </noscript>
         <dialog
           ref={lightbox}
           className="ts-lightbox"
@@ -740,7 +582,6 @@ export const CareerJourney = forwardRef<CareerJourneyHandle>(
             </div>
           )}
         </dialog>
-        {carOpen && <CarDetail onClose={() => setCarOpen(false)} />}
       </section>
     );
   },

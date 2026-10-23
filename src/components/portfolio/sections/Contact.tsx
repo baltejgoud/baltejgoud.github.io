@@ -138,6 +138,7 @@ export function Contact() {
                 maxLength={NOTE_LIMITS.name}
                 placeholder="your name"
                 autoComplete="name"
+                aria-label="Your name"
               />
             </label>
             <div className="c-composer-foot">
@@ -146,11 +147,13 @@ export function Contact() {
                   <button
                     key={c}
                     type="button"
-                    className={`c-note-${c}`}
+                    className="c-color-swatch"
                     aria-label={`${c} paper`}
                     aria-pressed={color === c}
                     onClick={() => setColor(c)}
-                  />
+                  >
+                    <span className={`c-note-${c}`} aria-hidden />
+                  </button>
                 ))}
               </div>
               <div className="c-actions">

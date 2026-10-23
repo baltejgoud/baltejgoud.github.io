@@ -1,7 +1,7 @@
 "use client";
 
 import { animate, type AnimationPlaybackControls } from "motion/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { WidgetFrame } from "./WidgetFrame";
 import { Pill } from "@/components/ui/Pill";
 import { cn } from "@/lib/cn";
@@ -15,6 +15,8 @@ export function AtlasWidget() {
   const [batched, setBatched] = useState(false);
   const [calls, setCalls] = useState(ATLAS_TILES);
   const animation = useRef<AnimationPlaybackControls | null>(null);
+
+  useEffect(() => () => animation.current?.stop(), []);
 
   const toggle = () => {
     const next = !batched;

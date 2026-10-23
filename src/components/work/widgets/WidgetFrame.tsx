@@ -8,9 +8,14 @@ interface WidgetFrameProps {
   children: ReactNode;
 }
 
-export function WidgetFrame({ title, caption, illustrative = true, children }: WidgetFrameProps) {
+export function WidgetFrame({
+  title,
+  caption,
+  illustrative = true,
+  children,
+}: WidgetFrameProps) {
   return (
-    <figure className="flex h-full min-h-[380px] flex-col rounded-[20px] border border-line bg-paper p-5 shadow-card">
+    <figure className="project-widget flex h-full min-h-[380px] flex-col rounded-[20px] border border-line bg-paper p-5 shadow-card">
       <div className="flex items-center justify-between gap-3">
         <span className="label text-ink">{title}</span>
         {illustrative && (
@@ -20,7 +25,9 @@ export function WidgetFrame({ title, caption, illustrative = true, children }: W
         )}
       </div>
       <div className="mt-4 flex-1">{children}</div>
-      <figcaption className="mt-4 font-mono text-[11px] leading-relaxed text-stone">{caption}</figcaption>
+      <figcaption className="mt-4 font-mono text-[11px] leading-relaxed text-stone">
+        {caption}
+      </figcaption>
     </figure>
   );
 }
